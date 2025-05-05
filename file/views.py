@@ -78,17 +78,7 @@ class LoginForm(View):
         except LoginToken.DoesNotExist:
             return HttpResponse("Invalid token", status=404)
 
-        if request.method == 'POST':
-            form = AuthenticationForm(data=request.POST)
-            if form.is_valid():
-                user = form.get_user()
-                login_token.user = user
-                login_token.validated = True
-                login_token.save()
-                login(request, user)
-                return HttpResponse("Login successful! You can close this window.")
-        else:
-            form = AuthenticationForm()
+        form = AuthenticationForm()
 
         return render(request, 'login_flow.html', {'form': form})
 
@@ -96,13 +86,40 @@ class LoginForm(View):
         try:
             login_token = LoginToken.objects.get(token=token)
         except LoginToken.DoesNotExist:
+            return HttpResponse("Invalid token", status=404)
+        
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login_token.user = user
+            login_token.validated = True
+            login_token.save()
+            login(request, user)
+            return HttpResponse("Login successful! You can close this window.")
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class LoginPoll(View):
+    def post(self, request):
+        data = request.json() if hasattr(request, 'json') else request.POST
+        token = data.get('token')
+        
+        try:
+            login_token = LoginToken.objects.get(token=token)
+        except LoginToken.DoesNotExist:
             return JsonResponse({"error": "Invalid token"}, status=404)
 
         if not login_token.validated or login_token.is_expired():
             return JsonResponse({"error": "Not authorized yet"}, status=404)
+        
+        protocol = "https" if request.is_secure() else "http"
 
-        return JsonResponse({
-            "server": request.get_host(),
+        json_content = {
+            "server": f"{protocol}://{request.get_host()}",
             "loginName": login_token.user.username,
-            "appPassword": "fake-app-password"
-        })
+            "appPassword": "fake-app-password",
+        }
+
+        print(json_content)
+
+        return JsonResponse(json_content)

@@ -19,7 +19,7 @@ from django.urls import path
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, StatusView, Login, LoginForm
+from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll
 from django.conf import settings
 
 from django.urls import re_path
@@ -33,6 +33,7 @@ urlpatterns = [
     path('status.php', StatusView.as_view()),
     path('index.php/login/v2', Login.as_view()),
     path('index.php/login/v2/flow/<str:token>', LoginForm.as_view()),
+    path('index.php/login/v2/poll', LoginPoll.as_view()),
     re_path(
         dav_path_regex,
         MyDavView.as_view(
