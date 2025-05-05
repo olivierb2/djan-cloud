@@ -19,7 +19,7 @@ from django.urls import path
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from djangodav.views import DavView
+from file.views import MyDavView
 from django.conf import settings
 
 from django.urls import re_path
@@ -32,7 +32,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(
         dav_path_regex,
-        DavView.as_view(
+        MyDavView.as_view(
             resource_class=MyDavResource,
             lock_class=DummyLock,
             acl_class=FullAcl
