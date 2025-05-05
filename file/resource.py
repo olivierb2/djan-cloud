@@ -3,7 +3,10 @@ from django.conf import settings
 from djangodav.base.resources import MetaEtagMixIn, BaseDavResource
 from .models import File, Folder, FileSystemItem
 from django.core.files.base import ContentFile
+import logging
 import mimetypes
+
+logger = logging.getLogger(__name__)
 
 class MyDavResource(MetaEtagMixIn, BaseDavResource):
 
@@ -30,7 +33,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                         full_path=path
                     )
             except Folder.DoesNotExist:
-                pass
+                logger.warning(f"Unable to find {path}")
 
     def __repr__(self):
         return f"<MyDavResource path:{'/'.join(self.path)}>"
