@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.contrib.auth.models import User
 import mimetypes
 
 # Create your models here.
@@ -64,20 +66,12 @@ class File(FileSystemItem):
         super().save(*args, **kwargs)
 
 
+class LoginToken(models.Model):
+    token = models.CharField(max_length=128, unique=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    validated = models.BooleanField(default=False)
 
-    # @property
-    # def content_type(self):
-    #     if self.content:
-    #         return mimetypes.guess_type(self.content.path)
-
-    # @property
-    # def content_length(self):
-    #     if self.content:
-    #         len(self.read())
-    #     return 0
-
-    # def read(self):
-    #     if self.content:
-    #         with open(self.content.path) as f:
-    #             return f.read()
-
+    def is_expired(self):
+        return timezone.now() - self.created_at > timezone.timedelta(minutes=10)
