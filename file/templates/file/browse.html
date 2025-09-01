@@ -14,10 +14,28 @@
         .folder::before { content: "\1F4C1"; margin-right: 5px; /* Folder icon */ }
         .file::before { content: "\1F4C4"; margin-right: 5px; /* File icon */ }
         .up-link { margin-bottom: 1em; display: inline-block; }
+        .upload-section { margin: 1em 0; padding: 1em; background-color: #f9f9f9; border-radius: 5px; }
+        .upload-form { display: flex; align-items: center; gap: 10px; }
+        .upload-btn { background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .upload-btn:hover { background-color: #0056b3; }
+        .messages { margin: 1em 0; }
+        .messages .success { color: green; }
+        .messages .error { color: red; }
     </style>
 </head>
 <body>
     <h1>Browsing: /{{ current_path }}</h1>
+
+    {# Display messages #}
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     {# Link to parent directory #}
     {% if parent_path is not None %}
@@ -27,6 +45,16 @@
             <a href="{% url 'browse_files' path=parent_path %}" class="up-link">⬆️ Up to parent directory</a>
         {% endif %}
     {% endif %}
+
+    {# Upload section #}
+    <div class="upload-section">
+        <h3>Upload File</h3>
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            <input type="file" name="file" required>
+            <button type="submit" class="upload-btn">📤 Upload</button>
+        </form>
+    </div>
 
     <table>
         <thead>

@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse, FileResponse, Http404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.contrib import messages
 import base64
 import secrets
 import os
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import LoginToken, Folder, File
 from django.views import View
@@ -165,6 +167,44 @@ class FileBrowseView(LoginRequiredMixin, View):
             'parent_path': parent_path,
         }
         return render(request, self.template_name, context)
+
+    def post(self, request, path=''):
+        # Handle file upload
+        normalized_path = '/' + path.strip('/')
+        if normalized_path == '/': # User root
+            folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+        else:
+            folder = get_object_or_404(Folder, owner=request.user, full_path=normalized_path)
+
+        uploaded_file = request.FILES.get('file')
+        if not uploaded_file:
+            messages.error(request, 'No file selected for upload.')
+            return redirect(request.path)
+
+        # Check if file already exists
+        existing_file = File.objects.filter(
+            owner=request.user, 
+            folder=folder,
+            file__icontains=uploaded_file.name
+        ).first()
+        
+        if existing_file:
+            messages.error(request, f'File "{uploaded_file.name}" already exists in this folder.')
+            return redirect(request.path)
+
+        # Create new file
+        try:
+            new_file = File(
+                owner=request.user,
+                folder=folder,
+                file=uploaded_file
+            )
+            new_file.save()
+            messages.success(request, f'File "{uploaded_file.name}" uploaded successfully.')
+        except Exception as e:
+            messages.error(request, f'Error uploading file: {str(e)}')
+
+        return redirect(request.path)
 
 
 class FileDownloadView(LoginRequiredMixin, View):
