@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib import messages
 from django.db import transaction
+from django.conf import settings
 import base64
 import secrets
 import os
@@ -42,6 +43,30 @@ class BasicAuthMixin:
 
 @method_decorator(csrf_exempt, name='dispatch')
 class MyDavView(BasicAuthMixin, DavView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Override to handle username validation from URL"""
+        # Extract username from URL kwargs
+        username = kwargs.get('username')
+        
+        # Call parent dispatch to handle authentication first
+        response = super().dispatch(request, *args, **kwargs)
+        
+        # If authentication failed, return the response (usually 401)
+        if hasattr(response, 'status_code') and response.status_code == 401:
+            return response
+        
+        # Validate that authenticated user matches URL username
+        if not request.user.is_authenticated:
+            response = HttpResponse('Unauthorized', status=401)
+            response['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+            return response
+            
+        if request.user.username != username:
+            return HttpResponse('Forbidden: Access denied for this user path', status=403)
+        
+        # If we get here, authentication and username validation passed
+        return response
     
     def get_resource(self, path=None):
         """Override to pass the user to the resource"""
@@ -126,7 +151,7 @@ class LoginPoll(View):
         protocol = "https" if request.is_secure() else "http"
 
         json_content = {
-            "server": f"{protocol}://{request.get_host()}",
+            "server": f"{protocol}://{request.get_host()}/{settings.ROOT_DAV}{login_token.user.username}",
             "loginName": login_token.user.username,
             "appPassword": "fake-app-password",
         }

@@ -26,7 +26,7 @@ from django.urls import re_path
 
 from file.resource import MyDavResource
 
-dav_path_regex = fr'^{settings.ROOT_DAV}(?P<path>.*)$'
+dav_path_regex = fr'^{settings.ROOT_DAV}(?P<username>[^/]+)/(?P<path>.*)$'
 
 urlpatterns = [
     path('admin/', admin.site.urls),

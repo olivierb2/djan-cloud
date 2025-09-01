@@ -125,4 +125,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
 
-ROOT_DAV = 'remote.php/webdav'
+ROOT_DAV = 'remote.php/webdav/files/'
