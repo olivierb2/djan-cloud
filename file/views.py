@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse, FileResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib import messages
+from django.db import transaction
 import base64
 import secrets
 import os
@@ -313,3 +314,180 @@ class FolderDeleteView(LoginRequiredMixin, View):
             return redirect('browse_files', path=parent_path)
         else:
             return redirect('browse_files_root')
+
+
+class MoveItemView(LoginRequiredMixin, View):
+    template_name = 'file/move_picker.html'
+    
+    def get(self, request, item_type, item_id):
+        # Get the item to be moved
+        if item_type == 'file':
+            item = get_object_or_404(File, id=item_id, owner=request.user)
+            current_folder = item.folder
+        elif item_type == 'folder':
+            item = get_object_or_404(Folder, id=item_id, owner=request.user)
+            current_folder = item.parent
+        else:
+            messages.error(request, 'Invalid item type.')
+            return redirect('browse_files_root')
+        
+        # Start at root folder for destination selection
+        root_folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+        
+        # Get breadcrumb path
+        breadcrumbs = [{'name': 'Root', 'folder': root_folder}]
+        
+        context = {
+            'item': item,
+            'item_type': item_type,
+            'current_folder': root_folder,
+            'subfolders': root_folder.subfolders.filter(owner=request.user).order_by('name'),
+            'breadcrumbs': breadcrumbs,
+            'current_path': '',
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, item_type, item_id):
+        # Get the item to move
+        if item_type == 'file':
+            item = get_object_or_404(File, id=item_id, owner=request.user)
+        elif item_type == 'folder':
+            item = get_object_or_404(Folder, id=item_id, owner=request.user)
+        else:
+            messages.error(request, 'Invalid item type.')
+            return redirect('browse_files_root')
+        
+        # Get destination folder
+        destination_folder_id = request.POST.get('destination_folder_id')
+        if not destination_folder_id:
+            messages.error(request, 'No destination folder selected.')
+            return redirect(request.META.get('HTTP_REFERER', 'browse_files_root'))
+        
+        destination_folder = get_object_or_404(Folder, id=destination_folder_id, owner=request.user)
+        
+        try:
+            with transaction.atomic():
+                if item_type == 'file':
+                    self._move_file(item, destination_folder)
+                    messages.success(request, f'File "{item.file.name}" moved successfully.')
+                else:  # folder
+                    self._move_folder(item, destination_folder)
+                    messages.success(request, f'Folder "{item.name}" moved successfully.')
+        except Exception as e:
+            messages.error(request, f'Error moving {item_type}: {str(e)}')
+        
+        # Redirect back to the destination folder
+        if destination_folder.parent is None and destination_folder.name is None:
+            return redirect('browse_files_root')
+        else:
+            dest_path = destination_folder.full_path.strip('/')
+            return redirect('browse_files', path=dest_path)
+    
+    def _move_file(self, file, destination_folder):
+        """Move a file to a new folder"""
+        if file.folder == destination_folder:
+            raise Exception('File is already in the destination folder.')
+        
+        # Check for name conflicts
+        existing_file = File.objects.filter(
+            owner=file.owner,
+            folder=destination_folder,
+            file__icontains=os.path.basename(file.file.name)
+        ).exclude(id=file.id).first()
+        
+        if existing_file:
+            raise Exception(f'A file with this name already exists in the destination folder.')
+        
+        file.folder = destination_folder
+        file.full_path = f"{destination_folder.full_path}/{os.path.basename(file.file.name)}"
+        file.save()
+    
+    def _move_folder(self, folder, destination_folder):
+        """Move a folder to a new parent folder"""
+        if folder.parent == destination_folder:
+            raise Exception('Folder is already in the destination folder.')
+        
+        if folder == destination_folder:
+            raise Exception('Cannot move folder into itself.')
+        
+        # Check if destination is a subfolder of the item being moved (prevent circular reference)
+        if self._is_subfolder_of(destination_folder, folder):
+            raise Exception('Cannot move folder into its own subfolder.')
+        
+        # Check for name conflicts
+        existing_folder = Folder.objects.filter(
+            owner=folder.owner,
+            parent=destination_folder,
+            name=folder.name
+        ).exclude(id=folder.id).first()
+        
+        if existing_folder:
+            raise Exception(f'A folder with this name already exists in the destination folder.')
+        
+        # Update folder parent and recalculate paths
+        folder.parent = destination_folder
+        folder.save()  # This will trigger path recalculation
+        
+        # Update paths for all subfolders and files recursively
+        self._update_paths_recursive(folder)
+    
+    def _is_subfolder_of(self, potential_subfolder, parent_folder):
+        """Check if potential_subfolder is a subfolder of parent_folder"""
+        current = potential_subfolder
+        while current and current.parent:
+            current = current.parent
+            if current == parent_folder:
+                return True
+        return False
+    
+    def _update_paths_recursive(self, folder):
+        """Recursively update full_path for all subfolders and files"""
+        # Update subfolders
+        for subfolder in folder.subfolders.all():
+            subfolder.save()  # Triggers path recalculation
+            self._update_paths_recursive(subfolder)
+        
+        # Update files
+        for file in folder.files.all():
+            file.full_path = f"{folder.full_path}/{os.path.basename(file.file.name)}"
+            file.save()
+
+
+class FolderSelectorView(LoginRequiredMixin, View):
+    def get(self, request, folder_id=None):
+        """AJAX endpoint to get folder contents for the move picker"""
+        if folder_id:
+            folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
+        else:
+            # Root folder
+            folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+        
+        # Build breadcrumbs
+        breadcrumbs = []
+        current = folder
+        while current:
+            if current.parent is None and current.name is None:
+                breadcrumbs.insert(0, {'name': 'Root', 'id': current.id, 'path': ''})
+            else:
+                path = current.full_path.strip('/')
+                breadcrumbs.insert(0, {'name': current.name, 'id': current.id, 'path': path})
+            current = current.parent
+        
+        # Get subfolders
+        subfolders = []
+        for subfolder in folder.subfolders.filter(owner=request.user).order_by('name'):
+            subfolders.append({
+                'id': subfolder.id,
+                'name': subfolder.name,
+                'path': subfolder.full_path.strip('/'),
+            })
+        
+        return JsonResponse({
+            'folder': {
+                'id': folder.id,
+                'name': folder.name or 'Root',
+                'path': folder.full_path.strip('/') if folder.full_path else '',
+            },
+            'breadcrumbs': breadcrumbs,
+            'subfolders': subfolders,
+        })

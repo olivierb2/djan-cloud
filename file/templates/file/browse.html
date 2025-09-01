@@ -24,6 +24,8 @@
         .actions { display: flex; gap: 5px; align-items: center; }
         .delete-btn { background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
         .delete-btn:hover { background-color: #c82333; }
+        .move-btn { background-color: #ffc107; color: black; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+        .move-btn:hover { background-color: #e0a800; }
     </style>
 </head>
 <body>
@@ -101,6 +103,7 @@
                     <td>--</td>
                     <td>
                         <div class="actions">
+                            <a href="{% url 'move_item' item_type='folder' item_id=folder.id %}" class="move-btn">📦 Move</a>
                             <form method="post" action="{% url 'delete_folder' folder_id=folder.id %}" style="display: inline;" 
                                   onsubmit="return confirm('Are you sure you want to delete folder \'{{ folder.name }}\'? This action cannot be undone.')">
                                 {% csrf_token %}
@@ -124,6 +127,7 @@
                     <td>{{ file.file.size|filesizeformat }}</td>
                     <td>
                         <div class="actions">
+                            <a href="{% url 'move_item' item_type='file' item_id=file.id %}" class="move-btn">📦 Move</a>
                             <form method="post" action="{% url 'delete_file' file_id=file.id %}" style="display: inline;" 
                                   onsubmit="return confirm('Are you sure you want to delete file \'{{ file.file.name }}\'? This action cannot be undone.')">
                                 {% csrf_token %}
