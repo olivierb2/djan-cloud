@@ -27,22 +27,20 @@ class Folder(FileSystemItem):
 
     def save(self, *args, **kwargs):
         if self.parent:
-            if self.parent.full_path.endswith('/'):
-                full_path = self.parent.full_path[:-1]
-            else:
-                full_path = self.parent.full_path
-            self.full_path = f"{full_path}/{self.name}"
+            # Subfolder - calculate path from parent
+            parent_path = self.parent.full_path
+            if not parent_path.endswith('/'):
+                parent_path += '/'
+            self.full_path = f"{parent_path}{self.name}/"
         else:
-            # Root folders are specific to users, no single root path
-            # The full_path should likely include username or be handled differently
-            # For now, let's prevent saving root folders directly this way
-            # or enforce a user-specific root convention elsewhere.
-            # We'll rely on filtering by owner instead of a shared root path.
+            # Root folder - use username-based path
             if self.name is None and self.parent is None:
-                 # Allow creation of user's root representation
-                 self.full_path = f"/userroot_{self.owner_id}" # Temporary unique path for user root
+                if not self.owner:
+                    raise ValidationError("Root folder must have an owner.")
+                # User-specific root folder path
+                self.full_path = f"/{self.owner.username}/"
             else:
-                 raise ValidationError("Cannot determine full_path without parent or name being null for root.")
+                raise ValidationError("Cannot determine full_path without parent or name being null for root.")
         super().save(*args, **kwargs)
 
     def clean(self):
@@ -56,6 +54,25 @@ class Folder(FileSystemItem):
             raise ValidationError(
                 {'parent': "Parent is required if name is defined."})
 
+    class Meta:
+        # Unique constraint: each user can have only one root folder, and no duplicate folder names within same parent
+        constraints = [
+            models.UniqueConstraint(
+                fields=['owner', 'parent', 'name'],
+                name='unique_folder_per_parent_per_user'
+            ),
+            models.UniqueConstraint(
+                fields=['owner'],
+                condition=models.Q(parent__isnull=True, name__isnull=True),
+                name='unique_root_folder_per_user'
+            ),
+        ]
+        # Indexes for performance
+        indexes = [
+            models.Index(fields=['owner', 'parent'], name='folder_owner_parent_idx'),
+            models.Index(fields=['owner', 'full_path'], name='folder_owner_path_idx'),
+        ]
+
 class File(FileSystemItem):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     file = models.FileField(upload_to='uploads/')
@@ -64,13 +81,14 @@ class File(FileSystemItem):
     content_type = models.CharField(editable=False, max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Create file name only if full_path was not given
-        if not self.full_path:
-            if self.folder:
-                self.full_path = f"{self.folder.full_path}/{self.file.name}"
-            else:
-                # Cannot determine path without a folder, and root is now user-specific
-                raise ValidationError("File must belong to a folder.")
+        # Always recalculate file path based on folder
+        if self.folder:
+            # Use just the filename from the file field
+            filename = self.file.name.split('/')[-1] if '/' in self.file.name else self.file.name
+            self.full_path = f"{self.folder.full_path}{filename}"
+        else:
+            # Cannot determine path without a folder, and root is now user-specific
+            raise ValidationError("File must belong to a folder.")
 
         if not self.content_type:
             guessed_type, _ = mimetypes.guess_type(self.file.path)

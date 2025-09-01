@@ -168,22 +168,33 @@ class FileBrowseView(LoginRequiredMixin, View):
         # Normalize path: remove leading/trailing slashes for consistency internally
         normalized_path = '/' + path.strip('/')
         if normalized_path == '/': # User root
-            folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+            # Look for user-specific root folder
+            folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
         else:
-            folder = get_object_or_404(Folder, owner=request.user, full_path=normalized_path)
+            # Prepend username to path for lookup and ensure trailing slash
+            user_path = f"/{request.user.username}{normalized_path}/"
+            folder = get_object_or_404(Folder, owner=request.user, full_path=user_path)
 
         subfolders = folder.subfolders.filter(owner=request.user).order_by('name')
         files = folder.files.filter(owner=request.user).order_by('file')
+        
+        # Pre-calculate URL paths for subfolders (removing username prefix)
+        for subfolder in subfolders:
+            if subfolder.full_path == f"/{request.user.username}/":
+                subfolder.url_path = ''
+            else:
+                subfolder.url_path = subfolder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
 
         # Calculate parent path for "up" link
         parent_path = None
         if folder.parent:
             parent_full_path = folder.parent.full_path
             # Handle root parent representation
-            if folder.parent.parent is None and folder.parent.name is None:
+            if parent_full_path == f"/{request.user.username}/":
                  parent_path = '' # Root path represented by empty string in URL
             else:
-                 parent_path = parent_full_path.strip('/')
+                 # Remove username prefix from path for URL
+                 parent_path = parent_full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
 
         context = {
             'current_folder': folder,
@@ -198,9 +209,12 @@ class FileBrowseView(LoginRequiredMixin, View):
         # Get current folder
         normalized_path = '/' + path.strip('/')
         if normalized_path == '/': # User root
-            folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+            # Look for user-specific root folder
+            folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
         else:
-            folder = get_object_or_404(Folder, owner=request.user, full_path=normalized_path)
+            # Prepend username to path for lookup and ensure trailing slash
+            user_path = f"/{request.user.username}{normalized_path}/"
+            folder = get_object_or_404(Folder, owner=request.user, full_path=user_path)
 
         # Handle file upload
         if 'file' in request.FILES:
@@ -302,11 +316,12 @@ class FileDeleteView(LoginRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error deleting file: {str(e)}')
         
-        # Redirect back to the folder view
-        folder_path = file_obj.folder.full_path.strip('/')
-        if folder_path.startswith('userroot_'):
+        # Redirect back to the folder view  
+        if file_obj.folder.full_path == f"/{request.user.username}/":
             return redirect('browse_files_root')
         else:
+            # Remove username prefix from path for URL
+            folder_path = file_obj.folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
             return redirect('browse_files', path=folder_path)
 
 
@@ -315,7 +330,7 @@ class FolderDeleteView(LoginRequiredMixin, View):
         folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
         
         # Prevent deletion of root folder
-        if folder.parent is None and folder.name is None:
+        if folder.full_path == f"/{request.user.username}/":
             messages.error(request, 'Cannot delete root folder.')
             return redirect('browse_files_root')
         
@@ -334,8 +349,9 @@ class FolderDeleteView(LoginRequiredMixin, View):
             messages.error(request, f'Error deleting folder: {str(e)}')
         
         # Redirect back to parent folder
-        if parent_folder and parent_folder.parent is not None:
-            parent_path = parent_folder.full_path.strip('/')
+        if parent_folder and parent_folder.full_path != f"/{request.user.username}/":
+            # Remove username prefix from path for URL
+            parent_path = parent_folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
             return redirect('browse_files', path=parent_path)
         else:
             return redirect('browse_files_root')
@@ -357,7 +373,7 @@ class MoveItemView(LoginRequiredMixin, View):
             return redirect('browse_files_root')
         
         # Start at root folder for destination selection
-        root_folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+        root_folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
         
         # Get breadcrumb path
         breadcrumbs = [{'name': 'Root', 'folder': root_folder}]
@@ -402,10 +418,13 @@ class MoveItemView(LoginRequiredMixin, View):
             messages.error(request, f'Error moving {item_type}: {str(e)}')
         
         # Redirect back to the destination folder
-        if destination_folder.parent is None and destination_folder.name is None:
+        if destination_folder.full_path == f"/{request.user.username}/":
             return redirect('browse_files_root')
         else:
-            dest_path = destination_folder.full_path.strip('/')
+            # Remove username prefix from path for URL
+            dest_path = destination_folder.full_path.replace(f"/{request.user.username}/", "", 1)
+            if dest_path and not dest_path.endswith('/'):
+                dest_path = dest_path.rstrip('/')
             return redirect('browse_files', path=dest_path)
     
     def _move_file(self, file, destination_folder):
@@ -485,33 +504,41 @@ class FolderSelectorView(LoginRequiredMixin, View):
             folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
         else:
             # Root folder
-            folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+            folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
         
         # Build breadcrumbs
         breadcrumbs = []
         current = folder
         while current:
-            if current.parent is None and current.name is None:
+            if current.full_path == f"/{request.user.username}/":
                 breadcrumbs.insert(0, {'name': 'Root', 'id': current.id, 'path': ''})
             else:
-                path = current.full_path.strip('/')
+                # Remove username prefix from path for URL
+                path = current.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
                 breadcrumbs.insert(0, {'name': current.name, 'id': current.id, 'path': path})
             current = current.parent
         
         # Get subfolders
         subfolders = []
         for subfolder in folder.subfolders.filter(owner=request.user).order_by('name'):
+            # Remove username prefix from path for URL
+            path = subfolder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
             subfolders.append({
                 'id': subfolder.id,
                 'name': subfolder.name,
-                'path': subfolder.full_path.strip('/'),
+                'path': path,
             })
+        
+        # Remove username prefix from folder path for URL
+        folder_path = ''
+        if folder.full_path != f"/{request.user.username}/":
+            folder_path = folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
         
         return JsonResponse({
             'folder': {
                 'id': folder.id,
                 'name': folder.name or 'Root',
-                'path': folder.full_path.strip('/') if folder.full_path else '',
+                'path': folder_path,
             },
             'breadcrumbs': breadcrumbs,
             'subfolders': subfolders,

@@ -91,11 +91,10 @@
             {% for folder in subfolders %}
                 <tr>
                     <td>
-                        {# Link uses the full_path excluding the leading '/' #}
-                        {% if folder.full_path|slice:"1:" == '' %}
+                        {% if folder.url_path == '' %}
                             <a href="{% url 'browse_files_root' %}" class="folder">{{ folder.name }}</a>
                         {% else %}
-                            <a href="{% url 'browse_files' path=folder.full_path|slice:"1:" %}" class="folder">{{ folder.name }}</a>
+                            <a href="{% url 'browse_files' path=folder.url_path %}" class="folder">{{ folder.name }}</a>
                         {% endif %}
                     </td>
                     <td>Folder</td>
