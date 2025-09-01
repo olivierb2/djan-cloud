@@ -16,6 +16,9 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     def __init__(self, path, user):
         self.full_path = path
         self.user = user
+        self.original_path = path
+        
+        # Convert DAV path to user-specific database path
         if path.endswith("/"):
             path = path[:-1]
         super().__init__(path)
@@ -26,28 +29,31 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
             logger.warning(f"Attempt to access resource {path} without authenticated user.")
             return
 
+        # Convert relative DAV path to absolute user path
+        if path == "":
+            # Root folder for this user
+            db_path = f"/{self.user.username}/"
+        else:
+            # Subfolder or file - prepend username
+            db_path = f"/{self.user.username}/{path}"
+
         try:
-            # Filter by owner
+            # Try to find as file first
             self._object = File.objects.get(
-                full_path=path,
+                full_path=db_path,
                 owner=self.user
             )
             return
         except File.DoesNotExist:
             try:
-                if path == "":
-                     # Get user's root folder (we need a consistent way to represent this)
-                     # Assuming Folder with name=None, parent=None represents the root for the user
-                    self._object = Folder.objects.get(
-                        name__isnull=True,
-                        parent__isnull=True, # Explicitly check for root folder
-                        owner=self.user
-                    )
-                else:
-                    self._object = Folder.objects.get(
-                        full_path=path,
-                        owner=self.user
-                    )
+                # Try to find as folder - ensure trailing slash for folders
+                if not db_path.endswith('/'):
+                    db_path += '/'
+                    
+                self._object = Folder.objects.get(
+                    full_path=db_path,
+                    owner=self.user
+                )
             except Folder.DoesNotExist:
                  # If it's the root path and doesn't exist, create it implicitly?
                  # Or rely on explicit creation/handling elsewhere.
@@ -58,8 +64,15 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
         return f"<MyDavResource path:{'/'.join(self.path)}>"
 
     def copy(self, obj: FileSystemItem = None):
-        # Pass user to the new resource instance
-        return MyDavResource(obj.full_path, self.user)
+        # Convert database path back to DAV path (remove username prefix)
+        if obj.full_path == f"/{self.user.username}/":
+            dav_path = ""
+        elif obj.full_path.startswith(f"/{self.user.username}/"):
+            # Remove username prefix and trailing slash for DAV path
+            dav_path = obj.full_path[len(f"/{self.user.username}/"):].rstrip('/')
+        else:
+            dav_path = obj.full_path
+        return MyDavResource(dav_path, self.user)
 
     @property
     def dirname(self) -> str:
@@ -107,16 +120,21 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
 
     @property
     def parent(self):
-        # Filter parent lookup by owner
-        try:
-            return Folder.objects.get(full_path=self.dirname, owner=self.user)
-        except Folder.DoesNotExist:
-            # Handle case where parent might not exist or is the user's root
-            if self.dirname == f"/userroot_{self.user.id}": # Check against the temporary root path representation
-                # Attempt to get the conceptual root folder for the user
-                return Folder.objects.get(name__isnull=True, parent__isnull=True, owner=self.user)
-            logger.warning(f"Parent folder {self.dirname} not found for user {self.user.username}")
+        # Convert DAV dirname to user-specific database path
+        if self.dirname == "/":
+            # Parent of root is None
             return None
+        elif self.dirname == "":
+            # Current is root, parent is None  
+            return None
+        else:
+            # Convert relative DAV path to absolute user path
+            parent_db_path = f"/{self.user.username}{self.dirname}/"
+            try:
+                return Folder.objects.get(full_path=parent_db_path, owner=self.user)
+            except Folder.DoesNotExist:
+                logger.warning(f"Parent folder {parent_db_path} not found for user {self.user.username}")
+                return None
 
     def write(self, content):
         parent_folder = self.parent
