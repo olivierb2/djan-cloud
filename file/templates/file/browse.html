@@ -21,7 +21,11 @@
 
     {# Link to parent directory #}
     {% if parent_path is not None %}
-        <a href="{% url 'browse_files' path=parent_path %}" class="up-link">⬆️ Up to parent directory</a>
+        {% if parent_path == '' %}
+            <a href="{% url 'browse_files_root' %}" class="up-link">⬆️ Up to parent directory</a>
+        {% else %}
+            <a href="{% url 'browse_files' path=parent_path %}" class="up-link">⬆️ Up to parent directory</a>
+        {% endif %}
     {% endif %}
 
     <table>
@@ -39,7 +43,11 @@
                 <tr>
                     <td>
                         {# Link uses the full_path excluding the leading '/' #}
-                        <a href="{% url 'browse_files' path=folder.full_path|slice:"1:" %}" class="folder">{{ folder.name }}</a>
+                        {% if folder.full_path|slice:"1:" == '' %}
+                            <a href="{% url 'browse_files_root' %}" class="folder">{{ folder.name }}</a>
+                        {% else %}
+                            <a href="{% url 'browse_files' path=folder.full_path|slice:"1:" %}" class="folder">{{ folder.name }}</a>
+                        {% endif %}
                     </td>
                     <td>Folder</td>
                     <td>{{ folder.updated_at|date:"Y-m-d H:i" }}</td>
