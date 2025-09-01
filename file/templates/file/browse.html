@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Files: {{ current_path|default:"/" }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+        .folder::before { content: "\1F4C1"; margin-right: 5px; /* Folder icon */ }
+        .file::before { content: "\1F4C4"; margin-right: 5px; /* File icon */ }
+        .up-link { margin-bottom: 1em; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>Browsing: /{{ current_path }}</h1>
+
+    {# Link to parent directory #}
+    {% if parent_path is not None %}
+        <a href="{% url 'browse_files' path=parent_path %}" class="up-link">⬆️ Up to parent directory</a>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Last Modified</th>
+                <th>Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# List Subfolders #}
+            {% for folder in subfolders %}
+                <tr>
+                    <td>
+                        {# Link uses the full_path excluding the leading '/' #}
+                        <a href="{% url 'browse_files' path=folder.full_path|slice:"1:" %}" class="folder">{{ folder.name }}</a>
+                    </td>
+                    <td>Folder</td>
+                    <td>{{ folder.updated_at|date:"Y-m-d H:i" }}</td>
+                    <td>--</td>
+                </tr>
+            {% empty %}
+                {# Handled in the combined empty check below #}
+            {% endfor %}
+
+            {# List Files #}
+            {% for file in files %}
+                <tr>
+                    <td>
+                        {# TODO: Add download link if needed #}
+                        <span class="file">{{ file.file.name }}</span> {# Display just the filename part #}
+                    </td>
+                    <td>{{ file.content_type|default:"File" }}</td>
+                    <td>{{ file.updated_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ file.file.size|filesizeformat }}</td> {# Use Django's filesizeformat template filter #}
+                </tr>
+            {% empty %}
+                {# Handled in the combined empty check below #}
+            {% endfor %}
+
+            {# Message if folder is empty #}
+            {% if not subfolders and not files %}
+                <tr>
+                    <td colspan="4"><em>This folder is empty.</em></td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.conf import settings
 from django.contrib.auth.models import User
 import mimetypes
 
@@ -19,6 +20,7 @@ class FileSystemItem(models.Model):
         abstract = True
 
 class Folder(FileSystemItem):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)
     parent = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name='subfolders')
@@ -31,7 +33,16 @@ class Folder(FileSystemItem):
                 full_path = self.parent.full_path
             self.full_path = f"{full_path}/{self.name}"
         else:
-            self.full_path = "/"
+            # Root folders are specific to users, no single root path
+            # The full_path should likely include username or be handled differently
+            # For now, let's prevent saving root folders directly this way
+            # or enforce a user-specific root convention elsewhere.
+            # We'll rely on filtering by owner instead of a shared root path.
+            if self.name is None and self.parent is None:
+                 # Allow creation of user's root representation
+                 self.full_path = f"/userroot_{self.owner_id}" # Temporary unique path for user root
+            else:
+                 raise ValidationError("Cannot determine full_path without parent or name being null for root.")
         super().save(*args, **kwargs)
 
     def clean(self):
@@ -46,6 +57,7 @@ class Folder(FileSystemItem):
                 {'parent': "Parent is required if name is defined."})
 
 class File(FileSystemItem):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     file = models.FileField(upload_to='uploads/')
     folder = models.ForeignKey(
         Folder, on_delete=models.CASCADE, related_name='files')
@@ -57,7 +69,8 @@ class File(FileSystemItem):
             if self.folder:
                 self.full_path = f"{self.folder.full_path}/{self.file.name}"
             else:
-                self.full_path = f"/{self.file.name}"
+                # Cannot determine path without a folder, and root is now user-specific
+                raise ValidationError("File must belong to a folder.")
 
         if not self.content_type:
             guessed_type, _ = mimetypes.guess_type(self.file.path)
@@ -65,6 +78,13 @@ class File(FileSystemItem):
 
         super().save(*args, **kwargs)
 
+
+
+    def clean(self):
+        # Ensure owner is set
+        if not self.owner_id:
+            raise ValidationError("Owner must be set.")
+        super().clean()
 
 class LoginToken(models.Model):
     token = models.CharField(max_length=128, unique=True)

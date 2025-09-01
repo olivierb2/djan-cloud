@@ -2,14 +2,15 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
 import base64
 import secrets
-from .models import LoginToken
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import LoginToken, Folder, File
 from django.views import View
 from djangodav.views.views import DavView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import AuthenticationForm
-# Create your views here.
+from .resource import MyDavResource
 
 
 class BasicAuthMixin:
@@ -37,7 +38,13 @@ class BasicAuthMixin:
 
 @method_decorator(csrf_exempt, name='dispatch')
 class MyDavView(BasicAuthMixin, DavView):
-    pass
+    
+    def get_resource(self, path=None):
+        """Override to pass the user to the resource"""
+        if path is None:
+            path = self.path
+        # Pass request.user to the resource constructor
+        return self.resource_class(path, user=self.request.user)
 
 
 class StatusView(View):
@@ -123,3 +130,37 @@ class LoginPoll(View):
         print(json_content)
 
         return JsonResponse(json_content)
+
+
+class FileBrowseView(LoginRequiredMixin, View):
+    template_name = 'file/browse.html'
+
+    def get(self, request, path=''):
+        # Normalize path: remove leading/trailing slashes for consistency internally
+        normalized_path = '/' + path.strip('/')
+        if normalized_path == '/': # User root
+            folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
+        else:
+            folder = get_object_or_404(Folder, owner=request.user, full_path=normalized_path)
+
+        subfolders = folder.subfolders.filter(owner=request.user).order_by('name')
+        files = folder.files.filter(owner=request.user).order_by('file')
+
+        # Calculate parent path for "up" link
+        parent_path = None
+        if folder.parent:
+            parent_full_path = folder.parent.full_path
+            # Handle root parent representation
+            if folder.parent.parent is None and folder.parent.name is None:
+                 parent_path = '' # Root path represented by empty string in URL
+            else:
+                 parent_path = parent_full_path.strip('/')
+
+        context = {
+            'current_folder': folder,
+            'current_path': path, # Use original path for display/URLs
+            'subfolders': subfolders,
+            'files': files,
+            'parent_path': parent_path,
+        }
+        return render(request, self.template_name, context)
