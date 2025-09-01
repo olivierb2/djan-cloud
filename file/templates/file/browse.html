@@ -61,12 +61,11 @@
             {% for file in files %}
                 <tr>
                     <td>
-                        {# TODO: Add download link if needed #}
-                        <span class="file">{{ file.file.name }}</span> {# Display just the filename part #}
+                        <a href="{% url 'download_file' file_id=file.id %}" class="file">{{ file.file.name }}</a>
                     </td>
                     <td>{{ file.content_type|default:"File" }}</td>
                     <td>{{ file.updated_at|date:"Y-m-d H:i" }}</td>
-                    <td>{{ file.file.size|filesizeformat }}</td> {# Use Django's filesizeformat template filter #}
+                    <td>{{ file.file.size|filesizeformat }}</td>
                 </tr>
             {% empty %}
                 {# Handled in the combined empty check below #}

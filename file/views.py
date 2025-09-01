@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse, Http404
 import base64
 import secrets
+import os
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import LoginToken, Folder, File
@@ -164,3 +165,18 @@ class FileBrowseView(LoginRequiredMixin, View):
             'parent_path': parent_path,
         }
         return render(request, self.template_name, context)
+
+
+class FileDownloadView(LoginRequiredMixin, View):
+    def get(self, request, file_id):
+        file_obj = get_object_or_404(File, id=file_id, owner=request.user)
+        
+        if not file_obj.file or not os.path.exists(file_obj.file.path):
+            raise Http404("File not found")
+        
+        response = FileResponse(
+            open(file_obj.file.path, 'rb'),
+            content_type=file_obj.content_type or 'application/octet-stream'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_obj.file.name)}"'
+        return response
