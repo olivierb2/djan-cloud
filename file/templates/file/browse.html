@@ -21,6 +21,9 @@
         .messages { margin: 1em 0; }
         .messages .success { color: green; }
         .messages .error { color: red; }
+        .actions { display: flex; gap: 5px; align-items: center; }
+        .delete-btn { background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+        .delete-btn:hover { background-color: #c82333; }
     </style>
 </head>
 <body>
@@ -46,14 +49,29 @@
         {% endif %}
     {% endif %}
 
-    {# Upload section #}
+    {# Actions section #}
     <div class="upload-section">
-        <h3>Upload File</h3>
-        <form method="post" enctype="multipart/form-data" class="upload-form">
-            {% csrf_token %}
-            <input type="file" name="file" required>
-            <button type="submit" class="upload-btn">📤 Upload</button>
-        </form>
+        <h3>Actions</h3>
+        
+        {# Upload file form #}
+        <div style="margin-bottom: 15px;">
+            <h4>Upload File</h4>
+            <form method="post" enctype="multipart/form-data" class="upload-form">
+                {% csrf_token %}
+                <input type="file" name="file" required>
+                <button type="submit" class="upload-btn">📤 Upload</button>
+            </form>
+        </div>
+        
+        {# Create folder form #}
+        <div>
+            <h4>Create Folder</h4>
+            <form method="post" class="upload-form">
+                {% csrf_token %}
+                <input type="text" name="folder_name" placeholder="Folder name" required maxlength="255">
+                <button type="submit" class="upload-btn" style="background-color: #28a745;">📁 Create</button>
+            </form>
+        </div>
     </div>
 
     <table>
@@ -63,6 +81,7 @@
                 <th>Type</th>
                 <th>Last Modified</th>
                 <th>Size</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -80,6 +99,15 @@
                     <td>Folder</td>
                     <td>{{ folder.updated_at|date:"Y-m-d H:i" }}</td>
                     <td>--</td>
+                    <td>
+                        <div class="actions">
+                            <form method="post" action="{% url 'delete_folder' folder_id=folder.id %}" style="display: inline;" 
+                                  onsubmit="return confirm('Are you sure you want to delete folder \'{{ folder.name }}\'? This action cannot be undone.')">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn">🗑️ Delete</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             {% empty %}
                 {# Handled in the combined empty check below #}
@@ -94,6 +122,15 @@
                     <td>{{ file.content_type|default:"File" }}</td>
                     <td>{{ file.updated_at|date:"Y-m-d H:i" }}</td>
                     <td>{{ file.file.size|filesizeformat }}</td>
+                    <td>
+                        <div class="actions">
+                            <form method="post" action="{% url 'delete_file' file_id=file.id %}" style="display: inline;" 
+                                  onsubmit="return confirm('Are you sure you want to delete file \'{{ file.file.name }}\'? This action cannot be undone.')">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn">🗑️ Delete</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             {% empty %}
                 {# Handled in the combined empty check below #}
@@ -102,7 +139,7 @@
             {# Message if folder is empty #}
             {% if not subfolders and not files %}
                 <tr>
-                    <td colspan="4"><em>This folder is empty.</em></td>
+                    <td colspan="5"><em>This folder is empty.</em></td>
                 </tr>
             {% endif %}
         </tbody>

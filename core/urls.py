@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, FileBrowseView, FileDownloadView
+from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView
 from django.conf import settings
 
 from django.urls import re_path
@@ -46,4 +46,6 @@ urlpatterns = [
     path('browse/', FileBrowseView.as_view(), name='browse_files_root'),
     path('browse/<path:path>', FileBrowseView.as_view(), name='browse_files'),
     path('download/<int:file_id>/', FileDownloadView.as_view(), name='download_file'),
+    path('delete/file/<int:file_id>/', FileDeleteView.as_view(), name='delete_file'),
+    path('delete/folder/<int:folder_id>/', FolderDeleteView.as_view(), name='delete_folder'),
 ]

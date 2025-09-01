@@ -169,40 +169,77 @@ class FileBrowseView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request, path=''):
-        # Handle file upload
+        # Get current folder
         normalized_path = '/' + path.strip('/')
         if normalized_path == '/': # User root
             folder = get_object_or_404(Folder, owner=request.user, parent__isnull=True, name__isnull=True)
         else:
             folder = get_object_or_404(Folder, owner=request.user, full_path=normalized_path)
 
-        uploaded_file = request.FILES.get('file')
-        if not uploaded_file:
-            messages.error(request, 'No file selected for upload.')
-            return redirect(request.path)
+        # Handle file upload
+        if 'file' in request.FILES:
+            uploaded_file = request.FILES.get('file')
+            if not uploaded_file:
+                messages.error(request, 'No file selected for upload.')
+                return redirect(request.path)
 
-        # Check if file already exists
-        existing_file = File.objects.filter(
-            owner=request.user, 
-            folder=folder,
-            file__icontains=uploaded_file.name
-        ).first()
-        
-        if existing_file:
-            messages.error(request, f'File "{uploaded_file.name}" already exists in this folder.')
-            return redirect(request.path)
-
-        # Create new file
-        try:
-            new_file = File(
-                owner=request.user,
+            # Check if file already exists
+            existing_file = File.objects.filter(
+                owner=request.user, 
                 folder=folder,
-                file=uploaded_file
-            )
-            new_file.save()
-            messages.success(request, f'File "{uploaded_file.name}" uploaded successfully.')
-        except Exception as e:
-            messages.error(request, f'Error uploading file: {str(e)}')
+                file__icontains=uploaded_file.name
+            ).first()
+            
+            if existing_file:
+                messages.error(request, f'File "{uploaded_file.name}" already exists in this folder.')
+                return redirect(request.path)
+
+            # Create new file
+            try:
+                new_file = File(
+                    owner=request.user,
+                    folder=folder,
+                    file=uploaded_file
+                )
+                new_file.save()
+                messages.success(request, f'File "{uploaded_file.name}" uploaded successfully.')
+            except Exception as e:
+                messages.error(request, f'Error uploading file: {str(e)}')
+
+        # Handle folder creation
+        elif 'folder_name' in request.POST:
+            folder_name = request.POST.get('folder_name', '').strip()
+            if not folder_name:
+                messages.error(request, 'Folder name cannot be empty.')
+                return redirect(request.path)
+
+            # Check if folder name contains invalid characters
+            if '/' in folder_name:
+                messages.error(request, 'Folder name cannot contain slash (/) characters.')
+                return redirect(request.path)
+
+            # Check if folder already exists
+            existing_folder = Folder.objects.filter(
+                owner=request.user,
+                parent=folder,
+                name=folder_name
+            ).first()
+            
+            if existing_folder:
+                messages.error(request, f'Folder "{folder_name}" already exists.')
+                return redirect(request.path)
+
+            # Create new folder
+            try:
+                new_folder = Folder(
+                    owner=request.user,
+                    parent=folder,
+                    name=folder_name
+                )
+                new_folder.save()
+                messages.success(request, f'Folder "{folder_name}" created successfully.')
+            except Exception as e:
+                messages.error(request, f'Error creating folder: {str(e)}')
 
         return redirect(request.path)
 
@@ -220,3 +257,59 @@ class FileDownloadView(LoginRequiredMixin, View):
         )
         response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_obj.file.name)}"'
         return response
+
+
+class FileDeleteView(LoginRequiredMixin, View):
+    def post(self, request, file_id):
+        file_obj = get_object_or_404(File, id=file_id, owner=request.user)
+        
+        try:
+            # Delete the physical file if it exists
+            if file_obj.file and os.path.exists(file_obj.file.path):
+                os.remove(file_obj.file.path)
+            
+            # Delete the database record
+            filename = file_obj.file.name
+            file_obj.delete()
+            
+            messages.success(request, f'File "{filename}" deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting file: {str(e)}')
+        
+        # Redirect back to the folder view
+        folder_path = file_obj.folder.full_path.strip('/')
+        if folder_path.startswith('userroot_'):
+            return redirect('browse_files_root')
+        else:
+            return redirect('browse_files', path=folder_path)
+
+
+class FolderDeleteView(LoginRequiredMixin, View):
+    def post(self, request, folder_id):
+        folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
+        
+        # Prevent deletion of root folder
+        if folder.parent is None and folder.name is None:
+            messages.error(request, 'Cannot delete root folder.')
+            return redirect('browse_files_root')
+        
+        try:
+            # Check if folder has content
+            if folder.subfolders.exists() or folder.files.exists():
+                messages.error(request, f'Folder "{folder.name}" is not empty. Delete contents first.')
+                return redirect(request.META.get('HTTP_REFERER', 'browse_files_root'))
+            
+            folder_name = folder.name
+            parent_folder = folder.parent
+            folder.delete()
+            
+            messages.success(request, f'Folder "{folder_name}" deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting folder: {str(e)}')
+        
+        # Redirect back to parent folder
+        if parent_folder and parent_folder.parent is not None:
+            parent_path = parent_folder.full_path.strip('/')
+            return redirect('browse_files', path=parent_path)
+        else:
+            return redirect('browse_files_root')
