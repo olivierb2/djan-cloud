@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import User
 import mimetypes
+import secrets
 
 # Create your models here.
 
@@ -76,16 +77,16 @@ class Folder(FileSystemItem):
 class File(FileSystemItem):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     file = models.FileField(upload_to='uploads/')
-    folder = models.ForeignKey(
+    parent = models.ForeignKey(
         Folder, on_delete=models.CASCADE, related_name='files')
     content_type = models.CharField(editable=False, max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # Always recalculate file path based on folder
-        if self.folder:
+        if self.parent:
             # Use just the filename from the file field
             filename = self.file.name.split('/')[-1] if '/' in self.file.name else self.file.name
-            self.full_path = f"{self.folder.full_path}{filename}"
+            self.full_path = f"{self.parent.full_path}{filename}"
         else:
             # Cannot determine path without a folder, and root is now user-specific
             raise ValidationError("File must belong to a folder.")
@@ -103,6 +104,23 @@ class File(FileSystemItem):
         if not self.owner_id:
             raise ValidationError("Owner must be set.")
         super().clean()
+
+class AppToken(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='app_tokens')
+    name = models.CharField(max_length=255)
+    token = models.CharField(max_length=128, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            self.token = secrets.token_urlsafe(64)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.name}"
+
 
 class LoginToken(models.Model):
     token = models.CharField(max_length=128, unique=True)

@@ -1,230 +1,128 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Move {{ item_type|title }}: {{ item.name|default:item.file.name }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 2em; }
-        .header { margin-bottom: 2em; }
-        .item-info { background-color: #f0f8ff; padding: 1em; border-radius: 5px; margin-bottom: 1em; }
-        .breadcrumbs { margin: 1em 0; }
-        .breadcrumb-item { display: inline; }
-        .breadcrumb-item:not(:last-child):after { content: " / "; color: #666; }
-        .breadcrumb-link { color: #007bff; text-decoration: none; }
-        .breadcrumb-link:hover { text-decoration: underline; }
-        .folder-list { margin: 1em 0; }
-        .folder-item { 
-            padding: 0.8em; 
-            border: 1px solid #ddd; 
-            margin: 0.2em 0; 
-            border-radius: 3px; 
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-        .folder-item:hover { background-color: #f5f5f5; }
-        .folder-item.selected { background-color: #e7f3ff; border-color: #007bff; }
-        .folder-icon { margin-right: 0.5em; }
-        .navigation-buttons { margin: 1em 0; }
-        .nav-btn, .action-btn { 
-            background-color: #6c757d; 
-            color: white; 
-            border: none; 
-            padding: 0.5em 1em; 
-            border-radius: 3px; 
-            cursor: pointer; 
-            margin-right: 0.5em;
-        }
-        .nav-btn:hover { background-color: #5a6268; }
-        .action-btn.primary { background-color: #28a745; }
-        .action-btn.primary:hover { background-color: #218838; }
-        .action-btn.secondary { background-color: #dc3545; }
-        .action-btn.secondary:hover { background-color: #c82333; }
-        .action-buttons { margin: 2em 0; text-align: center; }
-        .messages { margin: 1em 0; }
-        .messages .error { color: red; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Move {{ item_type|title }}</h1>
-        <div class="item-info">
-            <strong>Moving:</strong> 
-            {% if item_type == 'file' %}
-                📄 {{ item.file.name }}
-            {% else %}
-                📁 {{ item.name }}
-            {% endif %}
-        </div>
-    </div>
+{% extends "file/base.html" %}
 
-    {# Display messages #}
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
-                    {{ message }}
-                </div>
+{% block title %}Move {{ item_type|title }} - Djancloud{% endblock %}
+
+{% block body %}
+<div class="min-h-full flex flex-col">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm">
+        <a href="{% url 'browse_files_root' %}" class="flex items-center gap-2 text-brand-600 font-bold text-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+            </svg>
+            Djancloud
+        </a>
+        <button onclick="history.back()" class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">Cancel</button>
+    </nav>
+
+    <main class="flex-1 p-4 lg:p-6 max-w-2xl mx-auto w-full">
+        <!-- Item info -->
+        <div class="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+            <p class="text-sm text-blue-800">
+                <span class="font-semibold">Moving:</span>
+                {% if item_type == 'file' %}
+                    <svg class="inline w-4 h-4 text-gray-400 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    {{ item.file.name|cut:"uploads/" }}
+                {% else %}
+                    <svg class="inline w-4 h-4 text-yellow-400 -mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>
+                    {{ item.name }}
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Breadcrumbs -->
+        <div class="mb-4 flex items-center gap-1 text-sm text-gray-500" id="breadcrumb-bar">
+            <a href="#" onclick="navigateToRoot(); return false;" class="hover:text-brand-600">Home</a>
+            <span id="breadcrumb-container"></span>
+        </div>
+
+        <!-- Current location -->
+        <div class="mb-2 flex items-center justify-between">
+            <h2 class="text-sm font-medium text-gray-900">Select destination:</h2>
+            <span class="text-xs text-gray-400" id="current-location">Root</span>
+        </div>
+
+        <!-- Folder list -->
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden mb-6" id="folder-list">
+            {% for folder in subfolders %}
+            <div onclick="navigateToFolder({{ folder.id }})"
+                 class="flex items-center gap-2 px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 text-sm text-gray-800">
+                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>
+                {{ folder.name }}
+                <svg class="w-4 h-4 text-gray-300 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </div>
+            {% empty %}
+            <div class="px-4 py-8 text-center text-sm text-gray-400">No subfolders</div>
             {% endfor %}
         </div>
-    {% endif %}
 
-    {# Breadcrumbs #}
-    <div class="breadcrumbs">
-        <div class="breadcrumb-item">
-            <a href="#" class="breadcrumb-link" onclick="navigateToFolder({{ current_folder.id }})">Root</a>
-        </div>
-        <div id="breadcrumb-container"></div>
-    </div>
-
-    {# Navigation buttons #}
-    <div class="navigation-buttons">
-        <button class="nav-btn" id="up-btn" onclick="navigateUp()" style="display: none;">
-            ⬆️ Up
-        </button>
-        <button class="nav-btn" onclick="navigateToRoot()">
-            🏠 Root
-        </button>
-    </div>
-
-    {# Current location display #}
-    <div>
-        <h3>Select destination folder:</h3>
-        <p>Current location: <span id="current-location">Root</span></p>
-    </div>
-
-    {# Folder list #}
-    <div class="folder-list" id="folder-list">
-        {% for folder in subfolders %}
-            <div class="folder-item" onclick="navigateToFolder({{ folder.id }})">
-                <span class="folder-icon">📁</span>
-                <span>{{ folder.name }}</span>
-            </div>
-        {% empty %}
-            <p><em>No subfolders in this directory.</em></p>
-        {% endfor %}
-    </div>
-
-    {# Action buttons #}
-    <div class="action-buttons">
-        <form method="post" style="display: inline;" id="move-form">
-            {% csrf_token %}
-            <input type="hidden" name="destination_folder_id" id="destination-folder-id" value="{{ current_folder.id }}">
-            <button type="submit" class="action-btn primary" id="move-btn">
-                📦 Move Here
+        <!-- Action buttons -->
+        <div class="flex justify-center gap-3">
+            <form method="post" id="move-form">
+                {% csrf_token %}
+                <input type="hidden" name="destination_folder_id" id="destination-folder-id" value="{{ current_folder.id }}">
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 transition-colors">
+                    Move here
+                </button>
+            </form>
+            <button onclick="history.back()"
+                    class="rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                Cancel
             </button>
-        </form>
-        <button class="action-btn secondary" onclick="history.back()">
-            ❌ Cancel
-        </button>
-    </div>
+        </div>
+    </main>
+</div>
 
-    <script>
-        let currentFolderId = {{ current_folder.id }};
-        let itemToMoveId = {% if item_type == 'folder' %}{{ item.id }}{% else %}null{% endif %};
-        
-        function navigateToFolder(folderId) {
-            // Prevent moving folder into itself or its subfolders
-            if (itemToMoveId && folderId === itemToMoveId) {
-                alert('Cannot move folder into itself.');
-                return;
-            }
-            
-            fetch(`/api/folders/${folderId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    updateFolderView(data);
-                    currentFolderId = folderId;
-                    document.getElementById('destination-folder-id').value = folderId;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading folder contents.');
-                });
-        }
-        
-        function navigateToRoot() {
-            fetch('/api/folders/')
-                .then(response => response.json())
-                .then(data => {
-                    updateFolderView(data);
-                    currentFolderId = data.folder.id;
-                    document.getElementById('destination-folder-id').value = data.folder.id;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading root folder.');
-                });
-        }
-        
-        function navigateUp() {
-            // Find parent folder from breadcrumbs
-            const breadcrumbs = document.querySelectorAll('.breadcrumb-item');
-            if (breadcrumbs.length > 1) {
-                // Get second to last breadcrumb (parent)
-                const parentBreadcrumb = breadcrumbs[breadcrumbs.length - 2];
-                const parentLink = parentBreadcrumb.querySelector('.breadcrumb-link');
-                if (parentLink) {
-                    parentLink.click();
-                }
-            }
-        }
-        
-        function updateFolderView(data) {
-            // Update current location
-            document.getElementById('current-location').textContent = data.folder.name;
-            
-            // Update breadcrumbs
-            const breadcrumbContainer = document.getElementById('breadcrumb-container');
-            breadcrumbContainer.innerHTML = '';
-            
-            // Skip the first breadcrumb (Root) as it's always there
-            for (let i = 1; i < data.breadcrumbs.length; i++) {
-                const breadcrumb = data.breadcrumbs[i];
-                const breadcrumbDiv = document.createElement('div');
-                breadcrumbDiv.className = 'breadcrumb-item';
-                breadcrumbDiv.innerHTML = `<a href="#" class="breadcrumb-link" onclick="navigateToFolder(${breadcrumb.id})">${breadcrumb.name}</a>`;
-                breadcrumbContainer.appendChild(breadcrumbDiv);
-            }
-            
-            // Show/hide up button
-            const upBtn = document.getElementById('up-btn');
-            if (data.breadcrumbs.length > 1) {
-                upBtn.style.display = 'inline-block';
-            } else {
-                upBtn.style.display = 'none';
-            }
-            
-            // Update folder list
-            const folderList = document.getElementById('folder-list');
-            folderList.innerHTML = '';
-            
-            if (data.subfolders.length === 0) {
-                folderList.innerHTML = '<p><em>No subfolders in this directory.</em></p>';
-            } else {
-                data.subfolders.forEach(folder => {
-                    // Skip the folder being moved to prevent moving into itself
-                    if (itemToMoveId && folder.id === itemToMoveId) {
-                        return;
-                    }
-                    
-                    const folderDiv = document.createElement('div');
-                    folderDiv.className = 'folder-item';
-                    folderDiv.onclick = () => navigateToFolder(folder.id);
-                    folderDiv.innerHTML = `
-                        <span class="folder-icon">📁</span>
-                        <span>${folder.name}</span>
-                    `;
-                    folderList.appendChild(folderDiv);
-                });
-            }
-        }
-        
-        // Initialize the view
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('destination-folder-id').value = currentFolderId;
+<script>
+let currentFolderId = {{ current_folder.id }};
+let itemToMoveId = {% if item_type == 'folder' %}{{ item.id }}{% else %}null{% endif %};
+
+function navigateToFolder(folderId) {
+    if (itemToMoveId && folderId === itemToMoveId) { alert('Cannot move folder into itself.'); return; }
+    fetch('/api/folders/' + folderId + '/')
+        .then(r => r.json())
+        .then(data => { updateFolderView(data); currentFolderId = folderId; document.getElementById('destination-folder-id').value = folderId; });
+}
+
+function navigateToRoot() {
+    fetch('/api/folders/')
+        .then(r => r.json())
+        .then(data => { updateFolderView(data); currentFolderId = data.folder.id; document.getElementById('destination-folder-id').value = data.folder.id; });
+}
+
+function updateFolderView(data) {
+    document.getElementById('current-location').textContent = data.folder.name;
+    const bc = document.getElementById('breadcrumb-container');
+    bc.innerHTML = '';
+    for (let i = 1; i < data.breadcrumbs.length; i++) {
+        const b = data.breadcrumbs[i];
+        const sep = document.createElement('span');
+        sep.innerHTML = '<svg class="inline w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+        bc.appendChild(sep);
+        const a = document.createElement('a');
+        a.href = '#'; a.className = 'hover:text-brand-600'; a.textContent = b.name;
+        a.onclick = (e) => { e.preventDefault(); navigateToFolder(b.id); };
+        bc.appendChild(a);
+    }
+    const fl = document.getElementById('folder-list');
+    fl.innerHTML = '';
+    if (data.subfolders.length === 0) {
+        fl.innerHTML = '<div class="px-4 py-8 text-center text-sm text-gray-400">No subfolders</div>';
+    } else {
+        data.subfolders.forEach(f => {
+            if (itemToMoveId && f.id === itemToMoveId) return;
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-2 px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 text-sm text-gray-800';
+            div.onclick = () => navigateToFolder(f.id);
+            div.innerHTML = '<svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>' +
+                f.name + '<svg class="w-4 h-4 text-gray-300 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+            fl.appendChild(div);
         });
-    </script>
-</body>
-</html>
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => { document.getElementById('destination-folder-id').value = currentFolderId; });
+</script>
+{% endblock %}

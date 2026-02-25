@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView
+from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView
 from django.conf import settings
 
 from django.urls import re_path
@@ -30,6 +30,8 @@ dav_path_regex = fr'^{settings.ROOT_DAV}(?P<username>[^/]+)/(?P<path>.*)$'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', WebLoginView.as_view(), name='login'),
+    path('logout/', WebLogoutView.as_view(), name='logout'),
     path('status.php', StatusView.as_view()),
     path('index.php/login/v2', Login.as_view()),
     path('index.php/login/v2/flow/<str:token>', LoginForm.as_view()),
@@ -49,6 +51,9 @@ urlpatterns = [
     path('delete/file/<int:file_id>/', FileDeleteView.as_view(), name='delete_file'),
     path('delete/folder/<int:folder_id>/', FolderDeleteView.as_view(), name='delete_folder'),
     path('move/<str:item_type>/<int:item_id>/', MoveItemView.as_view(), name='move_item'),
+    path('rename/<str:item_type>/<int:item_id>/', RenameItemView.as_view(), name='rename_item'),
+    path('preview/<int:file_id>/', FilePreviewView.as_view(), name='preview_file'),
     path('api/folders/', FolderSelectorView.as_view(), name='api_folder_root'),
     path('api/folders/<int:folder_id>/', FolderSelectorView.as_view(), name='api_folder_contents'),
+    path('api/tree/', FolderTreeView.as_view(), name='api_folder_tree'),
 ]

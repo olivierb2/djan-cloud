@@ -1,152 +1,405 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Files: {{ current_path|default:"/" }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 2em; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
-        a { text-decoration: none; color: #007bff; }
-        a:hover { text-decoration: underline; }
-        .folder::before { content: "\1F4C1"; margin-right: 5px; /* Folder icon */ }
-        .file::before { content: "\1F4C4"; margin-right: 5px; /* File icon */ }
-        .up-link { margin-bottom: 1em; display: inline-block; }
-        .upload-section { margin: 1em 0; padding: 1em; background-color: #f9f9f9; border-radius: 5px; }
-        .upload-form { display: flex; align-items: center; gap: 10px; }
-        .upload-btn { background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
-        .upload-btn:hover { background-color: #0056b3; }
-        .messages { margin: 1em 0; }
-        .messages .success { color: green; }
-        .messages .error { color: red; }
-        .actions { display: flex; gap: 5px; align-items: center; }
-        .delete-btn { background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
-        .delete-btn:hover { background-color: #c82333; }
-        .move-btn { background-color: #ffc107; color: black; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
-        .move-btn:hover { background-color: #e0a800; }
-    </style>
-</head>
-<body>
-    <h1>Browsing: /{{ current_path }}</h1>
+{% extends "file/base.html" %}
 
-    {# Display messages #}
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
+{% block title %}{{ current_path|default:"Home" }} - Djancloud{% endblock %}
+
+{% block body %}
+<div class="flex h-full min-h-screen flex-col">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm">
+        <div class="flex items-center gap-3">
+            <a href="{% url 'browse_files_root' %}" class="flex items-center gap-2 text-brand-600 font-bold text-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                </svg>
+                Djancloud
+            </a>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="hidden sm:flex items-center gap-1 text-sm text-gray-500">
+            <a href="{% url 'browse_files_root' %}" class="hover:text-brand-600">Home</a>
+            {% if current_path %}
+                {% for part in breadcrumb_parts %}
+                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    {% if forloop.last %}
+                        <span class="text-gray-900 font-medium">{{ part.name }}</span>
+                    {% else %}
+                        <a href="{% url 'browse_files' path=part.path %}" class="hover:text-brand-600">{{ part.name }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-500">{{ user.username }}</span>
+            <a href="{% url 'logout' %}"
+               class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="hidden lg:flex w-60 flex-col border-r border-gray-200 bg-white overflow-y-auto">
+            <div class="px-3 py-4">
+                <h2 class="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Folders</h2>
+                <div id="folder-tree" class="text-sm">
+                    <div class="flex items-center gap-1 px-2 py-1.5 rounded-md text-gray-400 text-xs">Loading...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="mb-4 space-y-2">
+                {% for message in messages %}
+                <div class="rounded-lg px-4 py-3 text-sm
+                    {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200
+                    {% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200
+                    {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
                     {{ message }}
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
 
-    {# Link to parent directory #}
-    {% if parent_path is not None %}
-        {% if parent_path == '' %}
-            <a href="{% url 'browse_files_root' %}" class="up-link">⬆️ Up to parent directory</a>
-        {% else %}
-            <a href="{% url 'browse_files' path=parent_path %}" class="up-link">⬆️ Up to parent directory</a>
-        {% endif %}
-    {% endif %}
+            <!-- Toolbar -->
+            <div class="mb-4 flex flex-wrap items-center gap-2">
+                {% if parent_path is not None %}
+                    {% if parent_path == '' %}
+                    <a href="{% url 'browse_files_root' %}"
+                       class="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        Back
+                    </a>
+                    {% else %}
+                    <a href="{% url 'browse_files' path=parent_path %}"
+                       class="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        Back
+                    </a>
+                    {% endif %}
+                {% endif %}
 
-    {# Actions section #}
-    <div class="upload-section">
-        <h3>Actions</h3>
-        
-        {# Upload file form #}
-        <div style="margin-bottom: 15px;">
-            <h4>Upload File</h4>
-            <form method="post" enctype="multipart/form-data" class="upload-form">
-                {% csrf_token %}
-                <input type="file" name="file" required>
-                <button type="submit" class="upload-btn">📤 Upload</button>
-            </form>
-        </div>
-        
-        {# Create folder form #}
-        <div>
-            <h4>Create Folder</h4>
-            <form method="post" class="upload-form">
-                {% csrf_token %}
-                <input type="text" name="folder_name" placeholder="Folder name" required maxlength="255">
-                <button type="submit" class="upload-btn" style="background-color: #28a745;">📁 Create</button>
-            </form>
-        </div>
+                <!-- New dropdown -->
+                <div class="relative" id="new-dropdown">
+                    <button onclick="document.getElementById('new-menu').classList.toggle('hidden')"
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        New
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="new-menu" class="hidden absolute left-0 mt-1 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg z-20">
+                        <button onclick="openModal('folder-modal')" class="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>
+                            New folder
+                        </button>
+                        <button onclick="openModal('textfile-modal')" class="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            New text file
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload button -->
+                <form method="post" enctype="multipart/form-data" id="upload-form" class="inline-flex">
+                    {% csrf_token %}
+                    <input type="file" name="file" id="file-input" class="hidden" onchange="document.getElementById('upload-form').submit()">
+                    <button type="button" onclick="document.getElementById('file-input').click()"
+                            class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Upload
+                    </button>
+                </form>
+            </div>
+
+            <!-- Drop zone overlay -->
+            <div id="dropzone" class="hidden mb-4 rounded-xl border-2 border-dashed border-brand-400 bg-brand-50 p-8 text-center text-brand-600 font-medium">
+                Drop files here to upload
+            </div>
+
+            <!-- File table -->
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-100 bg-gray-50/50 text-xs font-medium uppercase tracking-wider text-gray-500">
+                            <th class="px-4 py-3 text-left">Name</th>
+                            <th class="px-4 py-3 text-left hidden sm:table-cell">Type</th>
+                            <th class="px-4 py-3 text-left hidden md:table-cell">Modified</th>
+                            <th class="px-4 py-3 text-right hidden sm:table-cell">Size</th>
+                            <th class="px-4 py-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for folder in subfolders %}
+                        <tr class="group hover:bg-gray-50/50 transition-colors">
+                            <td class="px-4 py-2.5">
+                                <a href="{% if folder.url_path == '' %}{% url 'browse_files_root' %}{% else %}{% url 'browse_files' path=folder.url_path %}{% endif %}"
+                                   class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600">
+                                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>
+                                    {{ folder.name }}
+                                </a>
+                            </td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">Folder</td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ folder.updated_at|date:"M d, Y H:i" }}</td>
+                            <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">&mdash;</td>
+                            <td class="px-4 py-2.5 text-right">
+                                <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="openRenameModal('folder', {{ folder.id }}, '{{ folder.name|escapejs }}')" title="Rename"
+                                            class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    </button>
+                                    <a href="{% url 'move_item' item_type='folder' item_id=folder.id %}" title="Move"
+                                       class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+                                    </a>
+                                    <form method="post" action="{% url 'delete_folder' folder_id=folder.id %}" class="inline"
+                                          onsubmit="return confirm('Delete folder \'{{ folder.name|escapejs }}\' and all its contents?')">
+                                        {% csrf_token %}
+                                        <button type="submit" title="Delete" class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% for file in files %}
+                        <tr class="group hover:bg-gray-50/50 transition-colors">
+                            <td class="px-4 py-2.5">
+                                <a href="{% url 'preview_file' file_id=file.id %}"
+                                   class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600">
+                                    {% if file.content_type and "image" in file.content_type %}
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    {% elif file.content_type and "pdf" in file.content_type %}
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    {% else %}
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    {% endif %}
+                                    {{ file.display_name }}
+                                </a>
+                            </td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">{{ file.content_type|default:"File" }}</td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ file.updated_at|date:"M d, Y H:i" }}</td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 text-right hidden sm:table-cell">{{ file.file.size|filesizeformat }}</td>
+                            <td class="px-4 py-2.5 text-right">
+                                <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <a href="{% url 'download_file' file_id=file.id %}" title="Download"
+                                       class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    </a>
+                                    <button onclick="openRenameModal('file', {{ file.id }}, '{{ file.display_name|escapejs }}')" title="Rename"
+                                            class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    </button>
+                                    <a href="{% url 'move_item' item_type='file' item_id=file.id %}" title="Move"
+                                       class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+                                    </a>
+                                    <form method="post" action="{% url 'delete_file' file_id=file.id %}" class="inline"
+                                          onsubmit="return confirm('Delete \'{{ file.display_name|escapejs }}\'?')">
+                                        {% csrf_token %}
+                                        <button type="submit" title="Delete" class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% if not subfolders and not files %}
+                        <tr>
+                            <td colspan="5" class="px-4 py-12 text-center text-sm text-gray-400">
+                                <svg class="mx-auto mb-2 w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                                This folder is empty
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Last Modified</th>
-                <th>Size</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {# List Subfolders #}
-            {% for folder in subfolders %}
-                <tr>
-                    <td>
-                        {% if folder.url_path == '' %}
-                            <a href="{% url 'browse_files_root' %}" class="folder">{{ folder.name }}</a>
-                        {% else %}
-                            <a href="{% url 'browse_files' path=folder.url_path %}" class="folder">{{ folder.name }}</a>
-                        {% endif %}
-                    </td>
-                    <td>Folder</td>
-                    <td>{{ folder.updated_at|date:"Y-m-d H:i" }}</td>
-                    <td>--</td>
-                    <td>
-                        <div class="actions">
-                            <a href="{% url 'move_item' item_type='folder' item_id=folder.id %}" class="move-btn">📦 Move</a>
-                            <form method="post" action="{% url 'delete_folder' folder_id=folder.id %}" style="display: inline;" 
-                                  onsubmit="return confirm('Are you sure you want to delete folder \'{{ folder.name }}\'? This action cannot be undone.')">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-btn">🗑️ Delete</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            {% empty %}
-                {# Handled in the combined empty check below #}
-            {% endfor %}
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 bg-white px-4 py-3 text-center text-xs text-gray-400">
+        Djancloud &mdash; Nextcloud-compatible file server powered by Django
+    </footer>
+</div>
 
-            {# List Files #}
-            {% for file in files %}
-                <tr>
-                    <td>
-                        <a href="{% url 'download_file' file_id=file.id %}" class="file">{{ file.file.name }}</a>
-                    </td>
-                    <td>{{ file.content_type|default:"File" }}</td>
-                    <td>{{ file.updated_at|date:"Y-m-d H:i" }}</td>
-                    <td>{{ file.file.size|filesizeformat }}</td>
-                    <td>
-                        <div class="actions">
-                            <a href="{% url 'move_item' item_type='file' item_id=file.id %}" class="move-btn">📦 Move</a>
-                            <form method="post" action="{% url 'delete_file' file_id=file.id %}" style="display: inline;" 
-                                  onsubmit="return confirm('Are you sure you want to delete file \'{{ file.file.name }}\'? This action cannot be undone.')">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-btn">🗑️ Delete</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            {% empty %}
-                {# Handled in the combined empty check below #}
-            {% endfor %}
+<!-- New Folder modal -->
+<div id="folder-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">New folder</h3>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="folder_name" required maxlength="255" placeholder="Folder name" autofocus
+                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none mb-4">
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeModal('folder-modal')"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            {# Message if folder is empty #}
-            {% if not subfolders and not files %}
-                <tr>
-                    <td colspan="5"><em>This folder is empty.</em></td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
+<!-- New Text File modal -->
+<div id="textfile-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">New text file</h3>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="text_filename" required maxlength="255" placeholder="filename.txt" autofocus
+                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none mb-4">
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeModal('textfile-modal')"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-</body>
-</html>
+<!-- Rename modal -->
+<div id="rename-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Rename</h3>
+        <form method="post" id="rename-form">
+            {% csrf_token %}
+            <input type="text" name="new_name" id="rename-input" required
+                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none mb-4">
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeModal('rename-modal')"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Rename</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Modal helpers
+function openModal(id) {
+    const m = document.getElementById(id);
+    m.classList.remove('hidden');
+    m.classList.add('flex');
+    document.getElementById('new-menu').classList.add('hidden');
+    const input = m.querySelector('input[type="text"]');
+    if (input) { input.focus(); input.select(); }
+}
+function closeModal(id) {
+    const m = document.getElementById(id);
+    m.classList.add('hidden');
+    m.classList.remove('flex');
+}
+document.querySelectorAll('[id$="-modal"]').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('[id$="-modal"].flex').forEach(m => closeModal(m.id));
+});
+
+// Rename
+function openRenameModal(itemType, itemId, currentName) {
+    document.getElementById('rename-input').value = currentName;
+    document.getElementById('rename-form').action = '/rename/' + itemType + '/' + itemId + '/';
+    openModal('rename-modal');
+}
+
+// Close "New" dropdown on outside click
+document.addEventListener('click', e => {
+    const dd = document.getElementById('new-dropdown');
+    if (!dd.contains(e.target)) document.getElementById('new-menu').classList.add('hidden');
+});
+
+// Drag & drop
+let dragCounter = 0;
+const dropzone = document.getElementById('dropzone');
+document.body.addEventListener('dragenter', e => { e.preventDefault(); dragCounter++; dropzone.classList.remove('hidden'); });
+document.body.addEventListener('dragleave', e => { e.preventDefault(); dragCounter--; if (dragCounter === 0) dropzone.classList.add('hidden'); });
+document.body.addEventListener('dragover', e => e.preventDefault());
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('border-brand-600', 'bg-brand-100'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('border-brand-600', 'bg-brand-100'));
+dropzone.addEventListener('drop', e => {
+    e.preventDefault(); dragCounter = 0; dropzone.classList.add('hidden');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        const form = document.createElement('form');
+        form.method = 'POST'; form.enctype = 'multipart/form-data'; form.style.display = 'none';
+        const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const ci = document.createElement('input'); ci.type = 'hidden'; ci.name = 'csrfmiddlewaretoken'; ci.value = csrf;
+        form.appendChild(ci);
+        const fi = document.createElement('input'); fi.type = 'file'; fi.name = 'file'; fi.files = files;
+        form.appendChild(fi);
+        document.body.appendChild(form); form.submit();
+    }
+});
+
+// Sidebar folder tree
+function renderTree(node, container, currentPath, depth) {
+    const isActive = node.url_path === currentPath;
+    const hasChildren = node.children && node.children.length > 0;
+    const isOnPath = currentPath === node.url_path || currentPath.startsWith(node.url_path ? node.url_path + '/' : '');
+
+    const item = document.createElement('div');
+    item.className = 'tree-item' + (isOnPath && hasChildren ? ' open' : '');
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm select-none ' +
+        (isActive ? 'bg-brand-50 text-brand-700 font-medium' : 'text-gray-700 hover:bg-gray-100');
+    row.style.paddingLeft = (depth * 12 + 8) + 'px';
+
+    if (hasChildren) {
+        const toggle = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        toggle.setAttribute('class', 'w-3 h-3 text-gray-400 tree-toggle flex-shrink-0');
+        toggle.setAttribute('fill', 'none'); toggle.setAttribute('stroke', 'currentColor'); toggle.setAttribute('viewBox', '0 0 24 24');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('stroke-linecap', 'round'); path.setAttribute('stroke-linejoin', 'round'); path.setAttribute('stroke-width', '2'); path.setAttribute('d', 'M9 5l7 7-7 7');
+        toggle.appendChild(path);
+        toggle.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); item.classList.toggle('open'); });
+        row.appendChild(toggle);
+    } else {
+        const spacer = document.createElement('span'); spacer.className = 'w-3 flex-shrink-0'; row.appendChild(spacer);
+    }
+
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('class', 'w-4 h-4 text-yellow-400 flex-shrink-0');
+    icon.setAttribute('fill', 'currentColor'); icon.setAttribute('viewBox', '0 0 24 24');
+    const ipath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    ipath.setAttribute('d', 'M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z');
+    icon.appendChild(ipath); row.appendChild(icon);
+
+    const label = document.createElement('a');
+    label.className = 'truncate'; label.textContent = node.name;
+    label.href = node.url_path ? '/browse/' + node.url_path : '/browse/';
+    row.appendChild(label);
+    item.appendChild(row);
+
+    if (hasChildren) {
+        const childContainer = document.createElement('div'); childContainer.className = 'tree-children';
+        node.children.forEach(c => renderTree(c, childContainer, currentPath, depth + 1));
+        item.appendChild(childContainer);
+    }
+    container.appendChild(item);
+}
+
+fetch('/api/tree/').then(r => r.json()).then(data => {
+    const treeEl = document.getElementById('folder-tree');
+    treeEl.innerHTML = '';
+    renderTree(data.tree, treeEl, '{{ current_path|escapejs }}', 0);
+});
+</script>
+{% endblock %}
