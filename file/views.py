@@ -64,6 +64,12 @@ class BasicAuthMixin:
 @method_decorator(csrf_exempt, name='dispatch')
 class MyDavView(BasicAuthMixin, DavView):
 
+    def dispatch(self, request, *args, **kwargs):
+        # Extract username from URL kwargs before passing to DavView
+        # DavView doesn't expect it and would pass it to handler methods
+        kwargs.pop('username', None)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_resource(self, path=None):
         """Override to pass the user to the resource"""
         

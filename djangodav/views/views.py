@@ -277,7 +277,7 @@ class DavView(View):
 
     def copy(self, request, path, xbody):
         depth = self.get_depth()
-        if depth != -1:
+        if self.resource.is_collection and depth != -1 and depth != 0:
             return HttpResponseBadRequest()
         return self.relocate(request, path, 'copy', depth=depth)
 

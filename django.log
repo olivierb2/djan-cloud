@@ -3087,3 +3087,168 @@ file.models.File.parent.RelatedObjectDoesNotExist: File has no parent.. Did you 
 [2026-02-25 15:16:11,463] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
 [2026-02-25 15:16:16,434] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
 [2026-02-25 15:16:21,430] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:26,430] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:31,428] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:36,434] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:38,343] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:38,483] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:16:38,665] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:16:38,847] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:39,035] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:39,214] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:39,395] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:39,576] DEBUG file.resource 150469 140308406851264 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:16:39,577] DEBUG file.resource 150469 140308406851264 Resource not found: test/dsfsdf (Copie).txt for user root2
+[2026-02-25 15:16:39,579] WARNING django.request 150469 140308406851264 Not Found: /remote.php/webdav/files/root2/test/dsfsdf (Copie).txt
+[2026-02-25 15:16:39,778] ERROR django.request 150469 140308406851264 Internal Server Error: /remote.php/webdav/files/root2/test/dsfsdf.txt
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 57, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+TypeError: DavView.copy() got an unexpected keyword argument 'username'
+[2026-02-25 15:16:39,914] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:41,427] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:46,426] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:51,429] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:16:56,438] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:01,432] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:06,435] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:11,430] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:16,445] DEBUG file.resource 150469 140308423636672 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:21,439] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:26,433] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:31,430] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:36,429] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:41,430] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:46,431] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:51,431] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:17:56,431] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:01,430] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:05,444] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:18:05,447] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:18:05,596] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:05,791] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:05,793] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:18:05,794] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:18:05,795] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:05,795] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:18:05,796] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:18:05,979] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:18:06,162] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:18:06,351] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:18:06,436] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:07,354] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:07,494] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:18:07,674] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:18:07,865] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:08,048] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:08,231] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:08,411] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:08,590] DEBUG file.resource 150846 140002537236160 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:18:08,591] DEBUG file.resource 150846 140002537236160 Resource not found: test/dsfsdf (Copie).txt for user root2
+[2026-02-25 15:18:08,594] WARNING django.request 150846 140002537236160 Not Found: /remote.php/webdav/files/root2/test/dsfsdf (Copie).txt
+[2026-02-25 15:18:08,773] WARNING django.request 150846 140002537236160 Bad Request: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:18:08,913] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:11,429] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:16,430] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:21,431] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:26,429] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:31,431] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:36,430] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:41,431] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:46,433] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:51,435] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:18:56,442] DEBUG file.resource 150846 140002545628864 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:01,435] DEBUG file.resource 151050 139990231152320 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:06,431] DEBUG file.resource 151050 139990231152320 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:11,431] DEBUG file.resource 151050 139990231152320 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:16,433] DEBUG file.resource 151050 139990231152320 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:21,431] DEBUG file.resource 151050 139990231152320 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:26,437] DEBUG file.resource 151099 140493066335936 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:31,433] DEBUG file.resource 151099 140493066335936 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:36,431] DEBUG file.resource 151126 140212153874112 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:41,437] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:46,428] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:51,434] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:19:56,431] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:01,444] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:06,456] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:11,436] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:16,444] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:21,428] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:26,431] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:31,439] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:36,427] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:41,435] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:46,430] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:51,432] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:20:56,429] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:01,458] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:06,432] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:11,436] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:16,431] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:21,434] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:26,428] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:31,427] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:36,428] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:41,430] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:46,427] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:51,431] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:21:56,439] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:01,440] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:06,428] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:11,432] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:16,426] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:21,436] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:23,305] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:22:23,309] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:22:23,457] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:23,647] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:22:23,649] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:22:23,649] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:23,650] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:22:23,651] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:22:23,655] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:23,835] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:22:24,014] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:22:24,195] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:22:24,805] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:24,944] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:22:25,127] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:22:25,306] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:25,487] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:25,668] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:25,848] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:26,026] DEBUG file.resource 151155 139772910413504 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:22:26,027] DEBUG file.resource 151155 139772910413504 Resource not found: test/dsfsdf (Copie).txt for user root2
+[2026-02-25 15:22:26,030] WARNING django.request 151155 139772910413504 Not Found: /remote.php/webdav/files/root2/test/dsfsdf (Copie).txt
+[2026-02-25 15:22:26,209] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:26,209] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:22:26,209] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:22:26,211] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf (Copie).txt for user root2
+[2026-02-25 15:22:26,211] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf (Copie).txt for user root2
+[2026-02-25 15:22:26,212] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf (Copie).txt for user root2
+[2026-02-25 15:22:26,363] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:22:26,433] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:26,502] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:26,689] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:22:26,826] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:22:31,433] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:36,430] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'

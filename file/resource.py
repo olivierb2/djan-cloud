@@ -64,7 +64,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     def clone(self, *args, **kwargs):
         return self.__class__(user=self.user, *args, **kwargs)
 
-    def copy(self, obj: FileSystemItem = None):
+    def obj_to_resource(self, obj: FileSystemItem = None):
         # Convert database path back to DAV path (remove username prefix)
         if obj.full_path == f"/{self.user.username}/":
             dav_path = ""
@@ -98,8 +98,20 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     def copy_collection(self, destination, depth=-1):
         raise NotImplementedError()
 
-    def copy_object(self, destination):
-        raise NotImplementedError()
+    def copy_object(self, destination: 'MyDavResource'):
+        dest_parent = destination.parent
+        if not dest_parent:
+            raise FileNotFoundError("Destination parent folder does not exist.")
+        import shutil
+        from django.core.files.base import ContentFile as CF
+        original = self.object
+        content = original.file.read()
+        original.file.seek(0)
+        new_file = File.objects.create(
+            parent=dest_parent,
+            file=CF(content, name=destination.displayname),
+            owner=self.user
+        )
 
     def move_collection(self, destination):
         raise NotImplementedError()
@@ -226,9 +238,9 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
         if isinstance(self.object, Folder):
             # Filter children by owner
             for child in File.objects.filter(parent=self.object, owner=self.user):
-                yield self.copy(child)
+                yield self.obj_to_resource(child)
             for child in self.object.subfolders.filter(owner=self.user): # Filter subfolders by owner too
-                yield self.copy(child)
+                yield self.obj_to_resource(child)
 
     def delete(self):
         self.object.delete()
