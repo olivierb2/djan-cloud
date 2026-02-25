@@ -13,9 +13,9 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     _object: Optional[Union[File, Folder]] = None
 
     def __init__(self, path, user, create=False):
-        logger.debug(f"Initializing MyDavResource: path='{path}', user='{user}'")
-        self.db_path = path
+        self.db_path = path.strip("/")
         self.user = user
+        logger.debug(f"Initializing MyDavResource: path='{self.db_path}', user='{user}'")
 
         super().__init__(path)
         
@@ -23,13 +23,6 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     def object(self) -> Optional[Union[File, Folder]]:
 
         if self._object == None:
-        # Convert relative DAV path to absolute user path
-            # if self.path == "":
-            #     # Root folder for this user
-            #     db_path = f"/{self.user.username}/"
-            # else:
-            #     # Subfolder or file - prepend username
-            
             db_path = f"/{self.user.username}/{self.db_path}"
 
             if db_path.endswith('/'):
@@ -41,7 +34,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                     full_path=db_path,
                     owner=self.user
                 )
-                return
+                return self._object
             except File.DoesNotExist:
                 try:
                     # Try to find as folder - ensure trailing slash for folders
@@ -85,7 +78,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     @property
     def dirname(self) -> str:
         if self.path:
-            return "/" + "/".join(self.path[:-1])
+            return "/".join(self.path[:-1])
 
     @property
     def getcontentlength(self):
@@ -129,10 +122,16 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     @property
     def parent(self) -> Optional[Folder]:
         # Convert relative DAV path to absolute user path
+        parent_path = self.get_parent_path().strip("/")
+        if parent_path:
+            db_path = f"/{self.user.username}/{parent_path}/"
+        else:
+            # Root folder for this user
+            db_path = f"/{self.user.username}/"
         try:
-            return Folder.objects.get(full_path=self.get_parent_path(), owner=self.user)
+            return Folder.objects.get(full_path=db_path, owner=self.user)
         except Folder.DoesNotExist:
-            logger.warning(f"Parent folder {self.get_parent_path()} not found for user {self.user.username}")
+            logger.warning(f"Parent folder {db_path} not found for user {self.user.username}")
             return None
 
     def write(self, content):
@@ -186,7 +185,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                     existing_file.file.delete(save=False)
                 existing_file.file = file_obj
                 existing_file.save()
-                self.object = existing_file
+                self._object = existing_file
             else:
                 logger.info(f"Creating new file {self.displayname} for user {self.user.username}")
                 new_file = File.objects.create(
@@ -194,7 +193,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                     file=file_obj,
                     owner=self.user
                 )
-                self.object = new_file
+                self._object = new_file
                 
             logger.info(f"Successfully uploaded {self.displayname} ({total_size} bytes) for user {self.user.username}")
             
