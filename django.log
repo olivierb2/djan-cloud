@@ -3252,3 +3252,251 @@ TypeError: DavView.copy() got an unexpected keyword argument 'username'
 [2026-02-25 15:22:26,826] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
 [2026-02-25 15:22:31,433] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
 [2026-02-25 15:22:36,430] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:41,439] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:46,429] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:51,427] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:22:56,430] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:01,432] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:06,427] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:11,430] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:16,435] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:21,435] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:26,428] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:31,433] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:36,435] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:41,426] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:46,443] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:51,434] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:23:56,443] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:01,428] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:06,428] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:11,427] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:16,428] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:21,446] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:26,432] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:31,429] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:36,436] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:41,430] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:45,534] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:45,714] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:45,720] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:46,325] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:46,429] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:46,462] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:46,643] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:46,845] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:47,023] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:47,024] DEBUG file.resource 151155 139772918806208 Resource not found: test/sdsdfds/dsfsdf.txt for user root2
+[2026-02-25 15:24:47,026] WARNING django.request 151155 139772918806208 Not Found: /remote.php/webdav/files/root2/test/sdsdfds/dsfsdf.txt
+[2026-02-25 15:24:47,204] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:47,344] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:47,345] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:47,345] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:47,346] DEBUG file.resource 151155 139772918806208 Resource not found: test/sdsdfds/dsfsdf.txt for user root2
+[2026-02-25 15:24:47,347] DEBUG file.resource 151155 139772918806208 Resource not found: test/sdsdfds/dsfsdf.txt for user root2
+[2026-02-25 15:24:47,347] DEBUG file.resource 151155 139772918806208 Resource not found: test/sdsdfds/dsfsdf.txt for user root2
+[2026-02-25 15:24:47,347] DEBUG file.resource 151155 139772918806208 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:47,496] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:47,635] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:47,818] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:47,820] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:47,821] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:48,001] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:48,138] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:51,428] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:51,429] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:51,430] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:51,672] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:51,673] DEBUG file.resource 151155 139772890654400 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:51,675] WARNING django.request 151155 139772890654400 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:53,210] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:24:53,211] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:24:53,211] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:53,211] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:53,379] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:24:53,381] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:24:53,382] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:24:53,382] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:53,383] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:24:53,384] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:53,579] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:53,580] DEBUG file.resource 151155 139772882261696 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:53,582] WARNING django.request 151155 139772882261696 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:53,585] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:53,586] DEBUG file.resource 151155 139772529997504 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:53,587] WARNING django.request 151155 139772529997504 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:53,763] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:24:53,899] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:24:54,083] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:24:54,267] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:54,268] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:54,268] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:54,270] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:54,271] DEBUG file.resource 151155 139772890654400 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:54,273] WARNING django.request 151155 139772890654400 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:54,565] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:54,566] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:54,566] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:54,568] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:54,569] DEBUG file.resource 151155 139772890654400 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:54,570] WARNING django.request 151155 139772890654400 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:54,577] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:54,743] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:54,747] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:54,932] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:54,934] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:54,935] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:55,735] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='', user='root2'
+[2026-02-25 15:24:55,872] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='.editorconfig', user='root2'
+[2026-02-25 15:24:55,873] DEBUG file.resource 151155 139772529997504 Resource not found: .editorconfig for user root2
+[2026-02-25 15:24:55,875] WARNING django.request 151155 139772529997504 Not Found: /remote.php/webdav/files/root2/.editorconfig
+[2026-02-25 15:24:56,060] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:24:56,203] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/.editorconfig', user='root2'
+[2026-02-25 15:24:56,204] DEBUG file.resource 151155 139772529997504 Resource not found: test/.editorconfig for user root2
+[2026-02-25 15:24:56,206] WARNING django.request 151155 139772529997504 Not Found: /remote.php/webdav/files/root2/test/.editorconfig
+[2026-02-25 15:24:56,383] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:24:56,519] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds/.editorconfig', user='root2'
+[2026-02-25 15:24:56,520] DEBUG file.resource 151155 139772882261696 Resource not found: test/sdsdfds/.editorconfig for user root2
+[2026-02-25 15:24:56,522] WARNING django.request 151155 139772882261696 Not Found: /remote.php/webdav/files/root2/test/sdsdfds/.editorconfig
+[2026-02-25 15:24:56,737] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:56,737] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:56,739] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:24:56,741] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:24:56,743] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:56,884] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:57,063] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:57,247] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:57,403] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:24:57,565] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:00,432] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:00,478] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:00,478] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:00,480] DEBUG file.resource 151155 139772890654400 Starting file upload for dsfsdf.txt by user root2
+[2026-02-25 15:25:00,480] DEBUG file.resource 151155 139772890654400 Successfully read 20 bytes for dsfsdf.txt
+[2026-02-25 15:25:00,480] INFO file.resource 151155 139772890654400 Overwriting existing file dsfsdf.txt for user root2
+[2026-02-25 15:25:00,495] INFO file.resource 151155 139772890654400 Successfully uploaded dsfsdf.txt (20 bytes) for user root2
+[2026-02-25 15:25:00,715] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:00,859] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:01,044] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:01,048] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:02,427] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:02,428] DEBUG file.resource 151155 139772890654400 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:02,430] WARNING django.request 151155 139772890654400 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:08,432] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:08,436] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:08,441] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:08,443] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:08,604] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:08,607] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:08,609] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:08,609] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:25:08,610] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:25:08,611] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:08,787] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:08,788] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:08,790] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:08,796] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:08,797] DEBUG file.resource 151155 139772882261696 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:08,799] WARNING django.request 151155 139772882261696 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:08,930] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:09,071] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:25:09,259] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:25:09,441] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:09,442] DEBUG file.resource 151155 139772521604800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:09,444] WARNING django.request 151155 139772521604800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:09,444] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:09,445] DEBUG file.resource 151155 139772529997504 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:09,447] WARNING django.request 151155 139772529997504 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:10,335] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:10,336] DEBUG file.resource 151155 139772529997504 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:10,338] WARNING django.request 151155 139772529997504 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:10,338] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:10,339] DEBUG file.resource 151155 139772521604800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:10,340] WARNING django.request 151155 139772521604800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:11,435] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:11,436] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:11,438] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:11,438] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:11,439] DEBUG file.resource 151155 139772882261696 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:11,441] WARNING django.request 151155 139772882261696 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:11,719] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:11,720] DEBUG file.resource 151155 139772890654400 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:11,722] WARNING django.request 151155 139772890654400 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:11,722] DEBUG file.resource 151155 139772513212096 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:11,723] DEBUG file.resource 151155 139772513212096 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:11,725] WARNING django.request 151155 139772513212096 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:12,079] DEBUG file.resource 151155 139772890654400 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:12,079] DEBUG file.resource 151155 139772902020800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:12,080] DEBUG file.resource 151155 139772890654400 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:12,082] WARNING django.request 151155 139772890654400 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:12,083] DEBUG file.resource 151155 139772902020800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:12,085] WARNING django.request 151155 139772902020800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:12,423] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:12,424] DEBUG file.resource 151155 139772882261696 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:12,426] WARNING django.request 151155 139772882261696 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:12,431] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:12,432] DEBUG file.resource 151155 139772521604800 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:12,434] WARNING django.request 151155 139772521604800 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:12,876] DEBUG file.resource 151155 139772504819392 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:12,877] DEBUG file.resource 151155 139772504819392 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:12,879] WARNING django.request 151155 139772504819392 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:12,884] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/dsfsdf.txt', user='root2'
+[2026-02-25 15:25:12,885] DEBUG file.resource 151155 139772529997504 Resource not found: test/dsfsdf.txt for user root2
+[2026-02-25 15:25:12,886] WARNING django.request 151155 139772529997504 Not Found: /remote.php/webdav/files/root2/test/dsfsdf.txt
+[2026-02-25 15:25:13,041] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:13,042] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:25:13,042] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:13,043] DEBUG file.resource 151155 139772529997504 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:13,044] DEBUG file.resource 151155 139772529997504 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:13,044] DEBUG file.resource 151155 139772529997504 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:13,044] DEBUG file.resource 151155 139772529997504 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:13,195] DEBUG file.resource 151155 139772504819392 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:25:13,196] DEBUG file.resource 151155 139772504819392 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:13,198] WARNING django.request 151155 139772504819392 Not Found: /remote.php/webdav/files/root2/test/asdfsd.txt
+[2026-02-25 15:25:35,147] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:35,148] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:35,296] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:35,480] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:35,671] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:35,674] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:35,675] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:25:35,675] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:25:35,677] DEBUG file.resource 151155 139772521604800 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:35,677] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-25 15:25:35,870] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:36,052] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-25 15:25:36,236] DEBUG file.resource 151155 139772882261696 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-25 15:25:58,341] DEBUG file.resource 153025 140280367937216 Initializing MyDavResource: path='test/asdfsd', user='root2'
+[2026-02-25 15:25:58,341] DEBUG file.resource 153025 140280367937216 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:25:58,342] DEBUG file.resource 153025 140280367937216 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:25:58,343] DEBUG file.resource 153025 140280367937216 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:58,343] DEBUG file.resource 153025 140280367937216 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:58,344] DEBUG file.resource 153025 140280367937216 Resource not found: test/asdfsd.txt for user root2
+[2026-02-25 15:25:58,507] DEBUG file.resource 153025 140280359544512 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:03,218] DEBUG file.resource 153025 140280359544512 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:03,619] DEBUG file.resource 153025 140280359544512 Initializing MyDavResource: path='', user='root2'
+[2026-02-25 15:26:03,769] DEBUG file.resource 153025 140280359544512 Initializing MyDavResource: path='.editorconfig', user='root2'
+[2026-02-25 15:26:03,770] DEBUG file.resource 153025 140280359544512 Resource not found: .editorconfig for user root2
+[2026-02-25 15:26:03,772] WARNING django.request 153025 140280359544512 Not Found: /remote.php/webdav/files/root2/.editorconfig
+[2026-02-25 15:26:03,963] DEBUG file.resource 153025 140280367937216 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:26:04,108] DEBUG file.resource 153025 140280367937216 Initializing MyDavResource: path='test/.editorconfig', user='root2'
+[2026-02-25 15:26:04,110] DEBUG file.resource 153025 140280367937216 Resource not found: test/.editorconfig for user root2
+[2026-02-25 15:26:04,111] WARNING django.request 153025 140280367937216 Not Found: /remote.php/webdav/files/root2/test/.editorconfig
+[2026-02-25 15:26:04,695] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:04,700] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:04,847] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:05,035] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:05,240] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:05,404] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:05,557] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:06,863] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:08,284] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:08,285] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test', user='root2'
+[2026-02-25 15:26:08,286] DEBUG file.resource 153025 140280267269824 Starting file upload for asdfsd.txt by user root2
+[2026-02-25 15:26:08,286] DEBUG file.resource 153025 140280267269824 Successfully read 16 bytes for asdfsd.txt
+[2026-02-25 15:26:08,287] INFO file.resource 153025 140280267269824 Overwriting existing file asdfsd.txt for user root2
+[2026-02-25 15:26:08,302] INFO file.resource 153025 140280267269824 Successfully uploaded asdfsd.txt (16 bytes) for user root2
+[2026-02-25 15:26:08,447] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:08,595] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:08,790] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-25 15:26:08,801] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'

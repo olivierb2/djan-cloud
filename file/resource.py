@@ -117,19 +117,27 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
         raise NotImplementedError()
 
     def move_object(self, destination: 'MyDavResource'):
-        # Ensure destination owner is the same
-        if destination.user != self.user:
-             logger.error(f"Attempt to move object across users: {self.user} -> {destination.user}")
-             raise PermissionError("Cannot move objects between different users.")
-        # Ensure the destination folder belongs to the user
-        dest_parent_resource = MyDavResource(destination.dirname, self.user)
-        if not dest_parent_resource.exists or not isinstance(dest_parent_resource._object, Folder):
-            logger.error(f"Destination parent folder {destination.dirname} does not exist for user {self.user}")
+        import os
+        from django.conf import settings as django_settings
+        dest_parent = destination.parent
+        if not dest_parent:
             raise FileNotFoundError("Destination folder does not exist.")
 
-        self.object.parent = dest_parent_resource._object
-        self.object.full_path = destination.full_path
-        self.object.save()
+        obj = self.object
+        obj.parent = dest_parent
+
+        # Rename the physical file if the name changed
+        old_path = obj.file.path
+        new_name = destination.displayname
+        new_file_name = f"uploads/{new_name}"
+        new_path = os.path.join(django_settings.MEDIA_ROOT, new_file_name)
+
+        if old_path != new_path:
+            os.makedirs(os.path.dirname(new_path), exist_ok=True)
+            os.rename(old_path, new_path)
+            obj.file.name = new_file_name
+
+        obj.save()
 
     @property
     def parent(self) -> Optional[Folder]:
