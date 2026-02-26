@@ -12,7 +12,7 @@ import json
 import secrets
 import os
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import AppToken, LoginToken, Folder, File
+from .models import AppToken, LoginToken, Folder, File, SharedFolder, SharedFolderMembership
 from django.views import View
 from djangodav.views.views import DavView
 from django.views.decorators.csrf import csrf_exempt
@@ -21,6 +21,63 @@ from django.contrib.auth.forms import AuthenticationForm
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _get_shared_membership(user, obj):
+    """Check if an object (File or Folder) is in a shared folder the user has access to."""
+    if not obj.full_path.startswith('/__shared__/'):
+        return None
+    parts = obj.full_path.split('/')
+    if len(parts) < 3:
+        return None
+    share_name = parts[2]
+    return SharedFolderMembership.objects.filter(
+        shared_folder__name=share_name, user=user
+    ).select_related('shared_folder').first()
+
+
+def get_accessible_file(request, file_id, permission='read'):
+    """Get a file the user can access (personal or shared)."""
+    try:
+        return File.objects.get(id=file_id, owner=request.user), True
+    except File.DoesNotExist:
+        pass
+    file_obj = get_object_or_404(File, id=file_id)
+    membership = _get_shared_membership(request.user, file_obj)
+    if not membership:
+        raise Http404
+    if permission == 'write' and membership.permission not in ('write', 'admin'):
+        raise Http404
+    can_write = membership.permission in ('write', 'admin')
+    return file_obj, can_write
+
+
+def get_accessible_folder(request, folder_id, permission='read'):
+    """Get a folder the user can access (personal or shared)."""
+    try:
+        return Folder.objects.get(id=folder_id, owner=request.user), True
+    except Folder.DoesNotExist:
+        pass
+    folder = get_object_or_404(Folder, id=folder_id)
+    membership = _get_shared_membership(request.user, folder)
+    if not membership:
+        raise Http404
+    if permission == 'write' and membership.permission not in ('write', 'admin'):
+        raise Http404
+    can_write = membership.permission in ('write', 'admin')
+    return folder, can_write
+
+
+def _redirect_to_folder(request, folder):
+    """Redirect to the browse view for a given folder."""
+    if folder.full_path.startswith('/__shared__/'):
+        folder_path = folder.full_path.lstrip('/').rstrip('/')
+        return redirect('browse_files', path=folder_path)
+    if folder.full_path == f"/{request.user.username}/":
+        return redirect('browse_files_root')
+    folder_path = folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+    return redirect('browse_files', path=folder_path)
+
 
 class BasicAuthMixin:
     """A mixin to protect a view with HTTP Basic Authentication."""
@@ -375,43 +432,108 @@ class WebLogoutView(View):
 class FileBrowseView(LoginRequiredMixin, View):
     template_name = 'file/browse.html'
 
-    def get(self, request, path=''):
-        # Normalize path: remove leading/trailing slashes for consistency internally
-        normalized_path = '/' + path.strip('/')
-        if normalized_path == '/': # User root
-            # Look for user-specific root folder
-            folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
+    def _resolve_folder(self, request, path):
+        """Resolve path to (folder, is_shared, can_write, is_shared_root).
+        Returns the folder object and context flags."""
+        stripped = path.strip('/')
+
+        # Shared folders listing
+        if stripped == '__shared__':
+            return None, True, False, True
+
+        # Inside a shared folder
+        if stripped.startswith('__shared__/'):
+            parts = stripped.split('/')
+            share_name = parts[1]
+            sf = get_object_or_404(SharedFolder, name=share_name)
+            membership = get_object_or_404(
+                SharedFolderMembership, shared_folder=sf, user=request.user)
+            can_write = membership.permission in ('write', 'admin')
+
+            if len(parts) == 2:
+                return sf.root_folder, True, can_write, False
+            sub_path = '/'.join(parts[2:])
+            full_path = f"/__shared__/{share_name}/{sub_path}/"
+            folder = get_object_or_404(Folder, full_path=full_path)
+            return folder, True, can_write, False
+
+        # Personal folder
+        normalized_path = '/' + stripped
+        if normalized_path == '/':
+            folder = get_object_or_404(
+                Folder, owner=request.user, full_path=f"/{request.user.username}/")
         else:
-            # Prepend username to path for lookup and ensure trailing slash
             user_path = f"/{request.user.username}{normalized_path}/"
             folder = get_object_or_404(Folder, owner=request.user, full_path=user_path)
+        return folder, False, True, False
 
-        subfolders = folder.subfolders.filter(owner=request.user).order_by('name')
-        files = folder.files.filter(owner=request.user).order_by('file')
+    def _folder_url_path(self, request, subfolder):
+        """Convert a folder's full_path to a browse URL path."""
+        if subfolder.full_path.startswith('/__shared__/'):
+            return subfolder.full_path.lstrip('/').rstrip('/')
+        if subfolder.full_path == f"/{request.user.username}/":
+            return ''
+        return subfolder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
 
-        # Add display_name to files (strip the uploads/ prefix)
+    def get(self, request, path=''):
+        folder, is_shared, can_write, is_shared_root = self._resolve_folder(request, path)
+
+        # Special case: listing all shared folders
+        if is_shared_root:
+            memberships = SharedFolderMembership.objects.filter(
+                user=request.user
+            ).select_related('shared_folder__root_folder')
+            shared_folders = []
+            for m in memberships:
+                sf = m.shared_folder
+                sf.url_path = f"__shared__/{sf.name}"
+                sf.permission = m.permission
+                shared_folders.append(sf)
+
+            context = {
+                'current_folder': None,
+                'current_path': '__shared__',
+                'is_shared_root': True,
+                'shared_folders': shared_folders,
+                'subfolders': [],
+                'files': [],
+                'parent_path': '',
+                'breadcrumb_parts': [{'name': 'Shared', 'path': '__shared__'}],
+                'is_shared': True,
+                'can_write': False,
+            }
+            return render(request, self.template_name, context)
+
+        if is_shared:
+            subfolders = folder.subfolders.all().order_by('name')
+            files = folder.files.all().order_by('file')
+        else:
+            subfolders = folder.subfolders.filter(owner=request.user).order_by('name')
+            files = folder.files.filter(owner=request.user).order_by('file')
+
         for f in files:
             f.display_name = os.path.basename(f.file.name)
 
-        # Pre-calculate URL paths for subfolders (removing username prefix)
         for subfolder in subfolders:
-            if subfolder.full_path == f"/{request.user.username}/":
-                subfolder.url_path = ''
-            else:
-                subfolder.url_path = subfolder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+            subfolder.url_path = self._folder_url_path(request, subfolder)
 
-        # Calculate parent path for "up" link
+        # Parent path
         parent_path = None
-        if folder.parent:
+        stripped = path.strip('/')
+        if is_shared:
+            parts = stripped.split('/')
+            if len(parts) == 2:
+                parent_path = '__shared__'
+            elif len(parts) > 2:
+                parent_path = '/'.join(parts[:-1])
+        elif folder.parent:
             parent_full_path = folder.parent.full_path
-            # Handle root parent representation
             if parent_full_path == f"/{request.user.username}/":
-                 parent_path = '' # Root path represented by empty string in URL
+                parent_path = ''
             else:
-                 # Remove username prefix from path for URL
-                 parent_path = parent_full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+                parent_path = parent_full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
 
-        # Build breadcrumb parts for the navbar
+        # Breadcrumbs
         breadcrumb_parts = []
         if path:
             parts = path.strip('/').split('/')
@@ -428,19 +550,17 @@ class FileBrowseView(LoginRequiredMixin, View):
             'files': files,
             'parent_path': parent_path,
             'breadcrumb_parts': breadcrumb_parts,
+            'is_shared': is_shared,
+            'can_write': can_write,
         }
         return render(request, self.template_name, context)
 
     def post(self, request, path=''):
-        # Get current folder
-        normalized_path = '/' + path.strip('/')
-        if normalized_path == '/': # User root
-            # Look for user-specific root folder
-            folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
-        else:
-            # Prepend username to path for lookup and ensure trailing slash
-            user_path = f"/{request.user.username}{normalized_path}/"
-            folder = get_object_or_404(Folder, owner=request.user, full_path=user_path)
+        folder, is_shared, can_write, is_shared_root = self._resolve_folder(request, path)
+
+        if is_shared_root or not can_write:
+            messages.error(request, 'You do not have write access here.')
+            return redirect(request.path)
 
         # Handle file upload
         if 'file' in request.FILES:
@@ -449,18 +569,15 @@ class FileBrowseView(LoginRequiredMixin, View):
                 messages.error(request, 'No file selected for upload.')
                 return redirect(request.path)
 
-            # Check if file already exists
             existing_file = File.objects.filter(
-                owner=request.user,
                 parent=folder,
-                file__icontains=uploaded_file.name
+                full_path=f"{folder.full_path}{uploaded_file.name}"
             ).first()
-            
+
             if existing_file:
                 messages.error(request, f'File "{uploaded_file.name}" already exists in this folder.')
                 return redirect(request.path)
 
-            # Create new file
             try:
                 new_file = File(
                     owner=request.user,
@@ -484,7 +601,6 @@ class FileBrowseView(LoginRequiredMixin, View):
                 return redirect(request.path)
 
             existing_folder = Folder.objects.filter(
-                owner=request.user,
                 parent=folder,
                 name=folder_name
             ).first()
@@ -516,7 +632,6 @@ class FileBrowseView(LoginRequiredMixin, View):
                 return redirect(request.path)
 
             existing = File.objects.filter(
-                owner=request.user,
                 parent=folder,
                 full_path=f"{folder.full_path}{filename}"
             ).first()
@@ -542,7 +657,7 @@ class FileBrowseView(LoginRequiredMixin, View):
 
 class FileDownloadView(LoginRequiredMixin, View):
     def get(self, request, file_id):
-        file_obj = get_object_or_404(File, id=file_id, owner=request.user)
+        file_obj, _ = get_accessible_file(request, file_id, permission='read')
         
         if not file_obj.file or not os.path.exists(file_obj.file.path):
             raise Http404("File not found")
@@ -557,7 +672,7 @@ class FileDownloadView(LoginRequiredMixin, View):
 
 class FileDeleteView(LoginRequiredMixin, View):
     def post(self, request, file_id):
-        file_obj = get_object_or_404(File, id=file_id, owner=request.user)
+        file_obj, _ = get_accessible_file(request, file_id, permission='write')
         
         try:
             # Delete the physical file if it exists
@@ -572,21 +687,15 @@ class FileDeleteView(LoginRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error deleting file: {str(e)}')
         
-        # Redirect back to the folder view  
-        if file_obj.parent.full_path == f"/{request.user.username}/":
-            return redirect('browse_files_root')
-        else:
-            # Remove username prefix from path for URL
-            folder_path = file_obj.parent.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
-            return redirect('browse_files', path=folder_path)
+        return _redirect_to_folder(request, file_obj.parent)
 
 
 class FolderDeleteView(LoginRequiredMixin, View):
     def post(self, request, folder_id):
-        folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
+        folder, can_write = get_accessible_folder(request, folder_id, permission='write')
 
-        # Prevent deletion of root folder
-        if folder.full_path == f"/{request.user.username}/":
+        # Prevent deletion of root folders
+        if folder.parent is None:
             messages.error(request, 'Cannot delete root folder.')
             return redirect('browse_files_root')
 
@@ -598,12 +707,9 @@ class FolderDeleteView(LoginRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error deleting folder: {str(e)}')
 
-        # Redirect back to parent folder
-        if parent_folder and parent_folder.full_path != f"/{request.user.username}/":
-            parent_path = parent_folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
-            return redirect('browse_files', path=parent_path)
-        else:
-            return redirect('browse_files_root')
+        if parent_folder:
+            return _redirect_to_folder(request, parent_folder)
+        return redirect('browse_files_root')
 
     def _delete_recursive(self, folder):
         """Delete a folder and all its contents recursively."""
@@ -624,23 +730,17 @@ class MoveItemView(LoginRequiredMixin, View):
     template_name = 'file/move_picker.html'
     
     def get(self, request, item_type, item_id):
-        # Get the item to be moved
         if item_type == 'file':
-            item = get_object_or_404(File, id=item_id, owner=request.user)
-            current_folder = item.parent
+            item, _ = get_accessible_file(request, item_id, permission='write')
         elif item_type == 'folder':
-            item = get_object_or_404(Folder, id=item_id, owner=request.user)
-            current_folder = item.parent
+            item, _ = get_accessible_folder(request, item_id, permission='write')
         else:
             messages.error(request, 'Invalid item type.')
             return redirect('browse_files_root')
-        
-        # Start at root folder for destination selection
+
         root_folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
-        
-        # Get breadcrumb path
         breadcrumbs = [{'name': 'Root', 'folder': root_folder}]
-        
+
         context = {
             'item': item,
             'item_type': item_type,
@@ -650,45 +750,35 @@ class MoveItemView(LoginRequiredMixin, View):
             'current_path': '',
         }
         return render(request, self.template_name, context)
-    
+
     def post(self, request, item_type, item_id):
-        # Get the item to move
         if item_type == 'file':
-            item = get_object_or_404(File, id=item_id, owner=request.user)
+            item, _ = get_accessible_file(request, item_id, permission='write')
         elif item_type == 'folder':
-            item = get_object_or_404(Folder, id=item_id, owner=request.user)
+            item, _ = get_accessible_folder(request, item_id, permission='write')
         else:
             messages.error(request, 'Invalid item type.')
             return redirect('browse_files_root')
-        
-        # Get destination folder
+
         destination_folder_id = request.POST.get('destination_folder_id')
         if not destination_folder_id:
             messages.error(request, 'No destination folder selected.')
             return redirect(request.META.get('HTTP_REFERER', 'browse_files_root'))
-        
-        destination_folder = get_object_or_404(Folder, id=destination_folder_id, owner=request.user)
-        
+
+        destination_folder, _ = get_accessible_folder(request, int(destination_folder_id), permission='write')
+
         try:
             with transaction.atomic():
                 if item_type == 'file':
                     self._move_file(item, destination_folder)
-                    messages.success(request, f'File "{item.file.name}" moved successfully.')
-                else:  # folder
+                    messages.success(request, f'File moved successfully.')
+                else:
                     self._move_folder(item, destination_folder)
                     messages.success(request, f'Folder "{item.name}" moved successfully.')
         except Exception as e:
             messages.error(request, f'Error moving {item_type}: {str(e)}')
-        
-        # Redirect back to the destination folder
-        if destination_folder.full_path == f"/{request.user.username}/":
-            return redirect('browse_files_root')
-        else:
-            # Remove username prefix from path for URL
-            dest_path = destination_folder.full_path.replace(f"/{request.user.username}/", "", 1)
-            if dest_path and not dest_path.endswith('/'):
-                dest_path = dest_path.rstrip('/')
-            return redirect('browse_files', path=dest_path)
+
+        return _redirect_to_folder(request, destination_folder)
     
     def _move_file(self, file, destination_folder):
         """Move a file to a new folder"""
@@ -759,14 +849,23 @@ class MoveItemView(LoginRequiredMixin, View):
 
 
 class FolderSelectorView(LoginRequiredMixin, View):
+    def _folder_path(self, request, folder):
+        """Convert a folder's full_path to a browse URL path."""
+        if folder.full_path.startswith('/__shared__/'):
+            return folder.full_path.lstrip('/').rstrip('/')
+        if folder.full_path == f"/{request.user.username}/":
+            return ''
+        return folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+
     def get(self, request, folder_id=None):
         """AJAX endpoint to get folder contents for the move picker"""
         if folder_id:
-            folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
+            folder, _ = get_accessible_folder(request, folder_id, permission='read')
         else:
-            # Root folder
             folder = get_object_or_404(Folder, owner=request.user, full_path=f"/{request.user.username}/")
-        
+
+        is_shared = folder.full_path.startswith('/__shared__/')
+
         # Build breadcrumbs
         breadcrumbs = []
         current = folder
@@ -774,32 +873,32 @@ class FolderSelectorView(LoginRequiredMixin, View):
             if current.full_path == f"/{request.user.username}/":
                 breadcrumbs.insert(0, {'name': 'Root', 'id': current.id, 'path': ''})
             else:
-                # Remove username prefix from path for URL
-                path = current.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
-                breadcrumbs.insert(0, {'name': current.name, 'id': current.id, 'path': path})
+                breadcrumbs.insert(0, {
+                    'name': current.name or current.full_path.strip('/').split('/')[-1],
+                    'id': current.id,
+                    'path': self._folder_path(request, current),
+                })
             current = current.parent
-        
+
         # Get subfolders
+        if is_shared:
+            children = folder.subfolders.all().order_by('name')
+        else:
+            children = folder.subfolders.filter(owner=request.user).order_by('name')
+
         subfolders = []
-        for subfolder in folder.subfolders.filter(owner=request.user).order_by('name'):
-            # Remove username prefix from path for URL
-            path = subfolder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+        for subfolder in children:
             subfolders.append({
                 'id': subfolder.id,
                 'name': subfolder.name,
-                'path': path,
+                'path': self._folder_path(request, subfolder),
             })
-        
-        # Remove username prefix from folder path for URL
-        folder_path = ''
-        if folder.full_path != f"/{request.user.username}/":
-            folder_path = folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
-        
+
         return JsonResponse({
             'folder': {
                 'id': folder.id,
                 'name': folder.name or 'Root',
-                'path': folder_path,
+                'path': self._folder_path(request, folder),
             },
             'breadcrumbs': breadcrumbs,
             'subfolders': subfolders,
@@ -818,13 +917,13 @@ class RenameItemView(LoginRequiredMixin, View):
             return redirect(request.META.get('HTTP_REFERER', 'browse_files_root'))
 
         if item_type == 'folder':
-            item = get_object_or_404(Folder, id=item_id, owner=request.user)
+            item, can_write = get_accessible_folder(request, item_id, permission='write')
             if item.parent is None:
                 messages.error(request, 'Cannot rename root folder.')
                 return redirect('browse_files_root')
 
             # Check for name conflicts
-            if Folder.objects.filter(owner=request.user, parent=item.parent, name=new_name).exclude(id=item.id).exists():
+            if Folder.objects.filter(parent=item.parent, name=new_name).exclude(id=item.id).exists():
                 messages.error(request, f'A folder named "{new_name}" already exists here.')
                 return redirect(request.META.get('HTTP_REFERER', 'browse_files_root'))
 
@@ -834,10 +933,10 @@ class RenameItemView(LoginRequiredMixin, View):
             messages.success(request, f'Folder renamed to "{new_name}".')
 
         elif item_type == 'file':
-            item = get_object_or_404(File, id=item_id, owner=request.user)
+            item, can_write = get_accessible_file(request, item_id, permission='write')
 
             # Check for name conflicts
-            if File.objects.filter(owner=request.user, parent=item.parent, full_path=f"{item.parent.full_path}{new_name}").exclude(id=item.id).exists():
+            if File.objects.filter(parent=item.parent, full_path=f"{item.parent.full_path}{new_name}").exclude(id=item.id).exists():
                 messages.error(request, f'A file named "{new_name}" already exists here.')
                 return redirect(request.META.get('HTTP_REFERER', 'browse_files_root'))
 
@@ -865,7 +964,7 @@ class RenameItemView(LoginRequiredMixin, View):
 
 class FilePreviewView(LoginRequiredMixin, View):
     def get(self, request, file_id):
-        file_obj = get_object_or_404(File, id=file_id, owner=request.user)
+        file_obj, _ = get_accessible_file(request, file_id, permission='read')
 
         if not file_obj.file or not os.path.exists(file_obj.file.path):
             raise Http404("File not found")
@@ -906,19 +1005,38 @@ class FolderTreeView(LoginRequiredMixin, View):
         root = Folder.objects.filter(
             owner=request.user, parent__isnull=True, name__isnull=True
         ).first()
-        if not root:
-            return JsonResponse({'tree': []})
 
-        def build_tree(folder):
-            children = folder.subfolders.filter(owner=request.user).order_by('name')
-            url_path = ''
-            if folder.full_path != f"/{request.user.username}/":
+        def build_tree(folder, is_shared=False):
+            if is_shared:
+                children = folder.subfolders.all().order_by('name')
+            else:
+                children = folder.subfolders.filter(owner=request.user).order_by('name')
+            if folder.full_path.startswith('/__shared__/'):
+                url_path = folder.full_path.lstrip('/').rstrip('/')
+            elif folder.full_path == f"/{request.user.username}/":
+                url_path = ''
+            else:
                 url_path = folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
             return {
                 'id': folder.id,
                 'name': folder.name or 'Home',
                 'url_path': url_path,
-                'children': [build_tree(c) for c in children],
+                'children': [build_tree(c, is_shared=is_shared) for c in children],
             }
 
-        return JsonResponse({'tree': build_tree(root)})
+        personal_tree = build_tree(root) if root else None
+
+        # Shared folders
+        from .models import SharedFolderMembership
+        memberships = SharedFolderMembership.objects.filter(
+            user=request.user
+        ).select_related('shared_folder__root_folder')
+        shared_trees = []
+        for m in memberships:
+            sf = m.shared_folder
+            tree = build_tree(sf.root_folder, is_shared=True)
+            tree['name'] = sf.name
+            tree['url_path'] = f"__shared__/{sf.name}"
+            shared_trees.append(tree)
+
+        return JsonResponse({'tree': personal_tree, 'shared': shared_trees})

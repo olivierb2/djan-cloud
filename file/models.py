@@ -21,7 +21,8 @@ class FileSystemItem(models.Model):
         abstract = True
 
 class Folder(FileSystemItem):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     parent = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name='subfolders')
@@ -34,12 +35,15 @@ class Folder(FileSystemItem):
                 parent_path += '/'
             self.full_path = f"{parent_path}{self.name}/"
         else:
-            # Root folder - use username-based path
+            # Root folder
             if self.name is None and self.parent is None:
-                if not self.owner:
-                    raise ValidationError("Root folder must have an owner.")
-                # User-specific root folder path
-                self.full_path = f"/{self.owner.username}/"
+                # Shared folder root: full_path already set externally
+                if self.full_path and self.full_path.startswith('/__shared__/'):
+                    pass
+                elif self.owner:
+                    self.full_path = f"/{self.owner.username}/"
+                else:
+                    raise ValidationError("Root folder must have an owner or a shared path.")
             else:
                 raise ValidationError("Cannot determine full_path without parent or name being null for root.")
         super().save(*args, **kwargs)
@@ -51,12 +55,8 @@ class Folder(FileSystemItem):
         if self.parent and not self.name:
             raise ValidationError(
                 {'name': "Name is required if not root folder."})
-        if self.name and not self.parent:
-            raise ValidationError(
-                {'parent': "Parent is required if name is defined."})
 
     class Meta:
-        # Unique constraint: each user can have only one root folder, and no duplicate folder names within same parent
         constraints = [
             models.UniqueConstraint(
                 fields=['owner', 'parent', 'name'],
@@ -64,31 +64,28 @@ class Folder(FileSystemItem):
             ),
             models.UniqueConstraint(
                 fields=['owner'],
-                condition=models.Q(parent__isnull=True, name__isnull=True),
+                condition=models.Q(parent__isnull=True, name__isnull=True, owner__isnull=False),
                 name='unique_root_folder_per_user'
             ),
         ]
-        # Indexes for performance
         indexes = [
             models.Index(fields=['owner', 'parent'], name='folder_owner_parent_idx'),
             models.Index(fields=['owner', 'full_path'], name='folder_owner_path_idx'),
         ]
 
 class File(FileSystemItem):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     file = models.FileField(upload_to='uploads/')
     parent = models.ForeignKey(
         Folder, on_delete=models.CASCADE, related_name='files')
     content_type = models.CharField(editable=False, max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Always recalculate file path based on folder
         if self.parent:
-            # Use just the filename from the file field
             filename = self.file.name.split('/')[-1] if '/' in self.file.name else self.file.name
             self.full_path = f"{self.parent.full_path}{filename}"
         else:
-            # Cannot determine path without a folder, and root is now user-specific
             raise ValidationError("File must belong to a folder.")
 
         if not self.content_type:
@@ -96,14 +93,6 @@ class File(FileSystemItem):
             self.content_type = guessed_type or 'application/octet-stream'
 
         super().save(*args, **kwargs)
-
-
-
-    def clean(self):
-        # Ensure owner is set
-        if not self.owner_id:
-            raise ValidationError("Owner must be set.")
-        super().clean()
 
 class AppToken(models.Model):
     user = models.ForeignKey(
@@ -131,3 +120,44 @@ class LoginToken(models.Model):
 
     def is_expired(self):
         return timezone.now() - self.created_at > timezone.timedelta(minutes=10)
+
+
+class SharedFolder(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    root_folder = models.OneToOneField(
+        Folder, on_delete=models.CASCADE, related_name='shared_folder_ref')
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='created_shared_folders')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.root_folder_id:
+            root = Folder(owner=None, name=None, parent=None)
+            root.full_path = f"/__shared__/{self.name}/"
+            root.save()
+            self.root_folder = root
+        super().save(*args, **kwargs)
+
+
+class SharedFolderMembership(models.Model):
+    PERMISSION_CHOICES = [
+        ('read', 'Read only'),
+        ('write', 'Read & Write'),
+        ('admin', 'Admin'),
+    ]
+
+    shared_folder = models.ForeignKey(
+        SharedFolder, on_delete=models.CASCADE, related_name='memberships')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='shared_folder_memberships')
+    permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default='read')
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [('shared_folder', 'user')]
+
+    def __str__(self):
+        return f"{self.user.username} -> {self.shared_folder.name} ({self.permission})"

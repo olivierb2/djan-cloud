@@ -17,6 +17,18 @@ class AppTokenAdmin(admin.ModelAdmin):
     readonly_fields = ('token',)
 
 
+class SharedFolderMembershipInline(admin.TabularInline):
+    model = models.SharedFolderMembership
+    extra = 1
+
+
+class SharedFolderAdmin(admin.ModelAdmin):
+    list_display = ('name', 'created_by', 'created_at')
+    exclude = ('root_folder',)
+    inlines = [SharedFolderMembershipInline]
+
+
 admin.site.register(models.File, FileAdmin)
 admin.site.register(models.Folder, FolderAdmin)
 admin.site.register(models.AppToken, AppTokenAdmin)
+admin.site.register(models.SharedFolder, SharedFolderAdmin)

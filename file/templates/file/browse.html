@@ -88,6 +88,7 @@
                     {% endif %}
                 {% endif %}
 
+                {% if can_write %}
                 <!-- New dropdown -->
                 <div class="relative" id="new-dropdown">
                     <button onclick="document.getElementById('new-menu').classList.toggle('hidden')"
@@ -118,12 +119,15 @@
                         Upload
                     </button>
                 </form>
+                {% endif %}
             </div>
 
+            {% if can_write %}
             <!-- Drop zone overlay -->
             <div id="dropzone" class="hidden mb-4 rounded-xl border-2 border-dashed border-brand-400 bg-brand-50 p-8 text-center text-brand-600 font-medium">
                 Drop files here to upload
             </div>
+            {% endif %}
 
             <!-- File table -->
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -138,6 +142,42 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
+                        {% if is_shared_root %}
+                        {% for sf in shared_folders %}
+                        <tr class="group hover:bg-gray-50/50 transition-colors">
+                            <td class="px-4 py-2.5">
+                                <a href="{% url 'browse_files' path=sf.url_path %}"
+                                   class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600">
+                                    <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    {{ sf.name }}
+                                </a>
+                            </td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">Shared folder</td>
+                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ sf.created_at|date:"M d, Y H:i" }}</td>
+                            <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">
+                                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+                                    {% if sf.permission == 'admin' %}bg-purple-50 text-purple-700
+                                    {% elif sf.permission == 'write' %}bg-green-50 text-green-700
+                                    {% else %}bg-gray-100 text-gray-600{% endif %}">
+                                    {{ sf.permission }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2.5 text-right"></td>
+                        </tr>
+                        {% endfor %}
+                        {% if not shared_folders %}
+                        <tr>
+                            <td colspan="5" class="px-4 py-12 text-center text-sm text-gray-400">
+                                <svg class="mx-auto mb-2 w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                No shared folders
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% else %}
                         {% for folder in subfolders %}
                         <tr class="group hover:bg-gray-50/50 transition-colors">
                             <td class="px-4 py-2.5">
@@ -151,6 +191,7 @@
                             <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ folder.updated_at|date:"M d, Y H:i" }}</td>
                             <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">&mdash;</td>
                             <td class="px-4 py-2.5 text-right">
+                                {% if can_write %}
                                 <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button onclick="openRenameModal('folder', {{ folder.id }}, '{{ folder.name|escapejs }}')" title="Rename"
                                             class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
@@ -168,6 +209,7 @@
                                         </button>
                                     </form>
                                 </div>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -196,6 +238,7 @@
                                        class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                     </a>
+                                    {% if can_write %}
                                     <button onclick="openRenameModal('file', {{ file.id }}, '{{ file.display_name|escapejs }}')" title="Rename"
                                             class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -211,6 +254,7 @@
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
                                     </form>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>
@@ -223,6 +267,7 @@
                                 This folder is empty
                             </td>
                         </tr>
+                        {% endif %}
                         {% endif %}
                     </tbody>
                 </table>
@@ -296,7 +341,8 @@ function openModal(id) {
     const m = document.getElementById(id);
     m.classList.remove('hidden');
     m.classList.add('flex');
-    document.getElementById('new-menu').classList.add('hidden');
+    var newMenu = document.getElementById('new-menu');
+    if (newMenu) newMenu.classList.add('hidden');
     const input = m.querySelector('input[type="text"]');
     if (input) { input.focus(); input.select(); }
 }
@@ -320,12 +366,15 @@ function openRenameModal(itemType, itemId, currentName) {
 }
 
 // Close "New" dropdown on outside click
-document.addEventListener('click', e => {
-    const dd = document.getElementById('new-dropdown');
-    if (!dd.contains(e.target)) document.getElementById('new-menu').classList.add('hidden');
-});
+var newDropdown = document.getElementById('new-dropdown');
+if (newDropdown) {
+    document.addEventListener('click', e => {
+        if (!newDropdown.contains(e.target)) document.getElementById('new-menu').classList.add('hidden');
+    });
+}
 
-// Drag & drop
+// Drag & drop (only when user can write)
+{% if can_write %}
 let dragCounter = 0;
 const dropzone = document.getElementById('dropzone');
 document.body.addEventListener('dragenter', e => { e.preventDefault(); dragCounter++; dropzone.classList.remove('hidden'); });
@@ -347,9 +396,10 @@ dropzone.addEventListener('drop', e => {
         document.body.appendChild(form); form.submit();
     }
 });
+{% endif %}
 
 // Sidebar folder tree
-function renderTree(node, container, currentPath, depth) {
+function renderTree(node, container, currentPath, depth, iconType) {
     const isActive = node.url_path === currentPath;
     const hasChildren = node.children && node.children.length > 0;
     const isOnPath = currentPath === node.url_path || currentPath.startsWith(node.url_path ? node.url_path + '/' : '');
@@ -376,11 +426,21 @@ function renderTree(node, container, currentPath, depth) {
     }
 
     const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    icon.setAttribute('class', 'w-4 h-4 text-yellow-400 flex-shrink-0');
-    icon.setAttribute('fill', 'currentColor'); icon.setAttribute('viewBox', '0 0 24 24');
-    const ipath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    ipath.setAttribute('d', 'M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z');
-    icon.appendChild(ipath); row.appendChild(icon);
+    if (iconType === 'shared') {
+        icon.setAttribute('class', 'w-4 h-4 text-brand-500 flex-shrink-0');
+        icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.setAttribute('viewBox', '0 0 24 24');
+        const ipath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        ipath.setAttribute('stroke-linecap', 'round'); ipath.setAttribute('stroke-linejoin', 'round'); ipath.setAttribute('stroke-width', '2');
+        ipath.setAttribute('d', 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z');
+        icon.appendChild(ipath);
+    } else {
+        icon.setAttribute('class', 'w-4 h-4 text-yellow-400 flex-shrink-0');
+        icon.setAttribute('fill', 'currentColor'); icon.setAttribute('viewBox', '0 0 24 24');
+        const ipath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        ipath.setAttribute('d', 'M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z');
+        icon.appendChild(ipath);
+    }
+    row.appendChild(icon);
 
     const label = document.createElement('a');
     label.className = 'truncate'; label.textContent = node.name;
@@ -390,7 +450,7 @@ function renderTree(node, container, currentPath, depth) {
 
     if (hasChildren) {
         const childContainer = document.createElement('div'); childContainer.className = 'tree-children';
-        node.children.forEach(c => renderTree(c, childContainer, currentPath, depth + 1));
+        node.children.forEach(c => renderTree(c, childContainer, currentPath, depth + 1, 'folder'));
         item.appendChild(childContainer);
     }
     container.appendChild(item);
@@ -399,7 +459,16 @@ function renderTree(node, container, currentPath, depth) {
 fetch('/api/tree/').then(r => r.json()).then(data => {
     const treeEl = document.getElementById('folder-tree');
     treeEl.innerHTML = '';
-    renderTree(data.tree, treeEl, '{{ current_path|escapejs }}', 0);
+    if (data.tree) renderTree(data.tree, treeEl, '{{ current_path|escapejs }}', 0, 'folder');
+
+    // Shared folders section
+    if (data.shared && data.shared.length > 0) {
+        const heading = document.createElement('h2');
+        heading.className = 'mt-4 mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400';
+        heading.textContent = 'Shared';
+        treeEl.appendChild(heading);
+        data.shared.forEach(s => renderTree(s, treeEl, '{{ current_path|escapejs }}', 0, 'shared'));
+    }
 });
 </script>
 {% endblock %}
