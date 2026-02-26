@@ -73,6 +73,19 @@ class MyDavView(BasicAuthMixin, DavView):
             path = self.path
         return self.resource_class(path, user=self.request.user)
 
+    def put(self, request, path, *args, **kwargs):
+        response = super().put(request, path, *args, **kwargs)
+        # Nextcloud client requires ETag and OC-ETag headers after upload
+        if response.status_code in (201, 204):
+            # Re-fetch resource to get updated etag after write
+            resource = self.get_resource(path=self.path)
+            if resource.exists and resource.getetag:
+                response['ETag'] = resource.getetag
+                response['OC-ETag'] = resource.getetag
+                if hasattr(resource, 'oc_fileid') and resource.oc_fileid:
+                    response['OC-FileId'] = resource.oc_fileid
+        return response
+
     def propfind(self, request, path, xbody=None, *args, **kwargs):
         from djangodav.utils import url_join, get_property_tag_list, WEBDAV_NS
         from djangodav.responses import HttpResponseMultiStatus

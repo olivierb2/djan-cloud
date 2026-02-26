@@ -4124,3 +4124,313 @@ lxml.etree.XPathEvalError: Undefined namespace prefix
 [2026-02-26 08:34:47,657] DEBUG file.resource 35826 139901379016384 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
 [2026-02-26 08:34:47,662] WARNING django.request 35826 139901598336704 Not Found: /index.php/apps/theming/img/core/filetypes/application-pdf.svg
 [2026-02-26 08:34:47,898] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:35:23,767] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:35:30,760] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:35:45,777] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:35:45,779] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:35:45,780] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:35:45,781] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:35:45,798] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:35:45,798] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:35:45,799] DEBUG file.resource 35826 139901608654528 Resource not found: test/FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:35:45,800] DEBUG file.resource 35826 139901608654528 Resource not found: test/FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:35:45,801] DEBUG file.resource 35826 139901608654528 Resource not found: test/FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:35:45,801] DEBUG file.resource 35826 139901608654528 Resource not found: test/FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:35:45,801] DEBUG file.resource 35826 139901608654528 Starting file upload for FAC_2026_0010-1 (Copy).pdf by user root2
+[2026-02-26 08:35:45,801] DEBUG file.resource 35826 139901608654528 Successfully read 199317 bytes for FAC_2026_0010-1 (Copy).pdf
+[2026-02-26 08:35:45,804] INFO file.resource 35826 139901608654528 Creating new file FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:35:45,810] INFO file.resource 35826 139901608654528 Successfully uploaded FAC_2026_0010-1 (Copy).pdf (199317 bytes) for user root2
+[2026-02-26 08:35:45,810] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:36:00,769] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:36:00,771] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:36:00,772] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:36:00,773] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:36:25,767] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:36:58,545] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:36:58,548] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:36:58,548] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:36:58,549] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:36:58,569] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:36:58,569] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:36:58,571] DEBUG file.resource 38789 139894315808448 Starting file upload for FAC_2026_0010-1 (Copy).pdf by user root2
+[2026-02-26 08:36:58,571] DEBUG file.resource 38789 139894315808448 Successfully read 199317 bytes for FAC_2026_0010-1 (Copy).pdf
+[2026-02-26 08:36:58,573] INFO file.resource 38789 139894315808448 Creating new file FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:36:58,577] ERROR file.resource 38789 139894315808448 Error writing file FAC_2026_0010-1 (Copy).pdf for user root2: UNIQUE constraint failed: file_file.full_path
+[2026-02-26 08:36:58,643] ERROR django.request 38789 139894315808448 Internal Server Error: /remote.php/dav/files/root2/test/FAC_2026_0010-1 (Copy).pdf
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: UNIQUE constraint failed: file_file.full_path
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 69, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 49, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 77, in put
+    response = super().put(request, path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 210, in put
+    self.resource.write(request)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/resource.py", line 263, in write
+    new_file = File.objects.create(
+        parent=self.parent,
+        file=file_obj,
+        owner=self.user
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/models.py", line 98, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1854, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1881, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: UNIQUE constraint failed: file_file.full_path
+[2026-02-26 08:37:10,765] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:37:10,767] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:37:10,767] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:37:10,768] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:37:12,372] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:37:18,202] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:37:18,204] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:37:18,205] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:37:18,205] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:37:23,574] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:37:23,576] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:37:23,577] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:37:23,577] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:37:27,765] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:37:32,182] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:37:32,185] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:37:32,185] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:37:32,186] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:37:32,205] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:37:32,205] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:37:32,207] DEBUG file.resource 38789 139894315808448 Starting file upload for FAC_2026_0010-1 (Copy).pdf by user root2
+[2026-02-26 08:37:32,207] DEBUG file.resource 38789 139894315808448 Successfully read 199317 bytes for FAC_2026_0010-1 (Copy).pdf
+[2026-02-26 08:37:32,208] INFO file.resource 38789 139894315808448 Creating new file FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:37:32,209] ERROR file.resource 38789 139894315808448 Error writing file FAC_2026_0010-1 (Copy).pdf for user root2: UNIQUE constraint failed: file_file.full_path
+[2026-02-26 08:37:32,268] ERROR django.request 38789 139894315808448 Internal Server Error: /remote.php/dav/files/root2/test/FAC_2026_0010-1 (Copy).pdf
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: UNIQUE constraint failed: file_file.full_path
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 69, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 49, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 77, in put
+    response = super().put(request, path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 210, in put
+    self.resource.write(request)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/resource.py", line 263, in write
+    new_file = File.objects.create(
+        parent=self.parent,
+        file=file_obj,
+        owner=self.user
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/models.py", line 98, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1854, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1881, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: UNIQUE constraint failed: file_file.full_path
+[2026-02-26 08:37:45,767] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:37:45,769] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:37:45,770] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:37:45,771] DEBUG file.resource 38789 139894315808448 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:38:02,298] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:38:02,300] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:38:02,301] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:38:02,302] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:38:02,321] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:38:02,322] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:38:02,323] DEBUG file.resource 38902 140487855961792 Starting file upload for FAC_2026_0010-1 (Copy).pdf by user root2
+[2026-02-26 08:38:02,324] DEBUG file.resource 38902 140487855961792 Successfully read 199317 bytes for FAC_2026_0010-1 (Copy).pdf
+[2026-02-26 08:38:02,325] INFO file.resource 38902 140487855961792 Overwriting existing file FAC_2026_0010-1 (Copy).pdf for user root2
+[2026-02-26 08:38:02,329] INFO file.resource 38902 140487855961792 Successfully uploaded FAC_2026_0010-1 (Copy).pdf (199317 bytes) for user root2
+[2026-02-26 08:38:02,329] DEBUG file.resource 38902 140487855961792 Initializing MyDavResource: path='test/FAC_2026_0010-1 (Copy).pdf', user='root2'
+[2026-02-26 08:38:11,472] WARNING django.request 38902 140487776270016 Not Found: /favicon.ico

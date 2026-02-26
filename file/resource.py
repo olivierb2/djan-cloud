@@ -243,11 +243,11 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                 name=self.displayname
             )
 
-            # Check if file already exists
+            # Check if file already exists by full_path (unique and reliable)
+            expected_path = f"{self.parent.full_path}{self.displayname}"
             existing_file = File.objects.filter(
-                parent=self.parent,
                 owner=self.user,
-                file__icontains=self.displayname
+                full_path=expected_path
             ).first()
             
             if existing_file:
