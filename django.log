@@ -3500,3 +3500,124 @@ TypeError: DavView.copy() got an unexpected keyword argument 'username'
 [2026-02-25 15:26:08,595] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
 [2026-02-25 15:26:08,790] DEBUG file.resource 153025 140280275662528 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
 [2026-02-25 15:26:08,801] DEBUG file.resource 153025 140280267269824 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-26 07:19:45,690] WARNING django.request 10458 139780636538560 Not Found: /
+[2026-02-26 07:19:45,836] WARNING django.request 10458 139780636538560 Not Found: /favicon.ico
+[2026-02-26 07:20:00,118] WARNING django.request 10458 139780636538560 Not Found: /download/
+[2026-02-26 07:20:05,773] WARNING django.request 10458 139780636538560 Not Found: / browse/
+[2026-02-26 07:20:09,764] WARNING django.request 10458 139780636538560 Not Found: /favicon.ico
+[2026-02-26 07:22:23,343] WARNING django.request 10458 139780636538560 Not Found: /favicon.ico
+[2026-02-26 07:22:29,659] WARNING django.request 10458 139780636538560 Not Found: /favicon.ico
+[2026-02-26 07:24:01,593] WARNING django.request 10458 139780636538560 Not Found: /
+[2026-02-26 07:24:01,595] WARNING django.request 10458 139780616779456 Not Found: /remote.php/dav/files//
+[2026-02-26 07:24:01,598] WARNING django.request 10458 139780608386752 Not Found: /ocs/v2.php/cloud/capabilities
+[2026-02-26 07:24:08,523] WARNING django.request 10458 139780599994048 Not Found: /index.php/login/v2/poll
+[2026-02-26 07:24:37,694] WARNING django.request 10458 139780599994048 Not Found: /index.php/login/v2/poll
+[2026-02-26 07:24:43,957] DEBUG file.resource 10458 139780591601344 Initializing MyDavResource: path='ocs/v1.php/cloud/user', user='root2'
+[2026-02-26 07:24:43,958] DEBUG file.resource 10458 139780591601344 Resource not found: ocs/v1.php/cloud/user for user root2
+[2026-02-26 07:24:43,960] WARNING django.request 10458 139780591601344 Not Found: /remote.php/webdav/files/root2/ocs/v1.php/cloud/user
+[2026-02-26 07:24:43,970] DEBUG file.resource 10458 139780591601344 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:24:43,971] DEBUG file.resource 10458 139780591601344 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:24:43,973] WARNING django.request 10458 139780591601344 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:24:44,032] DEBUG file.resource 10458 139780591601344 Initializing MyDavResource: path='remote.php/dav/avatars/root2/32.png', user='root2'
+[2026-02-26 07:24:44,033] DEBUG file.resource 10458 139780591601344 Resource not found: remote.php/dav/avatars/root2/32.png for user root2
+[2026-02-26 07:24:44,035] WARNING django.request 10458 139780591601344 Not Found: /remote.php/webdav/files/root2/remote.php/dav/avatars/root2/32.png
+[2026-02-26 07:24:44,070] DEBUG file.resource 10458 139780599994048 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:24:44,071] DEBUG file.resource 10458 139780599994048 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:24:44,073] WARNING django.request 10458 139780599994048 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:24:51,658] DEBUG file.resource 10458 139780591601344 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:24:51,659] DEBUG file.resource 10458 139780591601344 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:24:51,662] WARNING django.request 10458 139780591601344 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:24:54,882] DEBUG file.resource 10458 139780591601344 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:24:54,883] DEBUG file.resource 10458 139780591601344 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:24:54,885] WARNING django.request 10458 139780591601344 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:25:28,818] WARNING django.request 10458 139780608386752 Unauthorized: /remote.php/webdav/files/root2/remote.php/dav/files/root2
+[2026-02-26 07:25:32,651] DEBUG file.resource 10458 139780608386752 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:25:32,651] DEBUG file.resource 10458 139780608386752 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:25:32,789] DEBUG file.resource 10458 139780608386752 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:25:32,790] DEBUG file.resource 10458 139780608386752 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:25:32,791] WARNING django.request 10458 139780608386752 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2
+[2026-02-26 07:25:57,466] DEBUG file.resource 10458 139780591601344 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:25:57,467] DEBUG file.resource 10458 139780591601344 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:25:57,469] WARNING django.request 10458 139780591601344 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:26:31,349] WARNING django.request 10458 139780591601344 Not Found: /
+[2026-02-26 07:26:31,351] WARNING django.request 10458 139780616779456 Not Found: /remote.php/dav/files//
+[2026-02-26 07:26:31,353] WARNING django.request 10458 139780636538560 Not Found: /ocs/v2.php/cloud/capabilities
+[2026-02-26 07:27:01,194] WARNING django.request 10458 139780247516864 Not Found: /index.php/login/v2/poll
+[2026-02-26 07:27:02,397] ERROR django.request 10458 139780625172160 Internal Server Error: /index.php/login/v2/flow/hAhK8MVGYA0uPoRD8kOQ9mqDhThZ9lHNFYeOBuqw2mrZSWbmdRJvtuELUAawUYuxDF9NLeOzyzNsVQ1UPWb_Vg
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 204, in _get_response
+    self.check_response(response, callback)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 332, in check_response
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The view file.views.view didn't return an HttpResponse object. It returned None instead.
+[2026-02-26 07:27:09,060] WARNING django.request 10458 139780247516864 Not Found: /index.php/login/v2/poll
+[2026-02-26 07:27:12,398] WARNING django.request 10458 139780247516864 Not Found: /index.php/login/v2/poll
+[2026-02-26 07:27:19,853] DEBUG file.resource 10458 139780636538560 Initializing MyDavResource: path='ocs/v1.php/cloud/user', user='root2'
+[2026-02-26 07:27:19,854] DEBUG file.resource 10458 139780636538560 Resource not found: ocs/v1.php/cloud/user for user root2
+[2026-02-26 07:27:19,856] WARNING django.request 10458 139780636538560 Not Found: /remote.php/webdav/files/root2/ocs/v1.php/cloud/user
+[2026-02-26 07:27:19,867] DEBUG file.resource 10458 139780636538560 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:27:19,868] DEBUG file.resource 10458 139780636538560 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:27:19,870] WARNING django.request 10458 139780636538560 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:27:19,924] DEBUG file.resource 10458 139780636538560 Initializing MyDavResource: path='remote.php/dav/avatars/root2/32.png', user='root2'
+[2026-02-26 07:27:19,925] DEBUG file.resource 10458 139780636538560 Resource not found: remote.php/dav/avatars/root2/32.png for user root2
+[2026-02-26 07:27:19,927] WARNING django.request 10458 139780636538560 Not Found: /remote.php/webdav/files/root2/remote.php/dav/avatars/root2/32.png
+[2026-02-26 07:27:19,933] DEBUG file.resource 10458 139780247516864 Initializing MyDavResource: path='remote.php/dav/files/root2', user='root2'
+[2026-02-26 07:27:19,934] DEBUG file.resource 10458 139780247516864 Resource not found: remote.php/dav/files/root2 for user root2
+[2026-02-26 07:27:19,936] WARNING django.request 10458 139780247516864 Not Found: /remote.php/webdav/files/root2/remote.php/dav/files/root2/
+[2026-02-26 07:30:58,899] WARNING django.request 12865 140155251848896 Not Found: /
+[2026-02-26 07:30:58,902] WARNING django.request 12865 140155243456192 Not Found: /remote.php/dav/files//
+[2026-02-26 07:30:58,904] WARNING django.request 12865 140155235063488 Not Found: /ocs/v2.php/cloud/capabilities
+[2026-02-26 07:31:05,189] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:05,240] WARNING django.request 12865 140155235063488 Not Found: /remote.php/dav/avatars/root2/32.png
+[2026-02-26 07:31:05,258] DEBUG file.resource 12865 140155226670784 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:06,682] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:06,684] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:31:06,685] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:31:06,686] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:31:08,359] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:31:09,668] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:31:09,998] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:31:10,000] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-26 07:31:10,000] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-26 07:31:10,001] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-26 07:31:10,001] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-26 07:31:10,797] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-26 07:31:10,798] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-26 07:31:16,458] DEBUG file.resource 12865 140155235063488 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:16,574] WARNING django.request 12865 140155243456192 Not Found: /index.php/204
+[2026-02-26 07:31:16,636] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:16,681] WARNING django.request 12865 140155243456192 Not Found: /ocs/v1.php/cloud/capabilities
+[2026-02-26 07:31:16,725] WARNING django.request 12865 140155243456192 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 07:31:16,829] WARNING django.request 12865 140155243456192 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:31:16,874] WARNING django.request 12865 140155243456192 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:31:16,876] WARNING django.request 12865 140155226670784 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 07:31:16,878] WARNING django.request 12865 140155235063488 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 07:31:16,882] DEBUG file.resource 12865 140155251848896 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:16,884] DEBUG file.resource 12865 140155251848896 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:31:16,885] DEBUG file.resource 12865 140155251848896 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:31:16,886] DEBUG file.resource 12865 140155251848896 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:31:30,710] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:31:30,712] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:31:30,713] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:31:30,714] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:32:14,450] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:32:14,458] WARNING django.request 12865 140155235063488 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:32:14,463] WARNING django.request 12865 140155209885376 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:32:14,464] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:32:14,465] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:32:14,474] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:32:14,475] DEBUG file.resource 12865 140155243456192 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:32:14,476] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:32:14,477] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:32:14,478] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:32:15,798] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:32:15,815] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:32:15,817] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:32:15,818] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:32:15,819] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:32:16,693] WARNING django.request 12865 140155201492672 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications

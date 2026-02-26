@@ -97,6 +97,20 @@ class StatusView(View):
         return JsonResponse(json_response)
 
 
+class OcsUserView(BasicAuthMixin, View):
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({
+            "ocs": {
+                "meta": {"status": "ok", "statuscode": 100, "message": "OK"},
+                "data": {
+                    "id": request.user.username,
+                    "display-name": request.user.get_full_name() or request.user.username,
+                    "email": request.user.email or "",
+                }
+            }
+        })
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class Login(View):
 
@@ -130,7 +144,7 @@ class LoginForm(View):
             login_token = LoginToken.objects.get(token=token)
         except LoginToken.DoesNotExist:
             return HttpResponse("Invalid token", status=404)
-        
+
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
@@ -139,6 +153,8 @@ class LoginForm(View):
             login_token.save()
             login(request, user)
             return HttpResponse("Login successful! You can close this window.")
+
+        return render(request, 'login_flow.html', {'form': form})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -167,7 +183,7 @@ class LoginPoll(View):
         app_token.save()
 
         json_content = {
-            "server": f"{protocol}://{request.get_host()}/{settings.ROOT_DAV}{login_token.user.username}",
+            "server": f"{protocol}://{request.get_host()}",
             "loginName": login_token.user.username,
             "appPassword": app_token.token,
         }
