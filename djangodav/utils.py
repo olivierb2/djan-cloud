@@ -39,7 +39,7 @@ FORMAT_ASC = '%a %b %d %H:%M:%S %Y'
 
 WEBDAV_NS = "DAV:"
 
-WEBDAV_NSMAP = {'D': WEBDAV_NS}
+WEBDAV_NSMAP = {'d': WEBDAV_NS}
 
 D = lb.ElementMaker(namespace=WEBDAV_NS, nsmap=WEBDAV_NSMAP)
 

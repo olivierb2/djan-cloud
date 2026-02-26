@@ -8,7 +8,12 @@ import mimetypes
 
 logger = logging.getLogger(__name__)
 
+OC_NS = "http://owncloud.org/ns"
+NC_NS = "http://nextcloud.org/ns"
+
 class MyDavResource(MetaEtagMixIn, BaseDavResource):
+
+    ALL_PROPS = BaseDavResource.ALL_PROPS + ['getcontenttype', 'getetag']
 
     _object: Optional[Union[File, Folder]] = None
 
@@ -84,6 +89,53 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     def getcontentlength(self):
         if self.object and isinstance(self.object, File):
             return self.object.file.size
+
+    @property
+    def getcontenttype(self):
+        if self.object and isinstance(self.object, File):
+            return self.object.content_type or 'application/octet-stream'
+        if self.object and isinstance(self.object, Folder):
+            return 'httpd/unix-directory'
+
+    @property
+    def getetag(self):
+        if self.object:
+            return f'"{self.object.pk}-{int(self.object.updated_at.timestamp())}"'
+
+    @property
+    def oc_permissions(self):
+        # RGDNVW = Read, Get, Delete, reNname, moVe, Write
+        if isinstance(self.object, Folder):
+            return "RGDNVCK"
+        return "RGDNVW"
+
+    @property
+    def oc_fileid(self):
+        if self.object:
+            return str(self.object.pk)
+
+    @property
+    def oc_size(self):
+        if self.object and isinstance(self.object, File):
+            return str(self.object.file.size)
+        return "0"
+
+    @property
+    def oc_id(self):
+        if self.object:
+            # Format: zero-padded fileid + "oc" + instance identifier
+            return f"{self.object.pk:08d}ocdjancloud"
+
+    def get_oc_properties(self):
+        import lxml.builder as lb
+        props = []
+        oc_maker = lb.ElementMaker(namespace=OC_NS)
+        if self.object:
+            props.append(oc_maker.id(self.oc_id))
+            props.append(oc_maker.fileid(self.oc_fileid))
+            props.append(oc_maker.permissions(self.oc_permissions))
+            props.append(oc_maker.size(self.oc_size))
+        return props
 
     def get_created(self):
         """Return the create time as datetime object."""

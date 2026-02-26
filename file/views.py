@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, JsonResponse, FileResponse, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, FileResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib import messages
@@ -65,23 +65,61 @@ class BasicAuthMixin:
 class MyDavView(BasicAuthMixin, DavView):
 
     def dispatch(self, request, *args, **kwargs):
-        # Extract username from URL kwargs before passing to DavView
-        # DavView doesn't expect it and would pass it to handler methods
         kwargs.pop('username', None)
         return super().dispatch(request, *args, **kwargs)
 
     def get_resource(self, path=None):
-        """Override to pass the user to the resource"""
-        
         if path is None:
             path = self.path
-            
-        logger.debug(f"get_resource called: path='{path}', user='{self.request.user}', authenticated={self.request.user.is_authenticated}")
-        
-        # Pass request.user to the resource constructor
-        resource = self.resource_class(path, user=self.request.user)
-        # logger.debug(f"Created resource: {resource}, exists={resource.exists}")
-        return resource
+        return self.resource_class(path, user=self.request.user)
+
+    def propfind(self, request, path, xbody=None, *args, **kwargs):
+        from djangodav.utils import url_join, get_property_tag_list, WEBDAV_NS
+        from djangodav.responses import HttpResponseMultiStatus
+        from file.resource import OC_NS, NC_NS
+        import lxml.builder as lb
+
+        logger.debug("PROPFIND Content-Type: %s, body length: %s, xbody: %s",
+                     request.META.get('CONTENT_TYPE'), request.META.get('CONTENT_LENGTH'), xbody is not None)
+
+        if not self.has_access(self.resource, 'read'):
+            return self.no_access()
+        if not self.resource.exists:
+            raise Http404("Resource doesn't exists")
+        if not self.get_access(self.resource):
+            return self.no_access()
+
+        get_all_props, get_prop, get_prop_names = True, False, False
+        if xbody:
+            get_prop = [p.xpath('local-name()') for p in xbody('/d:propfind/d:prop/*')]
+            get_all_props = xbody('/d:propfind/d:allprop')
+            get_prop_names = xbody('/d:propfind/d:propname')
+            if int(bool(get_prop)) + int(bool(get_all_props)) + int(bool(get_prop_names)) != 1:
+                return HttpResponseBadRequest()
+
+        nsmap = {'d': WEBDAV_NS, 'oc': OC_NS, 'nc': NC_NS}
+        DAV = lb.ElementMaker(namespace=WEBDAV_NS, nsmap=nsmap)
+
+        children = self.resource.get_descendants(depth=self.get_depth())
+
+        responses = []
+        for child in children:
+            dav_props = get_property_tag_list(child, *(get_prop if get_prop else child.ALL_PROPS))
+            oc_props = child.get_oc_properties() if hasattr(child, 'get_oc_properties') else []
+            responses.append(
+                DAV.response(
+                    DAV.href(url_join(self.base_url, child.get_escaped_path())),
+                    DAV.propstat(
+                        DAV.prop(*(dav_props + oc_props)),
+                        DAV.status('HTTP/1.1 200 OK'),
+                    ),
+                )
+            )
+
+        body = DAV.multistatus(*responses)
+        from lxml import etree
+        logger.debug("PROPFIND response XML: %s", etree.tostring(body, pretty_print=True).decode())
+        return self.build_xml_response(body, HttpResponseMultiStatus)
 
 class StatusView(View):
     def get(self, *args, **kwargs):
@@ -106,6 +144,34 @@ class OcsUserView(BasicAuthMixin, View):
                     "id": request.user.username,
                     "display-name": request.user.get_full_name() or request.user.username,
                     "email": request.user.email or "",
+                }
+            }
+        })
+
+
+class OcsCapabilitiesView(BasicAuthMixin, View):
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({
+            "ocs": {
+                "meta": {"status": "ok", "statuscode": 100, "message": "OK"},
+                "data": {
+                    "version": {
+                        "major": 30, "minor": 0, "micro": 2,
+                        "string": "30.0.2", "edition": "", "extendedSupport": False
+                    },
+                    "capabilities": {
+                        "core": {
+                            "pollinterval": 60,
+                            "webdav-root": "remote.php/dav",
+                        },
+                        "dav": {
+                            "chunking": "1.0",
+                        },
+                        "files": {
+                            "bigfilechunking": True,
+                            "versioning": False,
+                        },
+                    }
                 }
             }
         })

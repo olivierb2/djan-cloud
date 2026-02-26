@@ -3621,3 +3621,506 @@ ValueError: The view file.views.view didn't return an HttpResponse object. It re
 [2026-02-26 07:32:15,818] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='ssdfsdf', user='root2'
 [2026-02-26 07:32:15,819] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
 [2026-02-26 07:32:16,693] WARNING django.request 12865 140155201492672 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:32:44,710] WARNING django.request 12865 140155201492672 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:33:04,926] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:33:04,928] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:33:04,929] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:33:04,929] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:33:14,710] WARNING django.request 12865 140155201492672 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:33:16,694] WARNING django.request 12865 140155201492672 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:33:20,695] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:33:44,709] WARNING django.request 12865 140155201492672 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:33:45,794] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:34:14,709] WARNING django.request 12865 140155201492672 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:34:15,792] DEBUG file.resource 12865 140155201492672 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:34:16,694] WARNING django.request 12865 140155201492672 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:34:44,712] WARNING django.request 13586 140330305320640 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:34:45,781] DEBUG file.resource 13586 140330305320640 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:34:55,713] DEBUG file.resource 13586 140330305320640 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:34:55,715] DEBUG file.resource 13586 140330305320640 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:34:55,716] DEBUG file.resource 13586 140330305320640 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:34:55,717] DEBUG file.resource 13586 140330305320640 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:35:04,958] WARNING django.request 14041 139703567251136 Not Found: /fr/admin/users/user/44/change/
+[2026-02-26 07:35:53,022] WARNING django.request 14155 140061952489152 Not Found: /
+[2026-02-26 07:35:53,025] WARNING django.request 14155 140061944096448 Not Found: /remote.php/dav/files//
+[2026-02-26 07:35:53,027] WARNING django.request 14155 140061935703744 Not Found: /ocs/v2.php/cloud/capabilities
+[2026-02-26 07:36:27,972] WARNING django.request 14155 140061935703744 Not Found: /remote.php/dav/files//
+[2026-02-26 07:36:27,975] WARNING django.request 14155 140061927311040 Not Found: /
+[2026-02-26 07:36:27,977] WARNING django.request 14155 140061944096448 Not Found: /ocs/v2.php/cloud/capabilities
+[2026-02-26 07:36:28,572] WARNING django.request 14155 140061952489152 Not Found: /index.php/login/v2/poll
+[2026-02-26 07:36:33,593] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:33,644] WARNING django.request 14155 140061567874752 Not Found: /remote.php/dav/avatars/root2/32.png
+[2026-02-26 07:36:33,663] DEBUG file.resource 14155 140061952489152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:35,655] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:35,752] WARNING django.request 14155 140061567874752 Not Found: /index.php/204
+[2026-02-26 07:36:35,798] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:35,845] WARNING django.request 14155 140061567874752 Not Found: /ocs/v1.php/cloud/capabilities
+[2026-02-26 07:36:35,893] WARNING django.request 14155 140061567874752 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 07:36:36,001] WARNING django.request 14155 140061567874752 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:36:36,046] WARNING django.request 14155 140061567874752 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:36:36,048] WARNING django.request 14155 140061935703744 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 07:36:36,050] WARNING django.request 14155 140061944096448 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 07:36:36,054] DEBUG file.resource 14155 140061927311040 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:36,057] DEBUG file.resource 14155 140061927311040 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:36:36,057] DEBUG file.resource 14155 140061927311040 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:36:36,058] DEBUG file.resource 14155 140061927311040 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:36:45,571] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:45,579] WARNING django.request 14155 140061935703744 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:36:45,590] WARNING django.request 14155 140061952489152 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:36:45,593] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:36:45,598] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:36:45,600] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:45,602] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:36:45,603] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:36:45,604] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:36:45,605] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:36:49,712] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:36:49,713] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:36:49,714] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:36:49,715] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:37:15,709] WARNING django.request 14155 140061559482048 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:37:24,777] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:37:35,694] WARNING django.request 14155 140061559482048 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:37:45,710] WARNING django.request 14155 140061559482048 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:37:54,712] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:37:54,714] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:37:54,715] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:37:54,716] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:37:54,852] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:38:15,710] WARNING django.request 14155 140061559482048 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:38:29,172] DEBUG file.resource 15134 140050114773248 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:38:35,694] WARNING django.request 14155 140061559482048 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:38:37,911] WARNING django.request 14155 140061918918336 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 07:38:39,707] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:38:44,631] WARNING django.request 14155 140061944096448 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 07:38:45,710] WARNING django.request 14155 140061559482048 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:38:54,794] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:39:05,241] DEBUG file.resource 14155 140061567874752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:39:15,709] WARNING django.request 14155 140061559482048 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:39:24,798] DEBUG file.resource 14155 140061559482048 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:39:35,697] WARNING django.request 15677 140415365805760 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:39:45,711] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:39:53,794] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:39:53,796] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:39:53,796] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:39:53,797] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:40:15,710] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:40:24,794] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:40:35,694] WARNING django.request 15688 140208657921728 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:40:45,709] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:40:54,784] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:41:15,709] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:41:24,790] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:41:34,869] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:41:34,871] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:41:34,871] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:41:34,872] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:41:35,694] WARNING django.request 15688 140208657921728 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:41:45,708] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:41:47,221] WARNING django.request 15688 140208649529024 Not Found: /index.php/204
+[2026-02-26 07:41:47,252] WARNING django.request 15688 140208641136320 Not Found: /index.php/204
+[2026-02-26 07:41:47,299] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:41:47,393] WARNING django.request 15688 140208641136320 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 07:41:47,486] WARNING django.request 15688 140208641136320 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:41:47,534] WARNING django.request 15688 140208641136320 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 07:41:47,536] WARNING django.request 15688 140208649529024 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 07:41:47,644] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:41:47,646] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:41:47,646] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:41:47,647] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:42:15,698] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:42:24,781] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:42:35,694] WARNING django.request 15688 140208657921728 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:42:45,697] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:42:54,800] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:43:15,697] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:43:24,697] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:43:35,693] WARNING django.request 15688 140208657921728 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:43:45,698] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:43:50,708] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:43:54,728] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:44:15,708] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:44:24,708] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:44:35,694] WARNING django.request 15688 140208657921728 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:44:45,708] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:44:49,975] DEBUG file.resource 15688 140208630818496 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:44:49,978] DEBUG file.resource 15688 140208630818496 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:44:49,979] DEBUG file.resource 15688 140208630818496 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:44:49,980] DEBUG file.resource 15688 140208630818496 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:44:52,707] DEBUG file.resource 15688 140208641136320 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:44:54,708] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:45:15,709] WARNING django.request 15688 140208657921728 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:45:24,713] DEBUG file.resource 15688 140208657921728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:45:35,694] WARNING django.request 15688 140208657921728 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:45:45,707] WARNING django.request 17245 140040986425024 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:45:54,719] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:45:54,745] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:46:02,646] DEBUG file.resource 17259 139855959938752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:46:14,320] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:46:14,322] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:46:14,323] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:46:14,324] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:46:15,711] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:46:35,693] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:46:45,704] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:46:54,709] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:46:56,706] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:47:15,709] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:47:24,718] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:47:35,693] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:47:45,698] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:47:54,708] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:47:58,706] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:48:15,708] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:48:24,703] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:48:35,694] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:48:45,704] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:48:54,708] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:49:00,709] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:49:22,502] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:49:24,708] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:49:35,693] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:49:52,713] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:49:54,709] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:50:02,708] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:50:22,708] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:50:24,711] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:50:35,694] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:50:52,708] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:50:54,708] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:51:04,736] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:51:22,709] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:51:24,715] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:51:35,693] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:51:52,709] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:51:54,705] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:52:06,701] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:52:22,711] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:52:24,706] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:52:35,694] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:52:52,708] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:52:54,711] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:53:09,098] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:53:20,345] DEBUG file.resource 17259 139855959938752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:53:20,348] DEBUG file.resource 17259 139855959938752 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 07:53:20,349] DEBUG file.resource 17259 139855959938752 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 07:53:20,350] DEBUG file.resource 17259 139855959938752 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 07:53:22,708] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:53:25,114] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:53:35,694] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:53:52,730] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:53:54,727] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:54:10,719] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:54:22,699] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:54:25,292] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:54:35,694] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:54:52,709] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:54:54,728] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:55:12,695] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:55:24,711] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:55:35,694] WARNING django.request 17259 139855968331456 Not Found: /ocs/v2.php/apps/notifications/api/v2/notifications
+[2026-02-26 07:55:46,234] WARNING django.request 17259 139855968331456 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 07:55:54,710] DEBUG file.resource 17259 139855968331456 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:55:57,205] WARNING django.request 17259 139855968331456 Unauthorized: /remote.php/dav/files/root2/ocs/v2.php/core/apppassword
+[2026-02-26 07:56:14,695] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 07:57:49,014] DEBUG file.resource 28944 140671960727808 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:01,651] WARNING django.request 17259 139855968331456 Not Found: /
+[2026-02-26 08:01:01,652] WARNING django.request 17259 139855744988864 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 08:01:01,654] WARNING django.request 17259 139855976724160 Not Found: /remote.php/dav/files//
+[2026-02-26 08:01:01,791] WARNING django.request 17259 139855744988864 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 08:01:07,887] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:07,942] WARNING django.request 17259 139855744988864 Not Found: /remote.php/dav/avatars/root2/32.png
+[2026-02-26 08:01:07,970] DEBUG file.resource 17259 139855959938752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:11,357] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:11,359] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:01:11,359] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:01:11,360] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:01:12,930] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:01:12,931] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-26 08:01:12,932] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-26 08:01:12,932] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-26 08:01:12,933] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-26 08:01:14,134] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:01:20,445] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:20,484] WARNING django.request 17259 139855976724160 Not Found: /index.php/204
+[2026-02-26 08:01:20,640] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:20,705] WARNING django.request 17259 139855976724160 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 08:01:20,805] WARNING django.request 17259 139855976724160 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 08:01:20,857] WARNING django.request 17259 139855736596160 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 08:01:20,859] WARNING django.request 17259 139855728203456 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 08:01:20,929] WARNING django.request 17259 139855959938752 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 08:01:20,931] WARNING django.request 17259 139855976724160 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 08:01:20,943] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:20,945] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:01:20,945] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:01:20,946] DEBUG file.resource 17259 139855744988864 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:01:20,961] DEBUG file.resource 17259 139855719810752 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:20,963] DEBUG file.resource 17259 139855719810752 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:01:20,964] DEBUG file.resource 17259 139855719810752 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:01:20,965] DEBUG file.resource 17259 139855719810752 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:01:33,722] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:01:33,726] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:01:33,727] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:01:33,728] DEBUG file.resource 17259 139855976724160 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:01:35,043] WARNING django.request 17259 139855976724160 Unauthorized: /remote.php/dav/files/root2/ocs/v2.php/core/apppassword
+[2026-02-26 08:11:58,380] WARNING django.request 32077 140639901578944 Bad Request: /status.php
+[2026-02-26 08:11:58,393] WARNING django.request 32077 140639893186240 Bad Request: /
+[2026-02-26 08:11:58,405] WARNING django.request 32077 140639901578944 Bad Request: /status.php
+[2026-02-26 08:12:27,739] WARNING django.request 32289 139652826658496 Not Found: /
+[2026-02-26 08:12:27,742] WARNING django.request 32289 139652818265792 Not Found: /remote.php/dav/files//
+[2026-02-26 08:12:27,743] WARNING django.request 32289 139652606457536 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 08:12:27,887] WARNING django.request 32289 139652606457536 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 08:12:29,354] WARNING django.request 32289 139652818265792 Not Found: /favicon.ico
+[2026-02-26 08:12:34,195] WARNING django.request 32289 139652818265792 Not Found: /favicon.ico
+[2026-02-26 08:12:37,617] DEBUG file.resource 32289 139652818265792 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:12:37,668] WARNING django.request 32289 139652818265792 Not Found: /remote.php/dav/avatars/root2/32.png
+[2026-02-26 08:12:37,677] DEBUG file.resource 32289 139652826658496 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:12:39,618] DEBUG file.resource 32289 139652818265792 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:12:40,107] WARNING django.request 32289 139652606457536 Not Found: /index.php/204
+[2026-02-26 08:12:40,177] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:12:40,282] WARNING django.request 32289 139652606457536 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 08:12:40,382] WARNING django.request 32289 139652606457536 Not Found: /remote.php/dav/avatars/root2/128.png
+[2026-02-26 08:12:40,437] WARNING django.request 32289 139652606457536 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 08:12:40,440] WARNING django.request 32289 139652826658496 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 08:12:40,557] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:12:40,560] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:12:40,561] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:12:40,562] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:12:45,707] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:12:45,709] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:12:45,710] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:12:45,711] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:13:30,795] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:13:45,803] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:13:45,805] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:13:45,806] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:13:45,807] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:13:53,105] WARNING django.request 32289 139652818265792 Not Found: /
+[2026-02-26 08:14:14,797] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:14:14,799] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:14:14,800] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:14:14,800] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:14:43,794] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:15:00,791] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:15:30,779] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:16:00,788] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:16:30,788] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:17:00,787] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:17:23,325] WARNING django.request 32289 139652589672128 Bad Request: /remote.php/dav/files/root2/
+[2026-02-26 08:17:30,786] DEBUG file.resource 32289 139652606457536 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:18:00,778] DEBUG file.resource 33380 140464086841024 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:18:30,786] DEBUG file.resource 33380 140464086841024 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:18:44,367] DEBUG file.resource 33380 140464086841024 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:18:44,370] DEBUG file.resource 33380 140464086841024 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:18:44,371] DEBUG file.resource 33380 140464086841024 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:18:44,372] DEBUG file.resource 33380 140464086841024 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:18:49,888] DEBUG file.resource 33514 140379531366656 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:19:30,780] DEBUG file.resource 33547 140098160031424 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:20:00,774] DEBUG file.resource 33547 140098160031424 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:20:30,784] DEBUG file.resource 33547 140098160031424 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:00,784] DEBUG file.resource 33547 140098160031424 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:23,556] DEBUG file.resource 34554 139992639731392 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:23,574] ERROR django.request 34554 139992639731392 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 69, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 49, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 94, in propfind
+    get_prop = [p.xpath('local-name()') for p in xbody('/D:propfind/D:prop/*')]
+                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/lxml/xpath.pxi", line 342, in lxml.etree.XPathDocumentEvaluator.__call__
+  File "src/lxml/xpath.pxi", line 210, in lxml.etree._XPathEvaluatorBase._handle_result
+lxml.etree.XPathEvalError: Undefined namespace prefix
+[2026-02-26 08:21:24,299] DEBUG file.resource 34554 139992639731392 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:24,313] ERROR django.request 34554 139992639731392 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 69, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 49, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 94, in propfind
+    get_prop = [p.xpath('local-name()') for p in xbody('/D:propfind/D:prop/*')]
+                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/lxml/xpath.pxi", line 342, in lxml.etree.XPathDocumentEvaluator.__call__
+  File "src/lxml/xpath.pxi", line 210, in lxml.etree._XPathEvaluatorBase._handle_result
+lxml.etree.XPathEvalError: Undefined namespace prefix
+[2026-02-26 08:21:24,733] DEBUG file.resource 34554 139992639731392 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:24,748] ERROR django.request 34554 139992639731392 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 69, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 49, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 94, in propfind
+    get_prop = [p.xpath('local-name()') for p in xbody('/D:propfind/D:prop/*')]
+                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/lxml/xpath.pxi", line 342, in lxml.etree.XPathDocumentEvaluator.__call__
+  File "src/lxml/xpath.pxi", line 210, in lxml.etree._XPathEvaluatorBase._handle_result
+lxml.etree.XPathEvalError: Undefined namespace prefix
+[2026-02-26 08:21:48,499] DEBUG file.resource 34636 139873223702208 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:48,515] ERROR django.request 34636 139873223702208 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 69, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 49, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/djangodav/views/views.py", line 67, in dispatch
+    resp = handler(request, self.path, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 94, in propfind
+    get_prop = [p.xpath('local-name()') for p in xbody('/D:propfind/D:prop/*')]
+                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/lxml/xpath.pxi", line 342, in lxml.etree.XPathDocumentEvaluator.__call__
+  File "src/lxml/xpath.pxi", line 210, in lxml.etree._XPathEvaluatorBase._handle_result
+lxml.etree.XPathEvalError: Undefined namespace prefix
+[2026-02-26 08:21:56,486] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:21:56,489] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:21:56,490] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:21:56,491] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:21:57,771] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:22:03,016] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:22:03,018] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:22:03,019] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:22:03,019] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:22:12,812] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:22:12,814] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:22:12,815] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:22:12,815] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:22:22,430] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:22:22,432] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:22:22,433] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:22:22,434] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:22:39,431] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:22:39,433] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:22:39,434] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:22:39,435] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:22:59,781] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:23:14,315] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:23:14,317] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:23:14,318] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:23:14,319] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:23:21,308] WARNING django.request 34647 140092387616448 Not Found: /
+[2026-02-26 08:24:00,779] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:24:30,780] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:24:33,521] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:24:33,523] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:24:33,524] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:24:33,524] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:25:03,780] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:25:30,772] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:26:00,778] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:26:30,778] DEBUG file.resource 34647 140092396009152 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:27:00,784] DEBUG file.resource 35754 139940079859392 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:27:30,779] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:28:00,765] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:28:30,775] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:29:00,764] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:29:30,775] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:30:00,762] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:30:30,773] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:31:00,771] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:31:30,772] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:32:00,771] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:32:30,771] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:33:00,769] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:33:30,771] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:34:00,770] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:34:30,761] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:34:47,395] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:34:47,398] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:34:47,399] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:34:47,400] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:34:47,412] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:34:47,417] DEBUG file.resource 35826 139901598336704 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:34:47,423] DEBUG file.resource 35826 139901598336704 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:34:47,432] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:34:47,439] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:34:47,441] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-26 08:34:47,442] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-26 08:34:47,443] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-26 08:34:47,444] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-26 08:34:47,460] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:34:47,492] DEBUG file.resource 35826 139901598336704 Initializing MyDavResource: path='test/sdsdfds', user='root2'
+[2026-02-26 08:34:47,493] DEBUG file.resource 35826 139901598336704 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-26 08:34:47,560] WARNING django.request 35826 139901608654528 Not Found: /index.php/apps/theming/img/core/filetypes/folder.svg
+[2026-02-26 08:34:47,615] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='test/sdsdfds/dsfsdf.txt', user='root2'
+[2026-02-26 08:34:47,627] DEBUG file.resource 35826 139901598336704 Initializing MyDavResource: path='test/FAC_2026_0010-1.pdf', user='root2'
+[2026-02-26 08:34:47,636] WARNING django.request 35826 139901608654528 Not Found: /index.php/apps/theming/img/core/filetypes/text.svg
+[2026-02-26 08:34:47,641] DEBUG file.resource 35826 139901589944000 Initializing MyDavResource: path='test/asdfsd.txt', user='root2'
+[2026-02-26 08:34:47,657] DEBUG file.resource 35826 139901379016384 Initializing MyDavResource: path='test/dsfsdf (Copie).txt', user='root2'
+[2026-02-26 08:34:47,662] WARNING django.request 35826 139901598336704 Not Found: /index.php/apps/theming/img/core/filetypes/application-pdf.svg
+[2026-02-26 08:34:47,898] DEBUG file.resource 35826 139901608654528 Initializing MyDavResource: path='', user='root2'

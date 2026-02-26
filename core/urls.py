@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView
+from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView
 from django.conf import settings
 
 from django.urls import re_path
@@ -42,6 +42,8 @@ urlpatterns = [
     path('index.php/login/v2/poll', LoginPoll.as_view()),
     path('ocs/v1.php/cloud/user', OcsUserView.as_view()),
     path('ocs/v2.php/cloud/user', OcsUserView.as_view()),
+    path('ocs/v1.php/cloud/capabilities', OcsCapabilitiesView.as_view()),
+    path('ocs/v2.php/cloud/capabilities', OcsCapabilitiesView.as_view()),
     re_path(fr'^{settings.ROOT_DAV}(?P<username>[^/]+)/(?P<path>.*)$', dav_view, name='fsdav'),
     re_path(r'^remote\.php/dav/files/(?P<username>[^/]+)/(?P<path>.*)$', dav_view, name='fsdav_alt'),
     path('browse/', FileBrowseView.as_view(), name='browse_files_root'),

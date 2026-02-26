@@ -306,7 +306,7 @@ class DavView(View):
 
         owner = None
         try:
-            owner_obj = xbody('/D:lockinfo/D:owner')[0]  # TODO: WEBDAV_NS
+            owner_obj = xbody('/d:lockinfo/d:owner')[0]  # TODO: WEBDAV_NS
         except IndexError:
             owner_obj = None
         else:
@@ -316,14 +316,14 @@ class DavView(View):
                 owner = owner_obj[0].text
 
         try:
-            lockscope_obj = xbody('/D:lockinfo/D:lockscope/*')[0] # TODO: WEBDAV_NS
+            lockscope_obj = xbody('/d:lockinfo/d:lockscope/*')[0] # TODO: WEBDAV_NS
         except IndexError:
             return HttpResponseBadRequest('Lock scope required')
         else:
             lockscope = lockscope_obj.xpath('local-name()')
 
         try:
-            locktype_obj = xbody('/D:lockinfo/D:locktype/*')[0] # TODO: WEBDAV_NS
+            locktype_obj = xbody('/d:lockinfo/d:locktype/*')[0] # TODO: WEBDAV_NS
         except IndexError:
             return HttpResponseBadRequest('Lock type required')
         else:
@@ -367,9 +367,9 @@ class DavView(View):
 
         get_all_props, get_prop, get_prop_names = True, False, False
         if xbody:
-            get_prop = [p.xpath('local-name()') for p in xbody('/D:propfind/D:prop/*')]
-            get_all_props = xbody('/D:propfind/D:allprop')
-            get_prop_names = xbody('/D:propfind/D:propname')
+            get_prop = [p.xpath('local-name()') for p in xbody('/d:propfind/d:prop/*')]
+            get_all_props = xbody('/d:propfind/d:allprop')
+            get_prop_names = xbody('/d:propfind/d:propname')
             if int(bool(get_prop)) + int(bool(get_all_props)) + int(bool(get_prop_names)) != 1:
                 return HttpResponseBadRequest()
 
@@ -413,7 +413,7 @@ class DavView(View):
         depth = self.get_depth(default="0")
         if depth != 0:
             return HttpResponseBadRequest('Invalid depth header value %s' % depth)
-        props = xbody('/D:propertyupdate/D:set/D:prop/*')
+        props = xbody('/d:propertyupdate/d:set/d:prop/*')
         body = D.multistatus(
             D.response(
                 D.href(url_join(self.base_url, self.resource.get_escaped_path())),
@@ -437,6 +437,6 @@ class DavView(View):
             content = b''
         return response_class(
             content,
-            content_type='text/xml; charset="%s"' % self.xml_encoding,
+            content_type='application/xml; charset=%s' % self.xml_encoding,
             **kwargs
         )
