@@ -5276,3 +5276,106 @@ django.db.utils.OperationalError: no such table: file_user
 [2026-02-26 12:00:49,463] WARNING django.request 81839 140545338889920 Not Found: /browse/
 [2026-02-26 12:00:50,273] WARNING django.request 81839 140545338889920 Not Found: /browse/
 [2026-02-26 12:01:13,980] WARNING django.request 81839 140545355675328 Not Found: /index.php/204
+[2026-02-26 12:02:15,983] WARNING django.request 81839 140545355675328 Not Found: /index.php/204
+[2026-02-26 12:02:15,986] WARNING django.request 81839 140544818804416 Not Found: /index.php/204
+[2026-02-26 12:02:16,130] WARNING django.request 81839 140545355675328 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:02:16,228] WARNING django.request 81839 140544818804416 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:02:26,772] WARNING django.request 81839 140544810411712 Not Found: /index.php/204
+[2026-02-26 12:02:26,922] WARNING django.request 81839 140544810411712 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:02:27,018] WARNING django.request 81839 140544818804416 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:02:29,137] WARNING django.request 81839 140544810411712 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:32,950] WARNING django.request 81839 140544810411712 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:35,088] WARNING django.request 81839 140545355675328 Not Found: /index.php/204
+[2026-02-26 12:02:35,242] WARNING django.request 81839 140545355675328 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:02:35,337] WARNING django.request 81839 140544810411712 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:02:37,263] WARNING django.request 81839 140545355675328 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:40,236] WARNING django.request 81839 140545347282624 Not Found: /index.php/204
+[2026-02-26 12:02:40,237] WARNING django.request 81839 140545305319104 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:40,368] WARNING django.request 81839 140545305319104 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:02:40,460] WARNING django.request 81839 140545347282624 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:02:42,380] WARNING django.request 81839 140545305319104 Not Found: /index.php/204
+[2026-02-26 12:02:42,381] WARNING django.request 81839 140544810411712 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:42,548] WARNING django.request 81839 140545305319104 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:02:42,641] WARNING django.request 81839 140544810411712 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:02:43,639] WARNING django.request 81839 140545305319104 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:46,050] WARNING django.request 81839 140545305319104 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:02:46,810] WARNING django.request 81839 140545305319104 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:03:09,664] WARNING django.request 82360 140338519865024 Not Found: /index.php/204
+[2026-02-26 12:03:09,822] WARNING django.request 82360 140338519865024 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:03:09,919] WARNING django.request 82360 140338511472320 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:03:13,259] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:03:14,232] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:03:19,464] WARNING django.request 82360 140338519865024 Not Found: /index.php/204
+[2026-02-26 12:03:19,615] WARNING django.request 82360 140338519865024 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:03:19,713] WARNING django.request 82360 140338503079616 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:03:21,196] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:03:50,892] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:10,349] WARNING django.request 82360 140338519865024 Not Found: /index.php/204
+[2026-02-26 12:04:20,837] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:28,997] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:31,407] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:32,358] WARNING django.request 82360 140338486294208 Not Found: /index.php/204
+[2026-02-26 12:04:32,359] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:32,523] WARNING django.request 82360 140338519865024 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:04:32,621] WARNING django.request 82360 140338486294208 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:04:45,756] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:45,826] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:46,554] WARNING django.request 82360 140338477901504 Not Found: /index.php/204
+[2026-02-26 12:04:46,555] WARNING django.request 82360 140338519865024 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:46,723] WARNING django.request 82360 140338477901504 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:04:46,820] WARNING django.request 82360 140338519865024 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:04:53,489] WARNING django.request 82360 140338477901504 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:04:59,980] WARNING django.request 82360 140338477901504 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:05:00,793] WARNING django.request 82360 140338477901504 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:05:26,542] WARNING django.request 82360 140338477901504 Not Found: /remote.php/dav/files//
+[2026-02-26 12:05:26,542] WARNING django.request 82360 140338511472320 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 12:05:26,680] WARNING django.request 82360 140338511472320 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 12:05:30,857] WARNING django.request 82360 140338469508800 Not Found: /remote.php/dav/avatars/root/32.png
+[2026-02-26 12:05:33,678] WARNING django.request 82360 140338469508800 Not Found: /index.php/204
+[2026-02-26 12:05:33,897] WARNING django.request 82360 140338469508800 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-26 12:05:34,015] WARNING django.request 82360 140338469508800 Not Found: /remote.php/dav/avatars/root/128.png
+[2026-02-26 12:05:34,069] WARNING django.request 82360 140338469508800 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 12:05:34,074] WARNING django.request 82360 140338511472320 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-26 12:05:34,400] WARNING django.request 82360 140338469508800 Not Found: /index.php/apps/theming/img/core/filetypes/folder.svg
+[2026-02-26 12:05:59,212] DEBUG file.resource 82360 140338469508800 Resource not found: sdfasdfsdfs for user root
+[2026-02-26 12:05:59,219] DEBUG file.resource 82360 140338511472320 Resource not found: ssdfsdf for user root
+[2026-02-26 12:05:59,237] DEBUG file.resource 82360 140338519865024 Resource not found: test for user root
+[2026-02-26 12:05:59,301] DEBUG file.resource 82360 140338511472320 Resource not found: test/sdsdfds for user root
+[2026-02-26 12:05:59,315] DEBUG file.resource 82360 140338519865024 Resource not found: test/FAC_2026_0010-1.pdf for user root
+[2026-02-26 12:05:59,321] DEBUG file.resource 82360 140338477901504 Resource not found: test/FAC_2026_0010-2.pdf for user root
+[2026-02-26 12:05:59,322] DEBUG file.resource 82360 140338477901504 Resource not found: test/FAC_2026_0010-2.pdf for user root
+[2026-02-26 12:05:59,323] DEBUG file.resource 82360 140338477901504 Resource not found: test/FAC_2026_0010-2.pdf for user root
+[2026-02-26 12:05:59,323] DEBUG file.resource 82360 140338477901504 Resource not found: test/FAC_2026_0010-2.pdf for user root
+[2026-02-26 12:05:59,323] DEBUG file.resource 82360 140338477901504 Starting file upload for FAC_2026_0010-2.pdf by user root
+[2026-02-26 12:05:59,324] INFO file.resource 82360 140338477901504 Creating new file FAC_2026_0010-2.pdf for user root
+[2026-02-26 12:05:59,325] DEBUG file.resource 82360 140338519865024 Resource not found: test/FAC_2026_0010-1.pdf for user root
+[2026-02-26 12:05:59,329] DEBUG file.resource 82360 140338519865024 Resource not found: test/FAC_2026_0010-1.pdf for user root
+[2026-02-26 12:05:59,329] DEBUG file.resource 82360 140338519865024 Resource not found: test/FAC_2026_0010-1.pdf for user root
+[2026-02-26 12:05:59,329] DEBUG file.resource 82360 140338519865024 Starting file upload for FAC_2026_0010-1.pdf by user root
+[2026-02-26 12:05:59,332] INFO file.resource 82360 140338519865024 Creating new file FAC_2026_0010-1.pdf for user root
+[2026-02-26 12:05:59,333] DEBUG file.resource 82360 140338469508800 Resource not found: test/asdfsd.txt for user root
+[2026-02-26 12:05:59,334] DEBUG file.resource 82360 140338469508800 Resource not found: test/asdfsd.txt for user root
+[2026-02-26 12:05:59,335] DEBUG file.resource 82360 140338469508800 Resource not found: test/asdfsd.txt for user root
+[2026-02-26 12:05:59,339] DEBUG file.resource 82360 140338469508800 Resource not found: test/asdfsd.txt for user root
+[2026-02-26 12:05:59,339] DEBUG file.resource 82360 140338469508800 Starting file upload for asdfsd.txt by user root
+[2026-02-26 12:05:59,344] INFO file.resource 82360 140338469508800 Creating new file asdfsd.txt for user root
+[2026-02-26 12:05:59,352] WARNING django.request 82360 140338494686912 Not Found: /index.php/apps/theming/img/core/filetypes/application-pdf.svg
+[2026-02-26 12:05:59,361] DEBUG file.resource 82360 140338123503296 Resource not found: test/dsfsdf (Copie).txt for user root
+[2026-02-26 12:05:59,362] DEBUG file.resource 82360 140338123503296 Resource not found: test/dsfsdf (Copie).txt for user root
+[2026-02-26 12:05:59,362] DEBUG file.resource 82360 140338477901504 Resource not found: sdfasdfsdfs/hello.txt for user root
+[2026-02-26 12:05:59,364] DEBUG file.resource 82360 140338123503296 Resource not found: test/dsfsdf (Copie).txt for user root
+[2026-02-26 12:05:59,365] DEBUG file.resource 82360 140338123503296 Resource not found: test/dsfsdf (Copie).txt for user root
+[2026-02-26 12:05:59,365] DEBUG file.resource 82360 140338123503296 Starting file upload for dsfsdf (Copie).txt by user root
+[2026-02-26 12:05:59,366] DEBUG file.resource 82360 140338477901504 Resource not found: sdfasdfsdfs/hello.txt for user root
+[2026-02-26 12:05:59,366] INFO file.resource 82360 140338123503296 Creating new file dsfsdf (Copie).txt for user root
+[2026-02-26 12:05:59,370] DEBUG file.resource 82360 140338477901504 Resource not found: sdfasdfsdfs/hello.txt for user root
+[2026-02-26 12:05:59,372] DEBUG file.resource 82360 140338477901504 Resource not found: sdfasdfsdfs/hello.txt for user root
+[2026-02-26 12:05:59,372] DEBUG file.resource 82360 140338477901504 Starting file upload for hello.txt by user root
+[2026-02-26 12:05:59,373] INFO file.resource 82360 140338477901504 Creating new file hello.txt for user root
+[2026-02-26 12:05:59,393] WARNING django.request 82360 140338494686912 Not Found: /index.php/apps/theming/img/core/filetypes/text.svg
+[2026-02-26 12:05:59,431] DEBUG file.resource 82360 140338469508800 Resource not found: test/sdsdfds/dsfsdf.txt for user root
+[2026-02-26 12:05:59,431] DEBUG file.resource 82360 140338469508800 Resource not found: test/sdsdfds/dsfsdf.txt for user root
+[2026-02-26 12:05:59,432] DEBUG file.resource 82360 140338469508800 Resource not found: test/sdsdfds/dsfsdf.txt for user root
+[2026-02-26 12:05:59,433] DEBUG file.resource 82360 140338469508800 Resource not found: test/sdsdfds/dsfsdf.txt for user root
+[2026-02-26 12:05:59,433] DEBUG file.resource 82360 140338469508800 Starting file upload for dsfsdf.txt by user root
+[2026-02-26 12:05:59,433] INFO file.resource 82360 140338469508800 Creating new file dsfsdf.txt for user root
