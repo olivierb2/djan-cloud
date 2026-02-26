@@ -254,22 +254,50 @@ class Login(View):
 
 class LoginForm(View):
 
-    def get(self, request, token):
+    def _validate_token(self, token):
         try:
             login_token = LoginToken.objects.get(token=token)
         except LoginToken.DoesNotExist:
-            return HttpResponse("Invalid token", status=404)
+            return None
+        if login_token.validated:
+            return None
+        if login_token.is_expired():
+            return None
+        return login_token
 
-        form = AuthenticationForm()
+    def _success_response(self, request):
+        return render(request, 'login_flow_success.html')
 
-        return render(request, 'login_flow.html', {'form': form})
+    def get(self, request, token):
+        login_token = self._validate_token(token)
+        if not login_token:
+            return render(request, 'login_flow_error.html', {
+                'title': 'Invalid link',
+                'message': 'This authorization link is invalid or has expired. Please try again from your application.',
+            }, status=404)
+
+        context = {
+            'form': AuthenticationForm(),
+            'already_logged_in': request.user.is_authenticated,
+        }
+        return render(request, 'login_flow.html', context)
 
     def post(self, request, token):
-        try:
-            login_token = LoginToken.objects.get(token=token)
-        except LoginToken.DoesNotExist:
-            return HttpResponse("Invalid token", status=404)
+        login_token = self._validate_token(token)
+        if not login_token:
+            return render(request, 'login_flow_error.html', {
+                'title': 'Invalid link',
+                'message': 'This authorization link is invalid or has expired. Please try again from your application.',
+            }, status=404)
 
+        # If user has an active session and clicked "Authorize device"
+        if request.POST.get('use_session') and request.user.is_authenticated:
+            login_token.user = request.user
+            login_token.validated = True
+            login_token.save()
+            return self._success_response(request)
+
+        # Otherwise, authenticate with username/password
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
@@ -277,9 +305,12 @@ class LoginForm(View):
             login_token.validated = True
             login_token.save()
             login(request, user)
-            return HttpResponse("Login successful! You can close this window.")
+            return self._success_response(request)
 
-        return render(request, 'login_flow.html', {'form': form})
+        return render(request, 'login_flow.html', {
+            'form': form,
+            'already_logged_in': request.user.is_authenticated,
+        })
 
 
 @method_decorator(csrf_exempt, name='dispatch')

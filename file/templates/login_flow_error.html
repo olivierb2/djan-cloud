@@ -1,0 +1,27 @@
+{% extends "file/base.html" %}
+
+{% block title %}Error - Djancloud{% endblock %}
+
+{% block body %}
+<div class="min-h-full flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-600 mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-900">{{ title|default:"Error" }}</h1>
+            <p class="mt-2 text-sm text-gray-500">{{ message }}</p>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'login' %}"
+               class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm
+                      hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+                      transition-colors">
+                Go to login
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

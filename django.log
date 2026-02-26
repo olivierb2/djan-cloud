@@ -4502,3 +4502,47 @@ django.db.utils.IntegrityError: UNIQUE constraint failed: file_file.full_path
 [2026-02-26 08:42:15,796] INFO file.resource 39435 139851300075200 Overwriting existing file hello.txt for user root2
 [2026-02-26 08:42:15,800] INFO file.resource 39435 139851300075200 Successfully uploaded hello.txt (18 bytes) for user root2
 [2026-02-26 08:42:15,800] DEBUG file.resource 39435 139851300075200 Initializing MyDavResource: path='sdfasdfsdfs/hello.txt', user='root2'
+[2026-02-26 08:42:37,760] DEBUG file.resource 39435 139851300075200 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:43:00,749] DEBUG file.resource 39435 139851300075200 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:43:30,759] DEBUG file.resource 39435 139851300075200 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:44:00,765] DEBUG file.resource 39435 139851300075200 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:44:26,418] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:26,896] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:27,419] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:27,823] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:28,043] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:28,206] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:28,364] WARNING django.request 40260 140327500379840 Not Found: /
+[2026-02-26 08:44:30,749] DEBUG file.resource 40299 140535306122944 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:44:40,994] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:42,075] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:44,319] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:44,744] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:44,903] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:45,043] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:47,662] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:48,167] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:48,346] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:44:48,447] WARNING django.request 40316 140586941150912 Not Found: /index.php/login/v2/flow/xFtTmpnF4IhgugQEwTKhamrnDLUoyMkrjWvBnTxalrF4yStQ8w1bQ6EMnes4kW6n68r2BXNMYF5-b4aa-r7WsQ
+[2026-02-26 08:45:00,760] DEBUG file.resource 40316 140586932758208 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:45:28,269] WARNING django.request 40316 140586923316928 Not Found: /
+[2026-02-26 08:45:28,270] WARNING django.request 40316 140586906531520 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 08:45:28,272] WARNING django.request 40316 140586914924224 Not Found: /remote.php/dav/files//
+[2026-02-26 08:45:28,414] WARNING django.request 40316 140586906531520 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 08:45:30,254] WARNING django.request 40316 140586560517824 Not Found: /index.php/login/v2/poll
+[2026-02-26 08:45:30,651] WARNING django.request 40316 140586560517824 Not Found: /index.php/login/v2/poll
+[2026-02-26 08:45:30,759] DEBUG file.resource 40316 140586932758208 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:46:00,246] WARNING django.request 40316 140586560517824 Not Found: /index.php/login/v2/poll
+[2026-02-26 08:46:00,759] DEBUG file.resource 40316 140586932758208 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:46:06,946] WARNING django.request 40316 140586560517824 Not Found: /index.php/login/v2/poll
+[2026-02-26 08:46:20,717] DEBUG file.resource 40480 140038107027136 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:46:20,772] WARNING django.request 40480 140038107027136 Not Found: /remote.php/dav/avatars/root2/32.png
+[2026-02-26 08:46:20,780] DEBUG file.resource 40480 140038098634432 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:46:30,761] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:47:00,760] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:47:28,324] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='', user='root2'
+[2026-02-26 08:47:28,327] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='test', user='root2'
+[2026-02-26 08:47:28,329] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='ssdfsdf', user='root2'
+[2026-02-26 08:47:28,331] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:47:28,341] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='sdfasdfsdfs', user='root2'
+[2026-02-26 08:47:28,344] DEBUG file.resource 40480 140038090241728 Initializing MyDavResource: path='sdfasdfsdfs/hello.txt', user='root2'
