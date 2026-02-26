@@ -4665,3 +4665,11 @@ django.db.utils.IntegrityError: UNIQUE constraint failed: file_file.full_path
 [2026-02-26 10:27:19,447] WARNING django.request 58457 140593886897856 Not Found: /__shared__
 [2026-02-26 10:37:17,371] WARNING django.request 59343 139659620550336 Method Not Allowed (PROPFIND): /
 [2026-02-26 10:37:17,371] WARNING django.request 59343 139659620550336 Method Not Allowed: /
+[2026-02-26 10:39:05,028] WARNING django.request 59343 139659376060096 Method Not Allowed (PROPFIND): /
+[2026-02-26 10:39:05,029] WARNING django.request 59343 139659376060096 Method Not Allowed: /
+[2026-02-26 10:39:05,072] WARNING django.request 59343 139659603764928 Method Not Allowed (PROPFIND): /
+[2026-02-26 10:39:05,072] WARNING django.request 59343 139659603764928 Method Not Allowed: /
+[2026-02-26 10:39:05,085] WARNING django.request 59343 139659612157632 Method Not Allowed (PROPFIND): /
+[2026-02-26 10:39:05,085] WARNING django.request 59343 139659612157632 Method Not Allowed: /
+[2026-02-26 10:39:05,088] WARNING django.request 59343 139659595372224 Method Not Allowed (PROPFIND): /
+[2026-02-26 10:39:05,088] WARNING django.request 59343 139659595372224 Method Not Allowed: /

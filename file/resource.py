@@ -140,6 +140,12 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
         return MyDavResource(dav_path, self.user)
 
     @property
+    def displayname(self):
+        if not self.path:
+            return 'Root'
+        return self.path[-1]
+
+    @property
     def dirname(self) -> str:
         if self.path:
             return "/".join(self.path[:-1])
