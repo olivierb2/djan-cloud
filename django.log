@@ -4650,3 +4650,18 @@ django.db.utils.IntegrityError: UNIQUE constraint failed: file_file.full_path
 [2026-02-26 09:55:16,755] DEBUG file.resource 52644 139800032884416 Starting file upload for Welcome to Firefox.pdf by user root2
 [2026-02-26 09:55:16,755] INFO file.resource 52644 139800032884416 Creating new file Welcome to Firefox.pdf for user root2
 [2026-02-26 09:55:25,357] WARNING django.request 52644 139800015050432 Not Found: /favicon.ico
+[2026-02-26 10:20:48,302] WARNING django.request 54302 139808992085696 Not Found: /favicon.ico
+[2026-02-26 10:22:34,587] WARNING django.request 54302 139808992085696 Not Found: /favicon.ico
+[2026-02-26 10:25:54,360] WARNING django.request 57469 139640151467712 Unauthorized: /
+[2026-02-26 10:26:36,683] WARNING django.request 58369 140639337440960 Unauthorized: /
+[2026-02-26 10:27:17,703] WARNING django.request 58457 140593921517248 Not Found: /test
+[2026-02-26 10:27:17,749] WARNING django.request 58457 140593929909952 Not Found: /ssdfsdf
+[2026-02-26 10:27:17,753] WARNING django.request 58457 140593913124544 Not Found: /sdfasdfsdfs
+[2026-02-26 10:27:17,756] WARNING django.request 58457 140593904731840 Not Found: /__shared__
+[2026-02-26 10:27:19,008] WARNING django.request 58457 140593913124544 Not Found: /__shared__
+[2026-02-26 10:27:19,390] WARNING django.request 58457 140593929909952 Not Found: /test
+[2026-02-26 10:27:19,441] WARNING django.request 58457 140593921517248 Not Found: /ssdfsdf
+[2026-02-26 10:27:19,444] WARNING django.request 58457 140593895290560 Not Found: /sdfasdfsdfs
+[2026-02-26 10:27:19,447] WARNING django.request 58457 140593886897856 Not Found: /__shared__
+[2026-02-26 10:37:17,371] WARNING django.request 59343 139659620550336 Method Not Allowed (PROPFIND): /
+[2026-02-26 10:37:17,371] WARNING django.request 59343 139659620550336 Method Not Allowed: /

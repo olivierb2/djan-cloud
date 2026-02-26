@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView
+from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView
 from django.conf import settings
 
 from django.urls import re_path
@@ -32,7 +32,14 @@ dav_view = MyDavView.as_view(
     acl_class=FullAcl
 )
 
+dav_entry_view = DavEntryView.as_view(
+    resource_class=MyDavResource,
+    lock_class=DummyLock,
+    acl_class=FullAcl
+)
+
 urlpatterns = [
+    path('', RootView.as_view(), name='root'),
     path('admin/', admin.site.urls),
     path('login/', WebLoginView.as_view(), name='login'),
     path('logout/', WebLogoutView.as_view(), name='logout'),
@@ -46,6 +53,7 @@ urlpatterns = [
     path('ocs/v2.php/cloud/capabilities', OcsCapabilitiesView.as_view()),
     re_path(fr'^{settings.ROOT_DAV}(?P<username>[^/]+)/(?P<path>.*)$', dav_view, name='fsdav'),
     re_path(r'^remote\.php/dav/files/(?P<username>[^/]+)/(?P<path>.*)$', dav_view, name='fsdav_alt'),
+    re_path(r'^dav/(?P<path>.*)$', dav_entry_view, name='fsdav_entry'),
     path('browse/', FileBrowseView.as_view(), name='browse_files_root'),
     path('browse/<path:path>', FileBrowseView.as_view(), name='browse_files'),
     path('download/<int:file_id>/', FileDownloadView.as_view(), name='download_file'),

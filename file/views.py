@@ -237,6 +237,125 @@ class MyDavView(BasicAuthMixin, DavView):
         logger.debug("PROPFIND response XML: %s", etree.tostring(body, pretty_print=True).decode())
         return self.build_xml_response(body, HttpResponseMultiStatus)
 
+@method_decorator(csrf_exempt, name='dispatch')
+class RootView(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('browse_files_root')
+        return redirect('login')
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DavEntryView(BasicAuthMixin, DavView):
+    """WebDAV entry point at /dav/ that auto-injects the authenticated user's username."""
+
+    def get_resource(self, path=None):
+        if path is None:
+            path = self.path
+        return self.resource_class(path, user=self.request.user)
+
+    def dispatch(self, request, *args, **kwargs):
+        kwargs.pop('username', None)
+        return super().dispatch(request, *args, **kwargs)
+
+    def relocate(self, request, path, method, *args, **kwargs):
+        from urllib import parse as urlparse
+        dst_header = request.META.get('HTTP_DESTINATION', '')
+        logger.debug("MOVE/COPY destination header: %s, base_url: %s", dst_header, self.base_url)
+        dst_url = urlparse.unquote(dst_header)
+        if not dst_url:
+            return HttpResponseBadRequest('Destination header missing.')
+        dparts = urlparse.urlparse(dst_url)
+        sparts = urlparse.urlparse(request.build_absolute_uri())
+        if dparts.netloc and sparts.netloc != dparts.netloc:
+            from djangodav.responses import HttpResponseBadGateway
+            return HttpResponseBadGateway('Source and destination must have the same host.')
+        dst_path = dparts.path
+        if dst_path.startswith(self.base_url):
+            dst_path = dst_path[len(self.base_url):]
+        dst_resource = self.get_resource(path=dst_path)
+        if not dst_resource.get_parent().exists:
+            from djangodav.responses import HttpResponseConflict
+            return HttpResponseConflict()
+        if not self.has_access(self.resource, 'write'):
+            return self.no_access()
+        overwrite = request.META.get('HTTP_OVERWRITE', 'T')
+        if overwrite not in ('T', 'F'):
+            return HttpResponseBadRequest('Overwrite header must be T or F.')
+        overwrite = (overwrite == 'T')
+        if not overwrite and dst_resource.exists:
+            from djangodav.responses import HttpResponsePreconditionFailed
+            return HttpResponsePreconditionFailed('Destination exists and overwrite False.')
+        dst_exists = dst_resource.exists
+        if dst_exists:
+            self.lock_class(self.resource).del_locks()
+            self.lock_class(dst_resource).del_locks()
+            dst_resource.delete()
+        errors = getattr(self.resource, method)(dst_resource, *args, **kwargs)
+        if errors:
+            from djangodav.responses import HttpResponseMultiStatus
+            return self.build_xml_response(response_class=HttpResponseMultiStatus)
+        if dst_exists:
+            from djangodav.responses import HttpResponseNoContent
+            return HttpResponseNoContent()
+        from djangodav.responses import HttpResponseCreated
+        return HttpResponseCreated()
+
+    def put(self, request, path, *args, **kwargs):
+        response = super().put(request, path, *args, **kwargs)
+        if response.status_code in (201, 204):
+            resource = self.get_resource(path=self.path)
+            if resource.exists and resource.getetag:
+                response['ETag'] = resource.getetag
+                response['OC-ETag'] = resource.getetag
+                if hasattr(resource, 'oc_fileid') and resource.oc_fileid:
+                    response['OC-FileId'] = resource.oc_fileid
+        return response
+
+    def propfind(self, request, path, xbody=None, *args, **kwargs):
+        from djangodav.utils import url_join, get_property_tag_list, WEBDAV_NS
+        from djangodav.responses import HttpResponseMultiStatus
+        from file.resource import OC_NS, NC_NS
+        import lxml.builder as lb
+
+        if not self.has_access(self.resource, 'read'):
+            return self.no_access()
+        if not self.resource.exists:
+            raise Http404("Resource doesn't exists")
+        if not self.get_access(self.resource):
+            return self.no_access()
+
+        get_all_props, get_prop, get_prop_names = True, False, False
+        if xbody:
+            get_prop = [p.xpath('local-name()') for p in xbody('/d:propfind/d:prop/*')]
+            get_all_props = xbody('/d:propfind/d:allprop')
+            get_prop_names = xbody('/d:propfind/d:propname')
+            if int(bool(get_prop)) + int(bool(get_all_props)) + int(bool(get_prop_names)) != 1:
+                return HttpResponseBadRequest()
+
+        nsmap = {'d': WEBDAV_NS, 'oc': OC_NS, 'nc': NC_NS}
+        DAV = lb.ElementMaker(namespace=WEBDAV_NS, nsmap=nsmap)
+
+        children = self.resource.get_descendants(depth=self.get_depth())
+
+        responses = []
+        for child in children:
+            dav_props = get_property_tag_list(child, *(get_prop if get_prop else child.ALL_PROPS))
+            oc_props = child.get_oc_properties() if hasattr(child, 'get_oc_properties') else []
+            responses.append(
+                DAV.response(
+                    DAV.href(url_join(self.base_url, child.get_escaped_path())),
+                    DAV.propstat(
+                        DAV.prop(*(dav_props + oc_props)),
+                        DAV.status('HTTP/1.1 200 OK'),
+                    ),
+                )
+            )
+
+        body = DAV.multistatus(*responses)
+        return self.build_xml_response(body, HttpResponseMultiStatus)
+
+
 class StatusView(View):
     def get(self, *args, **kwargs):
         json_response = {"installed": True,
