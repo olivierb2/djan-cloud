@@ -12,7 +12,7 @@ import json
 import secrets
 import os
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import AppToken, LoginToken, Folder, File, SharedFolder, SharedFolderMembership
+from .models import User, AppToken, LoginToken, Folder, File, SharedFolder, SharedFolderMembership
 from django.views import View
 from djangodav.views.views import DavView
 from django.views.decorators.csrf import csrf_exempt
@@ -1155,7 +1155,93 @@ class FolderTreeView(LoginRequiredMixin, View):
             sf = m.shared_folder
             tree = build_tree(sf.root_folder, is_shared=True)
             tree['name'] = sf.name
+            tree['sf_id'] = sf.id
             tree['url_path'] = f"__shared__/{sf.name}"
             shared_trees.append(tree)
 
-        return JsonResponse({'tree': personal_tree, 'shared': shared_trees})
+        is_admin = request.user.role == 'admin'
+        return JsonResponse({'tree': personal_tree, 'shared': shared_trees, 'is_admin': is_admin})
+
+
+class SharedFolderCreateView(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.user.role != 'admin':
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        name = data.get('name', '').strip()
+        if not name:
+            return JsonResponse({'error': 'Name is required'}, status=400)
+        if '/' in name:
+            return JsonResponse({'error': 'Name cannot contain /'}, status=400)
+        if SharedFolder.objects.filter(name=name).exists():
+            return JsonResponse({'error': 'A shared folder with this name already exists'}, status=400)
+        sf = SharedFolder(name=name, created_by=request.user)
+        sf.save()
+        SharedFolderMembership.objects.create(
+            shared_folder=sf, user=request.user, permission='admin')
+        return JsonResponse({'id': sf.id, 'name': sf.name})
+
+
+class SharedFolderMembersView(LoginRequiredMixin, View):
+    def _can_manage(self, request, sf):
+        if request.user.role == 'admin':
+            return True
+        return sf.memberships.filter(user=request.user, permission='admin').exists()
+
+    def get(self, request, sf_id):
+        sf = get_object_or_404(SharedFolder, id=sf_id)
+        if not self._can_manage(request, sf):
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        members = []
+        for m in sf.memberships.select_related('user').order_by('user__username'):
+            members.append({
+                'user_id': m.user.id,
+                'username': m.user.username,
+                'permission': m.permission,
+            })
+        return JsonResponse({'members': members})
+
+    def post(self, request, sf_id):
+        sf = get_object_or_404(SharedFolder, id=sf_id)
+        if not self._can_manage(request, sf):
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        user_id = data.get('user_id')
+        permission = data.get('permission', 'read')
+        if permission not in ('read', 'write', 'admin'):
+            return JsonResponse({'error': 'Invalid permission'}, status=400)
+        user = get_object_or_404(User, id=user_id)
+        membership, created = SharedFolderMembership.objects.update_or_create(
+            shared_folder=sf, user=user,
+            defaults={'permission': permission})
+        return JsonResponse({
+            'user_id': user.id,
+            'username': user.username,
+            'permission': membership.permission,
+            'created': created,
+        })
+
+
+class SharedFolderMemberDeleteView(LoginRequiredMixin, View):
+    def delete(self, request, sf_id, user_id):
+        sf = get_object_or_404(SharedFolder, id=sf_id)
+        if request.user.role != 'admin':
+            if not sf.memberships.filter(user=request.user, permission='admin').exists():
+                return JsonResponse({'error': 'Forbidden'}, status=403)
+        deleted, _ = SharedFolderMembership.objects.filter(
+            shared_folder=sf, user_id=user_id).delete()
+        if not deleted:
+            return JsonResponse({'error': 'Membership not found'}, status=404)
+        return JsonResponse({'ok': True})
+
+
+class UserListView(LoginRequiredMixin, View):
+    def get(self, request):
+        users = User.objects.order_by('username').values_list('id', 'username', flat=False)
+        return JsonResponse({'users': [{'id': u[0], 'username': u[1]} for u in users]})

@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from . import models
+from .models import User
 
 
 class FileAdmin(admin.ModelAdmin):
@@ -28,6 +30,17 @@ class SharedFolderAdmin(admin.ModelAdmin):
     inlines = [SharedFolderMembershipInline]
 
 
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ('Role', {'fields': ('role',)}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Role', {'fields': ('role',)}),
+    )
+    list_display = UserAdmin.list_display + ('role',)
+
+
+admin.site.register(User, CustomUserAdmin)
 admin.site.register(models.File, FileAdmin)
 admin.site.register(models.Folder, FolderAdmin)
 admin.site.register(models.AppToken, AppTokenAdmin)

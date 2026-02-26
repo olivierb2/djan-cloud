@@ -2,11 +2,14 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 import mimetypes
 import secrets
 
-# Create your models here.
+
+class User(AbstractUser):
+    ROLE_CHOICES = [('user', 'User'), ('admin', 'Admin')]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
 
 class FileSystemItem(models.Model):
 
@@ -114,7 +117,7 @@ class AppToken(models.Model):
 class LoginToken(models.Model):
     token = models.CharField(max_length=128, unique=True)
     user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     validated = models.BooleanField(default=False)
 

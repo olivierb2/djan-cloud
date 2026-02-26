@@ -4673,3 +4673,606 @@ django.db.utils.IntegrityError: UNIQUE constraint failed: file_file.full_path
 [2026-02-26 10:39:05,085] WARNING django.request 59343 139659612157632 Method Not Allowed: /
 [2026-02-26 10:39:05,088] WARNING django.request 59343 139659595372224 Method Not Allowed (PROPFIND): /
 [2026-02-26 10:39:05,088] WARNING django.request 59343 139659595372224 Method Not Allowed: /
+[2026-02-26 10:47:44,085] WARNING django.request 61196 140492158260928 Not Found: /favicon.ico
+[2026-02-26 11:13:00,811] ERROR django.request 70327 140691303823040 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:13:29,808] ERROR django.request 70327 140691303823040 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:14:31,794] WARNING django.request 70327 140691303823040 Not Found: /index.php/204
+[2026-02-26 11:15:33,795] WARNING django.request 70327 140691291940544 Not Found: /index.php/204
+[2026-02-26 11:15:33,798] WARNING django.request 70327 140691283547840 Not Found: /index.php/204
+[2026-02-26 11:15:33,863] ERROR django.request 70327 140691291940544 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:16:35,796] WARNING django.request 70327 140691291940544 Not Found: /index.php/204
+[2026-02-26 11:17:37,797] WARNING django.request 70327 140691291940544 Not Found: /index.php/204
+[2026-02-26 11:18:39,798] WARNING django.request 70327 140691274106560 Not Found: /index.php/204
+[2026-02-26 11:18:39,800] WARNING django.request 70327 140691283547840 Not Found: /index.php/204
+[2026-02-26 11:18:39,864] ERROR django.request 70327 140691274106560 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:19:41,798] WARNING django.request 70327 140691274106560 Not Found: /index.php/204
+[2026-02-26 11:20:43,799] WARNING django.request 70327 140691274106560 Not Found: /index.php/204
+[2026-02-26 11:21:45,803] WARNING django.request 72279 140612105926336 Not Found: /index.php/204
+[2026-02-26 11:22:47,801] WARNING django.request 72279 140612097533632 Not Found: /index.php/204
+[2026-02-26 11:22:47,803] WARNING django.request 72279 140612105926336 Not Found: /index.php/204
+[2026-02-26 11:22:47,867] ERROR django.request 72279 140612105926336 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:23:49,800] WARNING django.request 72279 140612105926336 Not Found: /index.php/204
+[2026-02-26 11:24:51,803] WARNING django.request 72279 140612105926336 Not Found: /index.php/204
+[2026-02-26 11:25:53,802] WARNING django.request 72279 140612105926336 Not Found: /index.php/204
+[2026-02-26 11:26:55,803] WARNING django.request 72279 140612105926336 Not Found: /index.php/204
+[2026-02-26 11:27:57,804] WARNING django.request 72279 140612086167232 Not Found: /index.php/204
+[2026-02-26 11:27:57,806] WARNING django.request 72279 140612097533632 Not Found: /index.php/204
+[2026-02-26 11:27:57,870] ERROR django.request 72279 140612086167232 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:28:59,804] WARNING django.request 72279 140612086167232 Not Found: /index.php/204
+[2026-02-26 11:30:01,804] WARNING django.request 72279 140612086167232 Not Found: /index.php/204
+[2026-02-26 11:31:03,805] WARNING django.request 72279 140612086167232 Not Found: /index.php/204
+[2026-02-26 11:32:05,805] WARNING django.request 72279 140612086167232 Not Found: /index.php/204
+[2026-02-26 11:33:07,805] WARNING django.request 72279 140612086167232 Not Found: /index.php/204
+[2026-02-26 11:34:09,806] WARNING django.request 72279 140612077774528 Not Found: /index.php/204
+[2026-02-26 11:34:09,808] WARNING django.request 72279 140612097533632 Not Found: /index.php/204
+[2026-02-26 11:34:09,879] ERROR django.request 72279 140612077774528 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:35:11,806] WARNING django.request 72279 140612077774528 Not Found: /index.php/204
+[2026-02-26 11:36:13,801] WARNING django.request 72279 140612077774528 Not Found: /index.php/204
+[2026-02-26 11:37:15,797] WARNING django.request 72279 140612077774528 Not Found: /index.php/204
+[2026-02-26 11:38:17,793] WARNING django.request 72279 140612077774528 Not Found: /index.php/204
+[2026-02-26 11:39:19,790] WARNING django.request 72279 140612077774528 Not Found: /index.php/204
+[2026-02-26 11:53:52,914] WARNING django.request 72279 140612097533632 Not Found: /index.php/204
+[2026-02-26 11:53:52,914] WARNING django.request 72279 140611860559552 Not Found: /index.php/204
+[2026-02-26 11:53:52,998] ERROR django.request 72279 140611860559552 Internal Server Error: /remote.php/dav/files/root2/
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: file_user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 126, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/file/views.py", line 101, in dispatch
+    app_token = AppToken.objects.select_related('user').get(
+        token=password, user__username=username)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/olivierb/Developments/rm-iabsis/djancloud/venv/lib/python3.13/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: file_user
+[2026-02-26 11:56:57,983] WARNING django.request 81140 140690791069376 Not Found: /index.php/204
+[2026-02-26 11:57:01,524] WARNING django.request 81140 140690713474752 Not Found: /browse/
+[2026-02-26 11:57:59,980] WARNING django.request 81140 140690791069376 Not Found: /index.php/204
+[2026-02-26 11:59:01,984] WARNING django.request 81661 139737450936000 Not Found: /index.php/204
+[2026-02-26 12:00:03,984] WARNING django.request 81839 140545355675328 Not Found: /index.php/204
+[2026-02-26 12:00:13,072] WARNING django.request 81839 140545355675328 Not Found: /index.php/204
+[2026-02-26 12:00:13,120] WARNING django.request 81839 140545347282624 Unauthorized: /remote.php/dav/files/root2/
+[2026-02-26 12:00:13,121] WARNING django.request 81839 140545338889920 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 12:00:13,296] WARNING django.request 81839 140545338889920 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-26 12:00:13,370] WARNING django.request 81839 140545355675328 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:00:18,745] WARNING django.request 81839 140545355675328 Not Found: /index.php/login/v2/poll
+[2026-02-26 12:00:23,418] WARNING django.request 81839 140545355675328 Not Found: /index.php/204
+[2026-02-26 12:00:23,477] DEBUG file.resource 81839 140545355675328 Resource not found:  for user root
+[2026-02-26 12:00:23,479] WARNING django.request 81839 140545355675328 Not Found: /remote.php/dav/files/root2/
+[2026-02-26 12:00:33,396] WARNING django.request 81839 140545338889920 Not Found: /admin&
+[2026-02-26 12:00:49,463] WARNING django.request 81839 140545338889920 Not Found: /browse/
+[2026-02-26 12:00:50,273] WARNING django.request 81839 140545338889920 Not Found: /browse/
+[2026-02-26 12:01:13,980] WARNING django.request 81839 140545355675328 Not Found: /index.php/204

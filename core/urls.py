@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView
+from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView, SharedFolderCreateView, SharedFolderMembersView, SharedFolderMemberDeleteView, UserListView
 from django.conf import settings
 
 from django.urls import re_path
@@ -65,4 +65,8 @@ urlpatterns = [
     path('api/folders/', FolderSelectorView.as_view(), name='api_folder_root'),
     path('api/folders/<int:folder_id>/', FolderSelectorView.as_view(), name='api_folder_contents'),
     path('api/tree/', FolderTreeView.as_view(), name='api_folder_tree'),
+    path('api/shared-folders/create/', SharedFolderCreateView.as_view(), name='api_shared_folder_create'),
+    path('api/shared-folders/<int:sf_id>/members/', SharedFolderMembersView.as_view(), name='api_shared_folder_members'),
+    path('api/shared-folders/<int:sf_id>/members/<int:user_id>/', SharedFolderMemberDeleteView.as_view(), name='api_shared_folder_member_delete'),
+    path('api/users/', UserListView.as_view(), name='api_users'),
 ]

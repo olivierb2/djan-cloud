@@ -443,9 +443,23 @@ function renderTree(node, container, currentPath, depth, iconType) {
     row.appendChild(icon);
 
     const label = document.createElement('a');
-    label.className = 'truncate'; label.textContent = node.name;
+    label.className = 'truncate flex-1'; label.textContent = node.name;
     label.href = node.url_path ? '/browse/' + node.url_path : '/browse/';
     row.appendChild(label);
+
+    // Share button on root shared folders
+    if (iconType === 'shared' && depth === 0 && node.sf_id) {
+        const shareBtn = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        shareBtn.setAttribute('class', 'w-3.5 h-3.5 text-gray-400 hover:text-brand-600 flex-shrink-0 cursor-pointer');
+        shareBtn.setAttribute('fill', 'none'); shareBtn.setAttribute('stroke', 'currentColor'); shareBtn.setAttribute('viewBox', '0 0 24 24');
+        const sp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        sp.setAttribute('stroke-linecap', 'round'); sp.setAttribute('stroke-linejoin', 'round'); sp.setAttribute('stroke-width', '2');
+        sp.setAttribute('d', 'M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z');
+        shareBtn.appendChild(sp);
+        shareBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openMembersModal(node.sf_id, node.name); });
+        row.appendChild(shareBtn);
+    }
+
     item.appendChild(row);
 
     if (hasChildren) {
@@ -461,14 +475,167 @@ fetch('/api/tree/').then(r => r.json()).then(data => {
     treeEl.innerHTML = '';
     if (data.tree) renderTree(data.tree, treeEl, '{{ current_path|escapejs }}', 0, 'folder');
 
-    // Shared folders section
-    if (data.shared && data.shared.length > 0) {
+    // Shared folders section (always show if admin or has shares)
+    if (data.is_admin || (data.shared && data.shared.length > 0)) {
+        const headingRow = document.createElement('div');
+        headingRow.className = 'mt-4 mb-2 px-2 flex items-center justify-between';
         const heading = document.createElement('h2');
-        heading.className = 'mt-4 mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400';
+        heading.className = 'text-xs font-semibold uppercase tracking-wider text-gray-400';
         heading.textContent = 'Shared';
-        treeEl.appendChild(heading);
-        data.shared.forEach(s => renderTree(s, treeEl, '{{ current_path|escapejs }}', 0, 'shared'));
+        headingRow.appendChild(heading);
+        if (data.is_admin) {
+            const addBtn = document.createElement('button');
+            addBtn.className = 'w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-brand-600 hover:bg-gray-100';
+            addBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>';
+            addBtn.addEventListener('click', () => openModal('shared-folder-modal'));
+            headingRow.appendChild(addBtn);
+        }
+        treeEl.appendChild(headingRow);
+        if (data.shared) data.shared.forEach(s => renderTree(s, treeEl, '{{ current_path|escapejs }}', 0, 'shared'));
     }
 });
+
+// Create shared folder
+function createSharedFolder() {
+    const input = document.getElementById('shared-folder-name');
+    const name = input.value.trim();
+    if (!name) return;
+    fetch('/api/shared-folders/create/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        body: JSON.stringify({name: name})
+    }).then(r => r.json()).then(data => {
+        if (data.error) { alert(data.error); return; }
+        closeModal('shared-folder-modal');
+        input.value = '';
+        location.reload();
+    });
+}
+
+// Members modal
+let currentSfId = null;
+let allUsers = [];
+
+function openMembersModal(sfId, sfName) {
+    currentSfId = sfId;
+    document.getElementById('members-modal-title').textContent = sfName;
+    openModal('members-modal');
+    loadMembers();
+    if (allUsers.length === 0) {
+        fetch('/api/users/').then(r => r.json()).then(data => { allUsers = data.users; });
+    }
+}
+
+function loadMembers() {
+    const list = document.getElementById('members-list');
+    list.innerHTML = '<div class="text-sm text-gray-400 py-2">Loading...</div>';
+    fetch('/api/shared-folders/' + currentSfId + '/members/').then(r => r.json()).then(data => {
+        if (data.error) { list.innerHTML = '<div class="text-sm text-red-500">' + data.error + '</div>'; return; }
+        list.innerHTML = '';
+        data.members.forEach(m => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-2 py-1.5';
+            row.innerHTML =
+                '<span class="flex-1 text-sm text-gray-700">' + m.username + '</span>' +
+                '<select class="rounded border border-gray-300 text-xs px-1.5 py-1" data-uid="' + m.user_id + '">' +
+                '<option value="read"' + (m.permission === 'read' ? ' selected' : '') + '>Read</option>' +
+                '<option value="write"' + (m.permission === 'write' ? ' selected' : '') + '>Write</option>' +
+                '<option value="admin"' + (m.permission === 'admin' ? ' selected' : '') + '>Admin</option>' +
+                '</select>' +
+                '<button class="text-gray-400 hover:text-red-600" data-uid="' + m.user_id + '" title="Remove">' +
+                '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
+                '</button>';
+            row.querySelector('select').addEventListener('change', function() {
+                updateMember(this.dataset.uid, this.value);
+            });
+            row.querySelector('button').addEventListener('click', function() {
+                removeMember(this.dataset.uid);
+            });
+            list.appendChild(row);
+        });
+    });
+}
+
+function updateMember(userId, permission) {
+    fetch('/api/shared-folders/' + currentSfId + '/members/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        body: JSON.stringify({user_id: parseInt(userId), permission: permission})
+    }).then(r => r.json());
+}
+
+function removeMember(userId) {
+    fetch('/api/shared-folders/' + currentSfId + '/members/' + userId + '/', {
+        method: 'DELETE',
+        headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value}
+    }).then(r => r.json()).then(() => loadMembers());
+}
+
+function addMember() {
+    const select = document.getElementById('add-member-select');
+    const userId = select.value;
+    if (!userId) return;
+    fetch('/api/shared-folders/' + currentSfId + '/members/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+        body: JSON.stringify({user_id: parseInt(userId), permission: 'read'})
+    }).then(r => r.json()).then(data => {
+        if (data.error) { alert(data.error); return; }
+        select.value = '';
+        loadMembers();
+    });
+}
+
+// Populate user select when members modal opens
+const membersModalEl = document.getElementById('members-modal');
+const observer = new MutationObserver(() => {
+    if (!membersModalEl.classList.contains('hidden')) {
+        const select = document.getElementById('add-member-select');
+        if (select.options.length <= 1 && allUsers.length > 0) {
+            allUsers.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id; opt.textContent = u.username;
+                select.appendChild(opt);
+            });
+        }
+    }
+});
+observer.observe(membersModalEl, {attributes: true, attributeFilter: ['class']});
 </script>
+
+<!-- New Shared Folder modal -->
+<div id="shared-folder-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">New shared folder</h3>
+        <input type="text" id="shared-folder-name" placeholder="Folder name" maxlength="255"
+               class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none mb-4"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();createSharedFolder();}">
+        <div class="flex justify-end gap-2">
+            <button type="button" onclick="closeModal('shared-folder-modal')"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+            <button type="button" onclick="createSharedFolder()"
+                    class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Create</button>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Members modal -->
+<div id="members-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Members — <span id="members-modal-title"></span></h3>
+        <div id="members-list" class="mb-4 max-h-60 overflow-y-auto divide-y divide-gray-100"></div>
+        <div class="flex items-center gap-2 border-t border-gray-100 pt-4">
+            <select id="add-member-select" class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <option value="">Add a user...</option>
+            </select>
+            <button type="button" onclick="addMember()"
+                    class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Add</button>
+        </div>
+        <div class="flex justify-end mt-4">
+            <button type="button" onclick="closeModal('members-modal')"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Close</button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

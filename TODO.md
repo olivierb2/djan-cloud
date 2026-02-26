@@ -1,0 +1,2 @@
+- createsuper with status admin by default
+- create root with signals on user creation
