@@ -100,6 +100,18 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
     @property
     def getetag(self):
         if self.object:
+            if isinstance(self.object, Folder):
+                # For folders, ETag must change when contents change
+                from django.db.models import Max
+                latest_file = File.objects.filter(parent=self.object).aggregate(m=Max('updated_at'))['m']
+                latest_subfolder = self.object.subfolders.aggregate(m=Max('updated_at'))['m']
+                timestamps = [self.object.updated_at]
+                if latest_file:
+                    timestamps.append(latest_file)
+                if latest_subfolder:
+                    timestamps.append(latest_subfolder)
+                latest = max(timestamps)
+                return f'"{self.object.pk}-{int(latest.timestamp())}"'
             return f'"{self.object.pk}-{int(self.object.updated_at.timestamp())}"'
 
     @property

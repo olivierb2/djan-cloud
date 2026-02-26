@@ -73,6 +73,52 @@ class MyDavView(BasicAuthMixin, DavView):
             path = self.path
         return self.resource_class(path, user=self.request.user)
 
+    def relocate(self, request, path, method, *args, **kwargs):
+        from urllib import parse as urlparse
+        # Log destination for debugging
+        dst_header = request.META.get('HTTP_DESTINATION', '')
+        logger.debug("MOVE/COPY destination header: %s, base_url: %s", dst_header, self.base_url)
+        dst_url = urlparse.unquote(dst_header)
+        if not dst_url:
+            return HttpResponseBadRequest('Destination header missing.')
+        dparts = urlparse.urlparse(dst_url)
+        # Only compare netloc (ignore scheme difference http vs https)
+        sparts = urlparse.urlparse(request.build_absolute_uri())
+        if dparts.netloc and sparts.netloc != dparts.netloc:
+            from djangodav.responses import HttpResponseBadGateway
+            return HttpResponseBadGateway('Source and destination must have the same host.')
+        # Extract the relative path from the destination
+        dst_path = dparts.path
+        if dst_path.startswith(self.base_url):
+            dst_path = dst_path[len(self.base_url):]
+        dst_resource = self.get_resource(path=dst_path)
+        if not dst_resource.get_parent().exists:
+            from djangodav.responses import HttpResponseConflict
+            return HttpResponseConflict()
+        if not self.has_access(self.resource, 'write'):
+            return self.no_access()
+        overwrite = request.META.get('HTTP_OVERWRITE', 'T')
+        if overwrite not in ('T', 'F'):
+            return HttpResponseBadRequest('Overwrite header must be T or F.')
+        overwrite = (overwrite == 'T')
+        if not overwrite and dst_resource.exists:
+            from djangodav.responses import HttpResponsePreconditionFailed
+            return HttpResponsePreconditionFailed('Destination exists and overwrite False.')
+        dst_exists = dst_resource.exists
+        if dst_exists:
+            self.lock_class(self.resource).del_locks()
+            self.lock_class(dst_resource).del_locks()
+            dst_resource.delete()
+        errors = getattr(self.resource, method)(dst_resource, *args, **kwargs)
+        if errors:
+            from djangodav.responses import HttpResponseMultiStatus
+            return self.build_xml_response(response_class=HttpResponseMultiStatus)
+        if dst_exists:
+            from djangodav.responses import HttpResponseNoContent
+            return HttpResponseNoContent()
+        from djangodav.responses import HttpResponseCreated
+        return HttpResponseCreated()
+
     def put(self, request, path, *args, **kwargs):
         response = super().put(request, path, *args, **kwargs)
         # Nextcloud client requires ETag and OC-ETag headers after upload
