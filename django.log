@@ -5741,3 +5741,26 @@ django.db.utils.OperationalError: no such table: file_user
 [2026-02-27 12:04:35,028] WARNING django.request 259482 140346150340288 Unauthorized: /api/tree/
 [2026-02-27 12:04:35,029] WARNING django.request 259482 140346522584768 Unauthorized: /api/auth/user/
 [2026-02-27 12:07:21,538] WARNING django.request 259482 140346141947584 Not Found: /index.php/apps/theming/img/core/filetypes/x-office-document.svg
+[2026-02-27 12:08:17,880] WARNING django.request 259482 140346150340288 Not Found: /remote.php/dav/files//
+[2026-02-27 12:08:17,880] WARNING django.request 259482 140346522584768 Not Found: /
+[2026-02-27 12:08:17,880] WARNING django.request 259482 140345757128384 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-27 12:08:18,029] WARNING django.request 259482 140346141947584 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-27 12:08:33,675] WARNING django.request 259482 140345773913792 Not Found: /remote.php/dav/avatars/olivier.b@iabsis.com/32.png
+[2026-02-27 12:08:59,196] WARNING django.request 259482 140346150340288 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-27 12:08:59,196] WARNING django.request 259482 140345773913792 Not Found: /remote.php/dav/files//
+[2026-02-27 12:08:59,196] WARNING django.request 259482 140345757128384 Not Found: /
+[2026-02-27 12:08:59,338] WARNING django.request 259482 140346522584768 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-27 12:09:04,128] WARNING django.request 259482 140345765521088 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:09:05,145] WARNING django.request 259482 140346141947584 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:09:08,853] WARNING django.request 259482 140346150340288 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:09:38,356] WARNING django.request 259482 140345773913792 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:09:39,759] WARNING django.request 259482 140345757128384 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:09:40,387] WARNING django.request 259482 140346522584768 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:10:10,336] WARNING django.request 259482 140345765521088 Not Found: /index.php/login/v2/poll
+[2026-02-27 12:10:31,882] WARNING django.request 259482 140346150340288 Not Found: /remote.php/dav/avatars/info@iabsis.com/32.png
+[2026-02-27 12:10:34,194] WARNING django.request 259482 140345757128384 Not Found: /index.php/204
+[2026-02-27 12:10:34,229] WARNING django.request 259482 140345765521088 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-27 12:10:34,246] WARNING django.request 259482 140346150340288 Not Found: /remote.php/dav/avatars/info@iabsis.com/128.png
+[2026-02-27 12:10:34,261] WARNING django.request 259482 140346522584768 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-27 12:10:34,262] WARNING django.request 259482 140345765521088 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-27 12:10:37,004] WARNING django.request 259482 140346150340288 Not Found: /index.php/apps/theming/img/core/filetypes/x-office-document.svg
