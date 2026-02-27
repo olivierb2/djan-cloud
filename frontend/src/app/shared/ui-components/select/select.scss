@@ -1,0 +1,228 @@
+:host {
+  width: 100%;
+  user-select: none;
+  position: relative;
+  display: inline-block;
+  font-family: "Plus Jakarta Sans", "Source Sans Pro", sans-serif;
+}
+
+.native-select {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+
+.select-wrapper {
+  gap: 8px;
+  display: flex;
+  align-self: stretch;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-label {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  font-style: normal;
+  letter-spacing: 0.32px;
+  color: var(--slate-800);
+  font-family: "Plus Jakarta Sans", "Source Sans Pro", sans-serif;
+
+  .required-indicator {
+    color: var(--rose-500);
+    margin-left: 2px;
+  }
+}
+
+.select-container {
+  gap: 8px;
+  width: 100%;
+  display: flex;
+  padding: 12px 16px;
+  cursor: pointer;
+  min-width: 160px;
+  align-items: center;
+  position: relative;
+  border-radius: 12px;
+  background: var(--White);
+  border: 2px solid var(--slate-200);
+
+
+  &.has-value {
+    border: 2px solid var(--primary-400);
+  }
+
+  &.invalid {
+    color: var(--rose-500);
+    border: 2px solid var(--rose-500);
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--slate-200);
+  }
+
+  .select-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    flex-shrink: 0;
+    z-index: 1;
+
+    &:hover {
+      background: var(--slate-100);
+    }
+  }
+
+  .select-arrow {
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .select-display {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+
+    .select-search {
+      flex: 1;
+      padding: 0;
+      border: none;
+      outline: none;
+      font: inherit;
+      min-width: 80px;
+      background: transparent;
+      color: var(--slate-800);
+    }
+  }
+
+  .selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      background: var(--slate-100);
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 13px;
+      color: var(--slate-800);
+
+      button {
+        background: none;
+        border: none;
+        margin-left: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        color: var(--slate-400);
+
+        &:hover {
+          color: var(--slate-700);
+        }
+      }
+    }
+  }
+
+  .options {
+    margin: 0;
+    top: 46px;
+    left: -2px;
+    right: -2px;
+    z-index: 10;
+    padding: 4px;
+    list-style: none;
+    overflow-y: auto;
+    max-height: 200px;
+    position: absolute;
+    background: var(--White);
+    border: 2px solid var(--slate-100);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0px 2px 20px 0 rgba(43, 43, 43, 0.10);
+
+    :host(.drop-up) & {
+      top: auto;
+      bottom: 46px;
+      border-top: 2px solid var(--slate-100);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0px -2px 20px 0 rgba(43, 43, 43, 0.10);
+    }
+
+
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 16px;
+      background-color: var(--slate-400);
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 16px;
+      background-color: var(--slate-200);
+    }
+
+    .option {
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
+
+      .select-value {
+        color: var(--slate-600);
+      }
+
+      &.hover:not(.disabled) {
+        color: var(--slate-800);
+        background: var(--slate-100);
+
+        .select-value {
+          color: var(--slate-800);
+        }
+      }
+
+      &.selected:not(.disabled) {
+        background: var(--primary-50);
+        font-weight: bold;
+
+        .select-value {
+          color: var(--primary-700);
+        }
+      }
+
+      &.new-option {
+        font-style: italic;
+
+        .select-value {
+
+        color: var(--primary-500);
+        }
+      }
+
+      &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: var(--slate-200);
+      }
+    }
+  }
+
+
+}

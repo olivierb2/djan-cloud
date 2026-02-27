@@ -1,0 +1,6 @@
+@for (toast of toaster.toasts$ | async; track toast.id) {
+  <app-toaster
+    [toast]="toast"
+    (close)="toaster.dismiss($event)">
+  </app-toaster>
+}

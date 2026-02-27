@@ -1,0 +1,47 @@
+@use '../public/styles/fonts.scss';
+@use '../public/styles/classes.scss';
+@use '../public/styles/variables.scss';
+@use '../public/styles/normalize.scss';
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+input:disabled {
+  opacity: 0.6;
+  background: var(--slate-200);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-link {
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-underline-offset: auto;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: auto;
+    text-decoration-line: underline;
+    text-underline-position: from-font;
+    text-decoration-color: var(--primary-500);
+  }
+}

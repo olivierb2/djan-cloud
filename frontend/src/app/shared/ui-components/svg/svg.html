@@ -1,0 +1,5 @@
+@if (isCustomSvg()) {
+  <img [src]="customSvgPath()" [ngStyle]="iconStyle()" class="d-flex" alt="">
+} @else if (iconName()) {
+  <ng-icon [name]="iconName()" [ngStyle]="iconStyle()" class="d-flex"></ng-icon>
+}

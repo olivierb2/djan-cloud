@@ -1,0 +1,83 @@
+.badge {
+  gap: 8px;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+
+  &.small {
+    padding: 4px 10px;
+    border-radius: 12px;
+
+    .badge-text {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 14px;
+    }
+  }
+
+  &.medium {
+    padding: 6px 8px;
+    border-radius: 8px;
+
+    .badge-text {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+  }
+
+  &.green {
+    background: var(--emerald-100);
+
+    .badge-text {
+      color: var(--emerald-600);
+    }
+  }
+
+  &.blue {
+    background: var(--primary-100);
+
+    .badge-text {
+      color: var(--primary-700);
+    }
+  }
+
+  &.red {
+    background: var(--rose-100);
+
+    .badge-text {
+      color: var(--rose-600);
+    }
+  }
+
+  &.orange {
+    background: var(--amber-100);
+
+    .badge-text {
+      color: var(--amber-700);
+    }
+  }
+
+  &.purple {
+    background: var(--purple-100);
+
+    .badge-text {
+      color: var(--purple-700);
+    }
+  }
+
+  &.gray {
+    background: var(--slate-100);
+
+    .badge-text {
+      color: var(--slate-700);
+    }
+  }
+
+  .badge-text {
+    font-style: normal;
+    letter-spacing: 0.32px;
+    font-family: "Plus Jakarta Sans", "Source Sans Pro", sans-serif;
+  }
+}

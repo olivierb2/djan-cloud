@@ -1,0 +1,81 @@
+<div class="users-page">
+  <div class="page-header">
+    <h2>Users</h2>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <ng-icon name="heroPlus" size="16"></ng-icon>
+      <span>Add User</span>
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Loading...</span>
+    </div>
+  }
+
+  @if (!loading) {
+    <div class="users-table">
+      <div class="table-header">
+        <span class="col-name">Email</span>
+        <span class="col-role">Role</span>
+        <span class="col-status">Status</span>
+        <span class="col-actions">Actions</span>
+      </div>
+      @for (user of users; track user.id) {
+        <div class="table-row">
+          <span class="col-name">{{ user.email }}</span>
+          <span class="col-role">
+            <span class="badge" [class.badge-admin]="user.role === 'admin'">{{ user.role }}</span>
+          </span>
+          <span class="col-status">
+            <span class="status-dot" [class.active]="user.is_active"></span>
+            {{ user.is_active ? 'Active' : 'Inactive' }}
+          </span>
+          <span class="col-actions">
+            <button class="action-btn action-btn-danger" (click)="deleteUser(user)" title="Delete user">
+              <ng-icon name="heroTrash" size="16"></ng-icon>
+            </button>
+          </span>
+        </div>
+      }
+      @if (users.length === 0) {
+        <div class="empty-state">
+          <p>No users found</p>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Create User Modal -->
+@if (showCreateModal) {
+  <div class="modal-backdrop" (click)="showCreateModal = false"></div>
+  <div class="modal">
+    <h3>Add User</h3>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="newEmail" placeholder="Email" autofocus>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" [(ngModel)]="newPassword" placeholder="Password">
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select [(ngModel)]="newRole">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" (click)="showCreateModal = false">Cancel</button>
+      <button class="btn btn-primary" (click)="createUser()" [disabled]="creating">
+        @if (creating) {
+          <div class="spinner-sm"></div>
+        }
+        Create
+      </button>
+    </div>
+  </div>
+}

@@ -1,0 +1,32 @@
+<header class="header">
+  <div class="header-left">
+    <h1 class="page-title">{{ pageTitle() }}</h1>
+  </div>
+
+  <div class="header-actions">
+    <div class="profile-section" (click)="toggleProfileMenu()">
+      <span class="username">{{ getUserDisplayName() }}</span>
+      <div class="profile-avatar">
+        <span>{{ getUserInitials() }}</span>
+      </div>
+      <ng-icon name="heroChevronDown" size="16" [class.rotated]="showProfileMenu()"></ng-icon>
+    </div>
+
+    @if (showProfileMenu()) {
+      <div class="profile-dropdown">
+        <div class="dropdown-header">
+          <strong>{{ getUserDisplayName() }}</strong>
+          @if (currentUser) {
+            <span class="role-badge">{{ currentUser.role }}</span>
+          }
+        </div>
+        <div class="dropdown-items">
+          <button class="dropdown-item logout" (click)="onLogout()">
+            <ng-icon name="heroArrowRightOnRectangle" size="18"></ng-icon>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</header>

@@ -99,7 +99,7 @@ class BasicAuthMixin:
             # Try app token authentication first
             try:
                 app_token = AppToken.objects.select_related('user').get(
-                    token=password, user__username=username)
+                    token=password, user__email=username)
                 app_token.last_used_at = timezone.now()
                 app_token.save(update_fields=['last_used_at'])
                 request.user = app_token.user
@@ -107,8 +107,8 @@ class BasicAuthMixin:
             except AppToken.DoesNotExist:
                 pass
 
-            # Fall back to Django's auth backend
-            user = authenticate(username=username, password=password)
+            # Fall back to Django's auth backend (email-based)
+            user = authenticate(email=username, password=password)
             if user:
                 request.user = user
                 return super().dispatch(request, *args, **kwargs)
@@ -376,9 +376,9 @@ class OcsUserView(BasicAuthMixin, View):
             "ocs": {
                 "meta": {"status": "ok", "statuscode": 100, "message": "OK"},
                 "data": {
-                    "id": request.user.username,
-                    "display-name": request.user.get_full_name() or request.user.username,
-                    "email": request.user.email or "",
+                    "id": request.user.email,
+                    "display-name": request.user.get_full_name() or request.user.email,
+                    "email": request.user.email,
                 }
             }
         })
@@ -516,7 +516,7 @@ class LoginPoll(View):
 
         json_content = {
             "server": f"{protocol}://{request.get_host()}",
-            "loginName": login_token.user.username,
+            "loginName": login_token.user.email,
             "appPassword": app_token.token,
         }
 
@@ -1220,10 +1220,10 @@ class SharedFolderMembersView(LoginRequiredMixin, View):
         if not self._can_manage(request, sf):
             return JsonResponse({'error': 'Forbidden'}, status=403)
         members = []
-        for m in sf.memberships.select_related('user').order_by('user__username'):
+        for m in sf.memberships.select_related('user').order_by('user__email'):
             members.append({
                 'user_id': m.user.id,
-                'username': m.user.username,
+                'email': m.user.email,
                 'permission': m.permission,
             })
         return JsonResponse({'members': members})
@@ -1246,7 +1246,7 @@ class SharedFolderMembersView(LoginRequiredMixin, View):
             defaults={'permission': permission})
         return JsonResponse({
             'user_id': user.id,
-            'username': user.username,
+            'email': user.email,
             'permission': membership.permission,
             'created': created,
         })
@@ -1267,7 +1267,7 @@ class SharedFolderMemberDeleteView(LoginRequiredMixin, View):
 
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
-        users = User.objects.order_by('username').values('id', 'username', 'role', 'is_active')
+        users = User.objects.order_by('email').values('id', 'email', 'username', 'role', 'is_active')
         return JsonResponse({'users': list(users)})
 
 
@@ -1276,17 +1276,18 @@ class UserCreateView(LoginRequiredMixin, View):
         if request.user.role != 'admin':
             return JsonResponse({'error': 'Forbidden'}, status=403)
         data = json.loads(request.body)
-        username = data.get('username', '').strip()
+        email = data.get('email', '').strip()
         password = data.get('password', '').strip()
         role = data.get('role', 'user')
-        if not username or not password:
-            return JsonResponse({'error': 'Username and password are required.'}, status=400)
-        if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'Username already exists.'}, status=400)
+        if not email or not password:
+            return JsonResponse({'error': 'Email and password are required.'}, status=400)
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Email already exists.'}, status=400)
         if role not in ('user', 'admin'):
             role = 'user'
-        user = User.objects.create_user(username=username, password=password, role=role)
-        return JsonResponse({'id': user.id, 'username': user.username, 'role': user.role})
+        username = email.split('@')[0]
+        user = User.objects.create_user(username=username, email=email, password=password, role=role)
+        return JsonResponse({'id': user.id, 'email': user.email, 'role': user.role})
 
 
 class UserDeleteView(LoginRequiredMixin, View):
@@ -1307,5 +1308,5 @@ class UserManagementView(LoginRequiredMixin, View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        users = User.objects.order_by('username')
+        users = User.objects.order_by('email')
         return render(request, 'file/users.html', {'users': users})

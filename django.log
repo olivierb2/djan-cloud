@@ -5384,3 +5384,360 @@ django.db.utils.OperationalError: no such table: file_user
 [2026-02-26 12:49:56,235] WARNING django.request 87359 140285553313472 Not Found: /browse/__shared__/Iabsis shared/Test
 [2026-02-26 13:04:12,954] WARNING django.request 91871 139852775589568 Not Found: /favicon.ico
 [2026-02-26 13:05:38,514] WARNING django.request 91871 139852775589568 Not Found: /favicon.ico
+[2026-02-26 14:38:45,354] WARNING django.request 91871 139852757755584 Not Found: /favicon.ico
+[2026-02-26 14:41:01,897] DEBUG file.resource 91871 139852785907392 Starting file upload for test.md by user root
+[2026-02-26 14:41:01,898] INFO file.resource 91871 139852785907392 Overwriting existing file test.md for user root
+[2026-02-26 15:34:25,014] WARNING django.request 91871 139852775589568 Method Not Allowed (PROPFIND): /
+[2026-02-26 15:34:25,014] WARNING django.request 91871 139852775589568 Method Not Allowed: /
+[2026-02-26 15:34:25,015] WARNING django.request 91871 139852757755584 Method Not Allowed (PROPFIND): /
+[2026-02-26 15:34:25,015] WARNING django.request 91871 139852766148288 Method Not Allowed (PROPFIND): /
+[2026-02-26 15:34:25,015] WARNING django.request 91871 139852757755584 Method Not Allowed: /
+[2026-02-26 15:34:25,016] WARNING django.request 91871 139852739045056 Method Not Allowed (PROPFIND): /
+[2026-02-26 15:34:25,016] WARNING django.request 91871 139852766148288 Method Not Allowed: /
+[2026-02-26 15:34:25,017] WARNING django.request 91871 139852389545664 Method Not Allowed (PROPFIND): /
+[2026-02-26 15:34:25,017] WARNING django.request 91871 139852739045056 Method Not Allowed: /
+[2026-02-26 15:34:25,017] WARNING django.request 91871 139852389545664 Method Not Allowed: /
+[2026-02-26 15:35:23,069] WARNING django.request 91871 139852757755584 Method Not Allowed (PROPFIND): /
+[2026-02-26 15:35:23,069] WARNING django.request 91871 139852757755584 Method Not Allowed: /
+[2026-02-27 07:29:01,853] WARNING django.request 91871 139852389545664 Unauthorized: /dav/__shared__
+[2026-02-27 07:29:01,853] WARNING django.request 91871 139852757755584 Unauthorized: /dav/__shared__
+[2026-02-27 07:29:01,857] WARNING django.request 91871 139852766148288 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:01,862] WARNING django.request 91871 139852739045056 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:01,880] WARNING django.request 91871 139852766148288 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:01,881] WARNING django.request 91871 139852739045056 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:02,069] WARNING django.request 91871 139852739045056 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:02,079] WARNING django.request 91871 139852766148288 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:08,843] WARNING django.request 91871 139852389545664 Unauthorized: /dav/__shared__
+[2026-02-27 07:29:08,843] WARNING django.request 91871 139852757755584 Unauthorized: /dav/__shared__
+[2026-02-27 07:29:08,993] WARNING django.request 91871 139852757755584 Unauthorized: /dav/__shared__
+[2026-02-27 07:29:08,995] WARNING django.request 91871 139852389545664 Unauthorized: /dav/__shared__
+[2026-02-27 07:29:09,003] WARNING django.request 91871 139852739045056 Unauthorized: /dav/
+[2026-02-27 07:29:09,008] WARNING django.request 91871 139852776466112 Unauthorized: /dav/
+[2026-02-27 07:29:09,065] WARNING django.request 91871 139852776466112 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:09,066] WARNING django.request 91871 139852739045056 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:09,205] WARNING django.request 91871 139852739045056 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:09,218] WARNING django.request 91871 139852776466112 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:21,115] WARNING django.request 91871 139852757755584 Unauthorized: /dav/
+[2026-02-27 07:29:21,261] WARNING django.request 91871 139852757755584 Unauthorized: /dav/
+[2026-02-27 07:29:23,858] WARNING django.request 91871 139852757755584 Unauthorized: /dav/
+[2026-02-27 07:29:25,141] WARNING django.request 91871 139852389545664 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:25,283] WARNING django.request 91871 139852389545664 Unauthorized: /dav/__shared__/Iabsis shared
+[2026-02-27 07:29:36,572] WARNING django.request 91871 139852776466112 Unauthorized: /dav/
+[2026-02-27 07:30:08,151] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/bla
+[2026-02-27 07:30:13,249] WARNING django.request 91871 139852757755584 Not Found: /favicon.ico
+[2026-02-27 07:30:19,416] WARNING django.request 91871 139852757755584 Not Found: /favicon.ico
+[2026-02-27 07:30:20,157] WARNING django.request 91871 139852766148288 Not Found: /favicon.ico
+[2026-02-27 07:30:50,127] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis 2
+[2026-02-27 07:31:01,520] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/test.md
+[2026-02-27 07:31:04,728] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA
+[2026-02-27 07:31:05,213] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Appels entrants
+[2026-02-27 07:31:05,711] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Appels entrants/archive
+[2026-02-27 07:31:06,210] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Appels entrants/archive/iabsis - Projet Appels entrants 2020.docx
+[2026-02-27 07:31:06,390] DEBUG file.resource 91871 139852389545664 Starting file upload for iabsis - Projet Appels entrants 2020.docx by user root
+[2026-02-27 07:31:06,391] INFO file.resource 91871 139852389545664 Creating new file iabsis - Projet Appels entrants 2020.docx for user root
+[2026-02-27 07:31:06,859] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Appels entrants/archive/iabsis - Projet Appels entrants.docx
+[2026-02-27 07:31:07,046] DEBUG file.resource 91871 139852757755584 Starting file upload for iabsis - Projet Appels entrants.docx by user root
+[2026-02-27 07:31:07,047] INFO file.resource 91871 139852757755584 Creating new file iabsis - Projet Appels entrants.docx for user root
+[2026-02-27 07:31:07,922] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/_Shared
+[2026-02-27 07:31:08,401] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/_Shared/Appels entrants
+[2026-02-27 07:31:08,875] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/_Shared/Appels entrants/Diagramme Appel entrant.drawio
+[2026-02-27 07:31:09,061] DEBUG file.resource 91871 139852739045056 Starting file upload for Diagramme Appel entrant.drawio by user root
+[2026-02-27 07:31:09,062] INFO file.resource 91871 139852739045056 Creating new file Diagramme Appel entrant.drawio for user root
+[2026-02-27 07:31:09,537] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/_Shared/Appels entrants/Spécification Projet Appels entrants 2020 - Draft 0.1.docx
+[2026-02-27 07:31:09,719] DEBUG file.resource 91871 139852389545664 Starting file upload for Spécification Projet Appels entrants 2020 - Draft 0.1.docx by user root
+[2026-02-27 07:31:09,720] INFO file.resource 91871 139852389545664 Creating new file Spécification Projet Appels entrants 2020 - Draft 0.1.docx for user root
+[2026-02-27 07:31:10,201] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/_Shared/Appels entrants/Spécification Projet Appels entrants 2020 - Draft 0.2.docx
+[2026-02-27 07:31:10,385] DEBUG file.resource 91871 139852757755584 Starting file upload for Spécification Projet Appels entrants 2020 - Draft 0.2.docx by user root
+[2026-02-27 07:31:10,386] INFO file.resource 91871 139852757755584 Creating new file Spécification Projet Appels entrants 2020 - Draft 0.2.docx for user root
+[2026-02-27 07:31:11,074] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/_Shared/VoiceBot Taxi
+[2026-02-27 07:31:11,953] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin
+[2026-02-27 07:31:12,445] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data
+[2026-02-27 07:31:12,924] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Contract
+[2026-02-27 07:31:13,359] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Contract/CHOOBS - projet de contrat 2019 03 26.doc
+[2026-02-27 07:31:13,552] DEBUG file.resource 91871 139852381152960 Starting file upload for CHOOBS - projet de contrat 2019 03 26.doc by user root
+[2026-02-27 07:31:13,553] INFO file.resource 91871 139852381152960 Creating new file CHOOBS - projet de contrat 2019 03 26.doc for user root
+[2026-02-27 07:31:14,076] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Contract/CHOOBS - projet de contrat 2019 03 26_CAK.doc
+[2026-02-27 07:31:14,262] DEBUG file.resource 91871 139852372760256 Starting file upload for CHOOBS - projet de contrat 2019 03 26_CAK.doc by user root
+[2026-02-27 07:31:14,263] INFO file.resource 91871 139852372760256 Creating new file CHOOBS - projet de contrat 2019 03 26_CAK.doc for user root
+[2026-02-27 07:31:14,748] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Contract/CHOOBS - projet de contrat 2019 04 03.doc
+[2026-02-27 07:31:14,934] DEBUG file.resource 91871 139852739045056 Starting file upload for CHOOBS - projet de contrat 2019 04 03.doc by user root
+[2026-02-27 07:31:14,935] INFO file.resource 91871 139852739045056 Creating new file CHOOBS - projet de contrat 2019 04 03.doc for user root
+[2026-02-27 07:31:15,594] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/v2
+[2026-02-27 07:31:16,061] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/v2/Acta workflow-Taxi -concept-2.png
+[2026-02-27 07:31:16,241] DEBUG file.resource 91871 139852381152960 Starting file upload for Acta workflow-Taxi -concept-2.png by user root
+[2026-02-27 07:31:16,242] INFO file.resource 91871 139852381152960 Creating new file Acta workflow-Taxi -concept-2.png for user root
+[2026-02-27 07:31:16,721] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/v2/Choobs - Offre -projet voicebot ACTA Appel taxis v1_ 2.docx
+[2026-02-27 07:31:16,901] DEBUG file.resource 91871 139852389545664 Starting file upload for Choobs - Offre -projet voicebot ACTA Appel taxis v1_ 2.docx by user root
+[2026-02-27 07:31:16,902] INFO file.resource 91871 139852389545664 Creating new file Choobs - Offre -projet voicebot ACTA Appel taxis v1_ 2.docx for user root
+[2026-02-27 07:31:17,381] WARNING django.request 91871 139852364367552 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/v2/Choobs - service contract FR - ACTA.docx
+[2026-02-27 07:31:17,562] DEBUG file.resource 91871 139852389545664 Starting file upload for Choobs - service contract FR - ACTA.docx by user root
+[2026-02-27 07:31:17,563] INFO file.resource 91871 139852389545664 Creating new file Choobs - service contract FR - ACTA.docx for user root
+[2026-02-27 07:31:18,219] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Acta workflow-Concept.png
+[2026-02-27 07:31:18,399] DEBUG file.resource 91871 139852381152960 Starting file upload for Acta workflow-Concept.png by user root
+[2026-02-27 07:31:18,400] INFO file.resource 91871 139852381152960 Creating new file Acta workflow-Concept.png for user root
+[2026-02-27 07:31:18,878] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V1 tak.docx
+[2026-02-27 07:31:19,061] DEBUG file.resource 91871 139852739045056 Starting file upload for Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V1 tak.docx by user root
+[2026-02-27 07:31:19,061] INFO file.resource 91871 139852739045056 Creating new file Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V1 tak.docx for user root
+[2026-02-27 07:31:19,545] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs-no stamp.pdf
+[2026-02-27 07:31:19,725] DEBUG file.resource 91871 139852372760256 Starting file upload for Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs-no stamp.pdf by user root
+[2026-02-27 07:31:19,726] DEBUG file.resource 91871 139852372760256 Uploaded 1MB of Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs-no stamp.pdf
+[2026-02-27 07:31:19,727] DEBUG file.resource 91871 139852372760256 Uploaded 2MB of Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs-no stamp.pdf
+[2026-02-27 07:31:19,728] DEBUG file.resource 91871 139852372760256 Uploaded 3MB of Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs-no stamp.pdf
+[2026-02-27 07:31:19,730] INFO file.resource 91871 139852372760256 Creating new file Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs-no stamp.pdf for user root
+[2026-02-27 07:31:20,194] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs.pdf
+[2026-02-27 07:31:20,383] DEBUG file.resource 91871 139852389545664 Starting file upload for Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs.pdf by user root
+[2026-02-27 07:31:20,383] DEBUG file.resource 91871 139852389545664 Uploaded 1MB of Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs.pdf
+[2026-02-27 07:31:20,384] DEBUG file.resource 91871 139852389545664 Uploaded 2MB of Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs.pdf
+[2026-02-27 07:31:20,384] DEBUG file.resource 91871 139852389545664 Uploaded 3MB of Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs.pdf
+[2026-02-27 07:31:20,386] INFO file.resource 91871 139852389545664 Creating new file Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak - signe choobs.pdf for user root
+[2026-02-27 07:31:20,868] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak.docx
+[2026-02-27 07:31:21,050] DEBUG file.resource 91871 139852364367552 Starting file upload for Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak.docx by user root
+[2026-02-27 07:31:21,051] INFO file.resource 91871 139852364367552 Creating new file Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak.docx for user root
+[2026-02-27 07:31:21,526] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak.pdf
+[2026-02-27 07:31:21,721] DEBUG file.resource 91871 139852381152960 Starting file upload for Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak.pdf by user root
+[2026-02-27 07:31:21,722] INFO file.resource 91871 139852381152960 Creating new file Choobs - Offre -projet voicebot ACTA Appel garages 20181214 V10 tak.pdf for user root
+[2026-02-27 07:31:22,199] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181104 vdraft1 tak.docx
+[2026-02-27 07:31:22,381] DEBUG file.resource 91871 139852372760256 Starting file upload for Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181104 vdraft1 tak.docx by user root
+[2026-02-27 07:31:22,382] INFO file.resource 91871 139852372760256 Creating new file Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181104 vdraft1 tak.docx for user root
+[2026-02-27 07:31:22,857] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181205 vdraft2 tak.docx
+[2026-02-27 07:31:23,040] DEBUG file.resource 91871 139852739045056 Starting file upload for Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181205 vdraft2 tak.docx by user root
+[2026-02-27 07:31:23,041] INFO file.resource 91871 139852739045056 Creating new file Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181205 vdraft2 tak.docx for user root
+[2026-02-27 07:31:23,521] WARNING django.request 91871 139852364367552 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181205 vdraft2 tak.pdf
+[2026-02-27 07:31:23,707] DEBUG file.resource 91871 139852364367552 Starting file upload for Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181205 vdraft2 tak.pdf by user root
+[2026-02-27 07:31:23,708] INFO file.resource 91871 139852364367552 Creating new file Choobs - cahier des charges -projet voicebot ACTA Appel garages 20181205 vdraft2 tak.pdf for user root
+[2026-02-27 07:31:24,181] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/Diagram-Concept.png
+[2026-02-27 07:31:24,374] DEBUG file.resource 91871 139852381152960 Starting file upload for Diagram-Concept.png by user root
+[2026-02-27 07:31:24,374] INFO file.resource 91871 139852381152960 Creating new file Diagram-Concept.png for user root
+[2026-02-27 07:31:24,850] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/NDA ACTA 2018 09 26 FR.doc
+[2026-02-27 07:31:25,028] DEBUG file.resource 91871 139852372760256 Starting file upload for NDA ACTA 2018 09 26 FR.doc by user root
+[2026-02-27 07:31:25,029] INFO file.resource 91871 139852372760256 Creating new file NDA ACTA 2018 09 26 FR.doc for user root
+[2026-02-27 07:31:25,504] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/PPP_Presentation_générale_XiVO_Solutions.pdf
+[2026-02-27 07:31:25,689] DEBUG file.resource 91871 139852739045056 Starting file upload for PPP_Presentation_générale_XiVO_Solutions.pdf by user root
+[2026-02-27 07:31:25,690] DEBUG file.resource 91871 139852739045056 Uploaded 1MB of PPP_Presentation_générale_XiVO_Solutions.pdf
+[2026-02-27 07:31:25,691] DEBUG file.resource 91871 139852739045056 Uploaded 2MB of PPP_Presentation_générale_XiVO_Solutions.pdf
+[2026-02-27 07:31:25,692] DEBUG file.resource 91871 139852739045056 Uploaded 3MB of PPP_Presentation_générale_XiVO_Solutions.pdf
+[2026-02-27 07:31:25,694] INFO file.resource 91871 139852739045056 Creating new file PPP_Presentation_générale_XiVO_Solutions.pdf for user root
+[2026-02-27 07:31:26,164] WARNING django.request 91871 139852364367552 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/choobs data/workflow.png
+[2026-02-27 07:31:26,347] DEBUG file.resource 91871 139852757755584 Starting file upload for workflow.png by user root
+[2026-02-27 07:31:26,348] INFO file.resource 91871 139852757755584 Creating new file workflow.png for user root
+[2026-02-27 07:31:27,011] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat
+[2026-02-27 07:31:27,491] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/drafts
+[2026-02-27 07:31:27,971] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/drafts/CHOOBS - iabsis - contrat final 2019 06 05.doc
+[2026-02-27 07:31:28,158] DEBUG file.resource 91871 139852389545664 Starting file upload for CHOOBS - iabsis - contrat final 2019 06 05.doc by user root
+[2026-02-27 07:31:28,159] INFO file.resource 91871 139852389545664 Creating new file CHOOBS - iabsis - contrat final 2019 06 05.doc for user root
+[2026-02-27 07:31:28,640] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/drafts/CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx
+[2026-02-27 07:31:28,821] DEBUG file.resource 91871 139852739045056 Starting file upload for CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx by user root
+[2026-02-27 07:31:28,822] INFO file.resource 91871 139852739045056 Creating new file CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx for user root
+[2026-02-27 07:31:29,287] WARNING django.request 91871 139852364367552 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/drafts/iabsis - projet de contrat 2019 04 03.doc
+[2026-02-27 07:31:29,475] DEBUG file.resource 91871 139852364367552 Starting file upload for iabsis - projet de contrat 2019 04 03.doc by user root
+[2026-02-27 07:31:29,476] INFO file.resource 91871 139852364367552 Creating new file iabsis - projet de contrat 2019 04 03.doc for user root
+[2026-02-27 07:31:30,142] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/CHOOBS - iabsis - projet de contrat 2019 05 27 ACTA.doc.pdf
+[2026-02-27 07:31:30,330] DEBUG file.resource 91871 139852381152960 Starting file upload for CHOOBS - iabsis - projet de contrat 2019 05 27 ACTA.doc.pdf by user root
+[2026-02-27 07:31:30,331] DEBUG file.resource 91871 139852381152960 Uploaded 1MB of CHOOBS - iabsis - projet de contrat 2019 05 27 ACTA.doc.pdf
+[2026-02-27 07:31:30,331] INFO file.resource 91871 139852381152960 Creating new file CHOOBS - iabsis - projet de contrat 2019 05 27 ACTA.doc.pdf for user root
+[2026-02-27 07:31:30,801] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx.pdf
+[2026-02-27 07:31:30,986] DEBUG file.resource 91871 139852389545664 Starting file upload for CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx.pdf by user root
+[2026-02-27 07:31:30,986] DEBUG file.resource 91871 139852389545664 Uploaded 1MB of CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx.pdf
+[2026-02-27 07:31:30,987] INFO file.resource 91871 139852389545664 Creating new file CHOOBS - iabsis - projet de contrat 2019 05 27 Annexe.docx.pdf for user root
+[2026-02-27 07:31:31,469] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/contrat/Summary.pdf
+[2026-02-27 07:31:31,649] DEBUG file.resource 91871 139852739045056 Starting file upload for Summary.pdf by user root
+[2026-02-27 07:31:31,650] INFO file.resource 91871 139852739045056 Creating new file Summary.pdf for user root
+[2026-02-27 07:31:32,330] WARNING django.request 91871 139852364367552 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/factures
+[2026-02-27 07:31:32,812] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/factures/FAC_2020_0013 - Voicebot facture soft launch.pdf
+[2026-02-27 07:31:33,002] DEBUG file.resource 91871 139852381152960 Starting file upload for FAC_2020_0013 - Voicebot facture soft launch.pdf by user root
+[2026-02-27 07:31:33,003] INFO file.resource 91871 139852381152960 Creating new file FAC_2020_0013 - Voicebot facture soft launch.pdf for user root
+[2026-02-27 07:31:33,481] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/factures/FAC_2020_0043  - Voicebot appel taxi facture 3 sur 3.pdf
+[2026-02-27 07:31:33,663] DEBUG file.resource 91871 139852757755584 Starting file upload for FAC_2020_0043  - Voicebot appel taxi facture 3 sur 3.pdf by user root
+[2026-02-27 07:31:33,663] INFO file.resource 91871 139852757755584 Creating new file FAC_2020_0043  - Voicebot appel taxi facture 3 sur 3.pdf for user root
+[2026-02-27 07:31:34,142] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/factures/FAC_2021_0031 - Experimentation SIP - avaya asterisk - selon carnet dheure DE21-0016.pdf
+[2026-02-27 07:31:34,325] DEBUG file.resource 91871 139852757755584 Starting file upload for FAC_2021_0031 - Experimentation SIP - avaya asterisk - selon carnet dheure DE21-0016.pdf by user root
+[2026-02-27 07:31:34,326] INFO file.resource 91871 139852757755584 Creating new file FAC_2021_0031 - Experimentation SIP - avaya asterisk - selon carnet dheure DE21-0016.pdf for user root
+[2026-02-27 07:31:34,822] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/factures/Facture - FAC_2019_0086 - Voicebot appel 2 sur 2.pdf
+[2026-02-27 07:31:35,009] DEBUG file.resource 91871 139852381152960 Starting file upload for Facture - FAC_2019_0086 - Voicebot appel 2 sur 2.pdf by user root
+[2026-02-27 07:31:35,010] INFO file.resource 91871 139852381152960 Creating new file Facture - FAC_2019_0086 - Voicebot appel 2 sur 2.pdf for user root
+[2026-02-27 07:31:35,677] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur
+[2026-02-27 07:31:36,152] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/1- RIB complet IBAN et SWIFT - 1590778-12_Account Details_08-10-2019.pdf
+[2026-02-27 07:31:36,345] DEBUG file.resource 91871 139852389545664 Starting file upload for 1- RIB complet IBAN et SWIFT - 1590778-12_Account Details_08-10-2019.pdf by user root
+[2026-02-27 07:31:36,346] INFO file.resource 91871 139852389545664 Creating new file 1- RIB complet IBAN et SWIFT - 1590778-12_Account Details_08-10-2019.pdf for user root
+[2026-02-27 07:31:36,818] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/2- equivalent extrait Kbis - Registre du commerce de Genève - CHE-314.116.461.pdf
+[2026-02-27 07:31:37,001] DEBUG file.resource 91871 139852757755584 Starting file upload for 2- equivalent extrait Kbis - Registre du commerce de Genève - CHE-314.116.461.pdf by user root
+[2026-02-27 07:31:37,001] INFO file.resource 91871 139852757755584 Creating new file 2- equivalent extrait Kbis - Registre du commerce de Genève - CHE-314.116.461.pdf for user root
+[2026-02-27 07:31:37,478] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/3- Attestation assurance iabsis.pdf
+[2026-02-27 07:31:37,666] DEBUG file.resource 91871 139852381152960 Starting file upload for 3- Attestation assurance iabsis.pdf by user root
+[2026-02-27 07:31:37,667] INFO file.resource 91871 139852381152960 Creating new file 3- Attestation assurance iabsis.pdf for user root
+[2026-02-27 07:31:38,151] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/3- Completment attestation assurance - Police IABSIS.pdf
+[2026-02-27 07:31:38,346] DEBUG file.resource 91871 139852372760256 Starting file upload for 3- Completment attestation assurance - Police IABSIS.pdf by user root
+[2026-02-27 07:31:38,347] INFO file.resource 91871 139852372760256 Creating new file 3- Completment attestation assurance - Police IABSIS.pdf for user root
+[2026-02-27 07:31:38,822] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/4- Attestation Charges sociales - CIEPP- prevoyance professionelle veillesse - LPP.pdf
+[2026-02-27 07:31:39,003] DEBUG file.resource 91871 139852739045056 Starting file upload for 4- Attestation Charges sociales - CIEPP- prevoyance professionelle veillesse - LPP.pdf by user root
+[2026-02-27 07:31:39,004] INFO file.resource 91871 139852739045056 Creating new file 4- Attestation Charges sociales - CIEPP- prevoyance professionelle veillesse - LPP.pdf for user root
+[2026-02-27 07:31:39,479] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/4- Attestation FER CIAM - Assurance veillesse  AVS - Invalidite - AI - Assurance perte de Gains APG - Assurance chomage AC.pdf
+[2026-02-27 07:31:39,661] DEBUG file.resource 91871 139852389545664 Starting file upload for 4- Attestation FER CIAM - Assurance veillesse  AVS - Invalidite - AI - Assurance perte de Gains APG - Assurance chomage AC.pdf by user root
+[2026-02-27 07:31:39,662] INFO file.resource 91871 139852389545664 Creating new file 4- Attestation FER CIAM - Assurance veillesse  AVS - Invalidite - AI - Assurance perte de Gains APG - Assurance chomage AC.pdf for user root
+[2026-02-27 07:31:40,138] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/referencement fournisseur/Référencement fournisseurs.xls
+[2026-02-27 07:31:40,327] DEBUG file.resource 91871 139852757755584 Starting file upload for Référencement fournisseurs.xls by user root
+[2026-02-27 07:31:40,328] INFO file.resource 91871 139852757755584 Creating new file Référencement fournisseurs.xls for user root
+[2026-02-27 07:31:40,993] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/Devis S00564 - Evaluation de faisabilite technique pour voicebot Appels entrants.pdf
+[2026-02-27 07:31:41,175] DEBUG file.resource 91871 139852381152960 Starting file upload for Devis S00564 - Evaluation de faisabilite technique pour voicebot Appels entrants.pdf by user root
+[2026-02-27 07:31:41,176] INFO file.resource 91871 139852381152960 Creating new file Devis S00564 - Evaluation de faisabilite technique pour voicebot Appels entrants.pdf for user root
+[2026-02-27 07:31:41,654] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/admin/Lettre d'initiative-VAP-VF - input iabsis.docx
+[2026-02-27 07:31:41,839] DEBUG file.resource 91871 139852739045056 Starting file upload for Lettre d'initiative-VAP-VF - input iabsis.docx by user root
+[2026-02-27 07:31:41,840] INFO file.resource 91871 139852739045056 Creating new file Lettre d'initiative-VAP-VF - input iabsis.docx for user root
+[2026-02-27 07:31:42,501] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/ACTA appels entrants concept flow high level.png
+[2026-02-27 07:31:42,683] DEBUG file.resource 91871 139852389545664 Starting file upload for ACTA appels entrants concept flow high level.png by user root
+[2026-02-27 07:31:42,683] INFO file.resource 91871 139852389545664 Creating new file ACTA appels entrants concept flow high level.png for user root
+[2026-02-27 07:31:43,163] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Diagramme conversation global.drawio
+[2026-02-27 07:31:43,352] DEBUG file.resource 91871 139852757755584 Starting file upload for Diagramme conversation global.drawio by user root
+[2026-02-27 07:31:43,353] INFO file.resource 91871 139852757755584 Creating new file Diagramme conversation global.drawio for user root
+[2026-02-27 07:31:43,830] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Meeting 05 Nov 19.md
+[2026-02-27 07:31:44,010] DEBUG file.resource 91871 139852381152960 Starting file upload for Meeting 05 Nov 19.md by user root
+[2026-02-27 07:31:44,010] INFO file.resource 91871 139852381152960 Creating new file Meeting 05 Nov 19.md for user root
+[2026-02-27 07:31:44,486] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Meeting 05 Nov 19_tak.txt
+[2026-02-27 07:31:44,670] DEBUG file.resource 91871 139852372760256 Starting file upload for Meeting 05 Nov 19_tak.txt by user root
+[2026-02-27 07:31:44,671] INFO file.resource 91871 139852372760256 Creating new file Meeting 05 Nov 19_tak.txt for user root
+[2026-02-27 07:31:45,145] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Meeting 27 juillet 2020 Tak
+[2026-02-27 07:31:45,331] DEBUG file.resource 91871 139852739045056 Starting file upload for Meeting 27 juillet 2020 Tak by user root
+[2026-02-27 07:31:45,332] INFO file.resource 91871 139852739045056 Creating new file Meeting 27 juillet 2020 Tak for user root
+[2026-02-27 07:31:45,810] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Notes meeting voicebot v2
+[2026-02-27 07:31:45,999] DEBUG file.resource 91871 139852389545664 Starting file upload for Notes meeting voicebot v2 by user root
+[2026-02-27 07:31:46,000] INFO file.resource 91871 139852389545664 Creating new file Notes meeting voicebot v2 for user root
+[2026-02-27 07:31:46,475] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Questions Meeting 20-Sept-19.md
+[2026-02-27 07:31:46,662] DEBUG file.resource 91871 139852757755584 Starting file upload for Questions Meeting 20-Sept-19.md by user root
+[2026-02-27 07:31:46,663] INFO file.resource 91871 139852757755584 Creating new file Questions Meeting 20-Sept-19.md for user root
+[2026-02-27 07:31:46,877] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies
+[2026-02-27 07:31:47,157] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Readme.md
+[2026-02-27 07:31:47,343] DEBUG file.resource 91871 139852381152960 Starting file upload for Readme.md by user root
+[2026-02-27 07:31:47,343] INFO file.resource 91871 139852381152960 Creating new file Readme.md for user root
+[2026-02-27 07:31:47,362] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies/Accueil EWP.aup3
+[2026-02-27 07:31:47,561] DEBUG file.resource 91871 139852372760256 Starting file upload for Accueil EWP.aup3 by user root
+[2026-02-27 07:31:47,562] DEBUG file.resource 91871 139852372760256 Uploaded 1MB of Accueil EWP.aup3
+[2026-02-27 07:31:47,563] DEBUG file.resource 91871 139852372760256 Uploaded 2MB of Accueil EWP.aup3
+[2026-02-27 07:31:47,565] INFO file.resource 91871 139852372760256 Creating new file Accueil EWP.aup3 for user root
+[2026-02-27 07:31:47,829] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Taxi Call Flow.xml
+[2026-02-27 07:31:48,018] DEBUG file.resource 91871 139852389545664 Starting file upload for Taxi Call Flow.xml by user root
+[2026-02-27 07:31:48,018] INFO file.resource 91871 139852389545664 Creating new file Taxi Call Flow.xml for user root
+[2026-02-27 07:31:48,106] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies/Accueil ADP.aup3
+[2026-02-27 07:31:48,304] DEBUG file.resource 91871 139852757755584 Starting file upload for Accueil ADP.aup3 by user root
+[2026-02-27 07:31:48,305] DEBUG file.resource 91871 139852757755584 Uploaded 1MB of Accueil ADP.aup3
+[2026-02-27 07:31:48,307] DEBUG file.resource 91871 139852757755584 Uploaded 2MB of Accueil ADP.aup3
+[2026-02-27 07:31:48,309] INFO file.resource 91871 139852757755584 Creating new file Accueil ADP.aup3 for user root
+[2026-02-27 07:31:48,507] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Testing needs.png
+[2026-02-27 07:31:48,692] DEBUG file.resource 91871 139852372760256 Starting file upload for Testing needs.png by user root
+[2026-02-27 07:31:48,693] INFO file.resource 91871 139852372760256 Creating new file Testing needs.png for user root
+[2026-02-27 07:31:48,790] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies/Common.aup3
+[2026-02-27 07:31:48,971] DEBUG file.resource 91871 139852381152960 Starting file upload for Common.aup3 by user root
+[2026-02-27 07:31:48,971] DEBUG file.resource 91871 139852381152960 Uploaded 1MB of Common.aup3
+[2026-02-27 07:31:48,972] DEBUG file.resource 91871 139852381152960 Uploaded 2MB of Common.aup3
+[2026-02-27 07:31:48,973] DEBUG file.resource 91871 139852381152960 Uploaded 3MB of Common.aup3
+[2026-02-27 07:31:48,973] DEBUG file.resource 91871 139852381152960 Uploaded 4MB of Common.aup3
+[2026-02-27 07:31:48,975] DEBUG file.resource 91871 139852381152960 Uploaded 5MB of Common.aup3
+[2026-02-27 07:31:48,977] DEBUG file.resource 91871 139852381152960 Uploaded 6MB of Common.aup3
+[2026-02-27 07:31:48,980] DEBUG file.resource 91871 139852381152960 Uploaded 7MB of Common.aup3
+[2026-02-27 07:31:48,983] DEBUG file.resource 91871 139852381152960 Uploaded 8MB of Common.aup3
+[2026-02-27 07:31:48,985] DEBUG file.resource 91871 139852381152960 Uploaded 9MB of Common.aup3
+[2026-02-27 07:31:48,990] DEBUG file.resource 91871 139852381152960 Uploaded 10MB of Common.aup3
+[2026-02-27 07:31:48,992] DEBUG file.resource 91871 139852381152960 Uploaded 11MB of Common.aup3
+[2026-02-27 07:31:48,993] DEBUG file.resource 91871 139852381152960 Uploaded 12MB of Common.aup3
+[2026-02-27 07:31:48,995] DEBUG file.resource 91871 139852381152960 Uploaded 13MB of Common.aup3
+[2026-02-27 07:31:48,998] DEBUG file.resource 91871 139852381152960 Uploaded 14MB of Common.aup3
+[2026-02-27 07:31:49,001] DEBUG file.resource 91871 139852381152960 Uploaded 15MB of Common.aup3
+[2026-02-27 07:31:49,004] DEBUG file.resource 91871 139852381152960 Uploaded 16MB of Common.aup3
+[2026-02-27 07:31:49,007] DEBUG file.resource 91871 139852381152960 Uploaded 17MB of Common.aup3
+[2026-02-27 07:31:49,009] DEBUG file.resource 91871 139852381152960 Uploaded 18MB of Common.aup3
+[2026-02-27 07:31:49,012] DEBUG file.resource 91871 139852381152960 Uploaded 19MB of Common.aup3
+[2026-02-27 07:31:49,015] DEBUG file.resource 91871 139852381152960 Uploaded 20MB of Common.aup3
+[2026-02-27 07:31:49,018] DEBUG file.resource 91871 139852381152960 Uploaded 21MB of Common.aup3
+[2026-02-27 07:31:49,021] DEBUG file.resource 91871 139852381152960 Uploaded 22MB of Common.aup3
+[2026-02-27 07:31:49,024] DEBUG file.resource 91871 139852381152960 Uploaded 23MB of Common.aup3
+[2026-02-27 07:31:49,027] DEBUG file.resource 91871 139852381152960 Uploaded 24MB of Common.aup3
+[2026-02-27 07:31:49,029] DEBUG file.resource 91871 139852381152960 Uploaded 25MB of Common.aup3
+[2026-02-27 07:31:49,032] DEBUG file.resource 91871 139852381152960 Uploaded 26MB of Common.aup3
+[2026-02-27 07:31:49,037] DEBUG file.resource 91871 139852381152960 Uploaded 27MB of Common.aup3
+[2026-02-27 07:31:49,039] DEBUG file.resource 91871 139852381152960 Uploaded 28MB of Common.aup3
+[2026-02-27 07:31:49,041] DEBUG file.resource 91871 139852381152960 Uploaded 29MB of Common.aup3
+[2026-02-27 07:31:49,043] DEBUG file.resource 91871 139852381152960 Uploaded 30MB of Common.aup3
+[2026-02-27 07:31:49,046] DEBUG file.resource 91871 139852381152960 Uploaded 31MB of Common.aup3
+[2026-02-27 07:31:49,056] INFO file.resource 91871 139852381152960 Creating new file Common.aup3 for user root
+[2026-02-27 07:31:49,177] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/Ubuntu 16.04-install.md
+[2026-02-27 07:31:49,360] DEBUG file.resource 91871 139852739045056 Starting file upload for Ubuntu 16.04-install.md by user root
+[2026-02-27 07:31:49,361] INFO file.resource 91871 139852739045056 Creating new file Ubuntu 16.04-install.md for user root
+[2026-02-27 07:31:49,571] WARNING django.request 91871 139852389545664 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies/Accueil Eurex.aup3
+[2026-02-27 07:31:49,754] DEBUG file.resource 91871 139852389545664 Starting file upload for Accueil Eurex.aup3 by user root
+[2026-02-27 07:31:49,755] DEBUG file.resource 91871 139852389545664 Uploaded 1MB of Accueil Eurex.aup3
+[2026-02-27 07:31:49,756] INFO file.resource 91871 139852389545664 Creating new file Accueil Eurex.aup3 for user root
+[2026-02-27 07:31:49,841] WARNING django.request 91871 139852739045056 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/acta-voicebot-taxi-dev.zip
+[2026-02-27 07:31:50,027] DEBUG file.resource 91871 139852757755584 Starting file upload for acta-voicebot-taxi-dev.zip by user root
+[2026-02-27 07:31:50,027] INFO file.resource 91871 139852757755584 Creating new file acta-voicebot-taxi-dev.zip for user root
+[2026-02-27 07:31:50,235] WARNING django.request 91871 139852381152960 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies/Accueil FK Conseils.aup3
+[2026-02-27 07:31:50,429] DEBUG file.resource 91871 139852381152960 Starting file upload for Accueil FK Conseils.aup3 by user root
+[2026-02-27 07:31:50,430] DEBUG file.resource 91871 139852381152960 Uploaded 1MB of Accueil FK Conseils.aup3
+[2026-02-27 07:31:50,431] INFO file.resource 91871 139852381152960 Creating new file Accueil FK Conseils.aup3 for user root
+[2026-02-27 07:31:50,525] WARNING django.request 91871 139852372760256 Not Found: /dav/__shared__/Iabsis shared/Clients/ACTA/meeting notes.pdf
+[2026-02-27 07:31:50,717] DEBUG file.resource 91871 139852372760256 Starting file upload for meeting notes.pdf by user root
+[2026-02-27 07:31:50,718] INFO file.resource 91871 139852372760256 Creating new file meeting notes.pdf for user root
+[2026-02-27 07:31:50,931] WARNING django.request 91871 139852757755584 Not Found: /dav/__shared__/Iabsis shared/Clients/Autour des Paies/Téléphonie.txt
+[2026-02-27 07:31:51,116] DEBUG file.resource 91871 139852757755584 Starting file upload for Téléphonie.txt by user root
+[2026-02-27 07:31:51,117] INFO file.resource 91871 139852757755584 Creating new file Téléphonie.txt for user root
+[2026-02-27 07:32:08,080] WARNING django.request 91871 139852785907392 Not Found: /index.php/apps/theming/img/core/filetypes/x-office-document.svg
+[2026-02-27 07:32:08,188] WARNING django.request 91871 139852757755584 Not Found: /index.php/apps/theming/img/core/filetypes/image.svg
+[2026-02-27 08:13:31,332] WARNING django.request 244855 139959406159552 Not Found: /index.php/204
+[2026-02-27 08:14:33,328] WARNING django.request 244855 139959406159552 Not Found: /index.php/204
+[2026-02-27 08:15:35,328] WARNING django.request 244855 139959406159552 Not Found: /index.php/204
+[2026-02-27 08:16:37,331] WARNING django.request 244855 139959406159552 Not Found: /index.php/204
+[2026-02-27 08:16:37,331] WARNING django.request 244855 139959389374144 Not Found: /index.php/204
+[2026-02-27 08:16:37,370] WARNING django.request 244855 139959389374144 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-27 08:16:37,382] WARNING django.request 244855 139959389374144 Not Found: /remote.php/dav/avatars/root/128.png
+[2026-02-27 08:16:37,397] WARNING django.request 244855 139959406159552 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-27 08:16:37,399] WARNING django.request 244855 139959389374144 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-27 08:30:54,327] WARNING django.request 244855 139959389374144 Not Found: /browse/sdfasdfsdfs
+[2026-02-27 08:36:06,453] WARNING django.request 253921 140126505133760 Unauthorized: /remote.php/dav/files/root/
+[2026-02-27 08:36:06,601] WARNING django.request 253921 140126505133760 Unauthorized: /remote.php/dav/files/root/
+[2026-02-27 08:36:06,619] WARNING django.request 253921 140126505133760 Not Found: /index.php/core/wipe/check
+[2026-02-27 08:57:46,318] WARNING django.request 259482 140346522584768 Not Found: /
+[2026-02-27 08:57:54,534] WARNING django.request 259482 140346141947584 Not Found: /
+[2026-02-27 08:58:01,444] WARNING django.request 259482 140346150340288 Unauthorized: /dav/
+[2026-02-27 08:58:01,609] WARNING django.request 259482 140346141947584 Unauthorized: /dav/
+[2026-02-27 08:58:03,634] WARNING django.request 259482 140346522584768 Unauthorized: /dav/
+[2026-02-27 08:58:05,367] WARNING django.request 259482 140346150340288 Unauthorized: /dav/
+[2026-02-27 08:58:06,778] WARNING django.request 259482 140346141947584 Unauthorized: /dav/
+[2026-02-27 08:58:13,855] WARNING django.request 259482 140346150340288 Unauthorized: /dav/
+[2026-02-27 08:58:15,185] WARNING django.request 259482 140346141947584 Unauthorized: /dav/
+[2026-02-27 08:59:09,851] WARNING django.request 259482 140346150340288 Unauthorized: /dav/
+[2026-02-27 08:59:11,698] WARNING django.request 259482 140346522584768 Not Found: /
+[2026-02-27 08:59:22,219] DEBUG file.resource 259482 140346158732992 Resource not found: sadasdf for user root2
+[2026-02-27 09:00:04,354] WARNING django.request 259482 140346150340288 Not Found: /browse/sdfasdfsdfs
+[2026-02-27 09:00:16,328] WARNING django.request 259482 140346522584768 Unauthorized: /remote.php/dav/files/root/ocs/v2.php/core/apppassword
+[2026-02-27 09:00:40,200] WARNING django.request 259482 140346141947584 Not Found: /remote.php/dav/files//
+[2026-02-27 09:00:40,201] WARNING django.request 259482 140346522584768 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-27 09:00:40,201] WARNING django.request 259482 140346150340288 Not Found: /
+[2026-02-27 09:00:40,362] WARNING django.request 259482 140346141947584 Unauthorized: /ocs/v2.php/cloud/capabilities
+[2026-02-27 09:00:52,794] WARNING django.request 259482 140346150340288 Not Found: /
+[2026-02-27 09:00:55,572] WARNING django.request 259482 140346522584768 Not Found: /
+[2026-02-27 09:01:07,918] WARNING django.request 259482 140346150340288 Not Found: /index.php/login/v2/poll
+[2026-02-27 09:01:09,132] WARNING django.request 259482 140346141947584 Not Found: /index.php/login/v2/poll
+[2026-02-27 09:01:42,339] WARNING django.request 259482 140346150340288 Not Found: /remote.php/dav/avatars/olivier.b@iabsis.com/32.png
+[2026-02-27 09:01:52,563] WARNING django.request 259482 140346522584768 Not Found: /index.php/204
+[2026-02-27 09:01:52,730] WARNING django.request 259482 140346141947584 Not Found: /ocs/v2.php/apps/terms_of_service/terms
+[2026-02-27 09:01:52,755] WARNING django.request 259482 140346150340288 Not Found: /remote.php/dav/avatars/olivier.b@iabsis.com/128.png
+[2026-02-27 09:01:52,777] WARNING django.request 259482 140346150340288 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-27 09:01:52,779] WARNING django.request 259482 140346522584768 Not Found: /ocs/v2.php/core/navigation/apps
+[2026-02-27 09:01:53,282] WARNING django.request 259482 140346150340288 Not Found: /index.php/apps/theming/img/core/filetypes/folder.svg
+[2026-02-27 09:01:53,331] WARNING django.request 259482 140346141947584 Not Found: /index.php/apps/theming/img/core/filetypes/x-office-document.svg
+[2026-02-27 09:01:53,379] WARNING django.request 259482 140346522584768 Not Found: /index.php/apps/theming/img/core/filetypes/text.svg
+[2026-02-27 09:01:53,487] WARNING django.request 259482 140346150340288 Not Found: /index.php/apps/theming/img/core/filetypes/image.svg
+[2026-02-27 09:01:53,578] WARNING django.request 259482 140346141947584 Not Found: /index.php/apps/theming/img/core/filetypes/application-pdf.svg
+[2026-02-27 09:01:54,190] WARNING django.request 259482 140346522584768 Not Found: /index.php/apps/theming/img/core/filetypes/file.svg
+[2026-02-27 09:02:35,859] WARNING django.request 259482 140346150340288 Not Found: /
+[2026-02-27 09:02:44,030] WARNING django.request 259482 140346141947584 Not Found: /
+[2026-02-27 09:29:05,521] WARNING django.request 259482 140346150340288 Unauthorized: /api/browse/sadasdf
+[2026-02-27 10:03:44,390] WARNING django.request 259482 140346522584768 Unauthorized: /api/auth/user/
+[2026-02-27 10:03:44,391] WARNING django.request 259482 140346150340288 Unauthorized: /api/tree/
+[2026-02-27 10:03:44,391] WARNING django.request 259482 140346141947584 Unauthorized: /api/browse/__shared__/Shared
+[2026-02-27 10:45:52,033] WARNING django.request 259482 140346522584768 Unauthorized: /api/browse/
+[2026-02-27 10:45:52,034] WARNING django.request 259482 140346150340288 Unauthorized: /api/tree/
+[2026-02-27 10:45:52,035] WARNING django.request 259482 140346141947584 Unauthorized: /api/auth/user/
+[2026-02-27 11:10:25,550] WARNING django.request 259482 140346522584768 Unauthorized: /api/download/73/
+[2026-02-27 12:04:35,026] WARNING django.request 259482 140345765521088 Unauthorized: /api/browse/__shared__/Shared/sfsdfd
+[2026-02-27 12:04:35,028] WARNING django.request 259482 140346150340288 Unauthorized: /api/tree/
+[2026-02-27 12:04:35,029] WARNING django.request 259482 140346522584768 Unauthorized: /api/auth/user/
+[2026-02-27 12:07:21,538] WARNING django.request 259482 140346141947584 Not Found: /index.php/apps/theming/img/core/filetypes/x-office-document.svg

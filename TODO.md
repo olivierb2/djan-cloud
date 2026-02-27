@@ -9,8 +9,5 @@ OnlyOffice / Collabora support
 
 Ajouter un lien avec Onlyoffice et Collabora
 
-Configuration > User support
-============================
-
 Ajouter de la gestion des contact carddav et caldav
 ===================================================

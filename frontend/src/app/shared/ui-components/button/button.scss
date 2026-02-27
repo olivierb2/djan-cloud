@@ -1,0 +1,321 @@
+:host {
+  display: inline-block;
+
+  &.block {
+    width: 100%;
+    display: block;
+
+    .app-button {
+      width: 100%;
+    }
+  }
+
+  .app-button {
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 12px;
+    align-items: center;
+    white-space: nowrap;
+    display: inline-flex;
+    justify-content: center;
+    font-family: "Plus Jakarta Sans", "Source Sans Pro", sans-serif;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+
+    &.large {
+      padding: 16px 24px;
+      font-size: 16px;
+      line-height: 16px;
+    }
+
+    &.medium {
+      padding: 12px 20px;
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    &.small {
+      padding: 8px 16px;
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    &.primary {
+      color: var(--White);
+      background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%) border-box;
+      box-shadow: 0 4px 14px rgba(var(--primary-500-rgb), 0.3);
+
+      //::ng-deep svg {
+      //  fill: var(--White) !important;
+      //}
+
+      &:hover {
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%) border-box;
+        box-shadow: 0 6px 20px rgba(var(--primary-500-rgb), 0.4);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        color: var(--slate-400);
+        background: var(--slate-200);
+        box-shadow: none;
+        transform: none;
+      }
+
+      &.secondary {
+        color: var(--slate-700);
+        background: var(--slate-100);
+        box-shadow: none;
+
+        //::ng-deep svg {
+        //  fill: var(--slate-600) !important;
+        //}
+
+        &:hover {
+          background: var(--slate-200);
+          transform: translateY(-1px);
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          background: var(--slate-100);
+        }
+      }
+
+      &.error {
+        background: linear-gradient(135deg, var(--rose-500) 0%, var(--rose-600) 100%);
+        color: var(--White);
+        box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
+
+        &:hover {
+          background: linear-gradient(135deg, var(--rose-600) 0%, var(--rose-700) 100%);
+          box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4);
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          background: var(--slate-200);
+          box-shadow: none;
+        }
+      }
+    }
+
+    &.stroke {
+      background: transparent;
+      border: 2px solid var(--primary-500);
+      color: var(--primary-600);
+
+      //::ng-deep svg {
+      //  fill: var(--primary-500);
+      //}
+
+      &:hover {
+        background: var(--primary-500);
+        color: var(--White);
+        transform: translateY(-1px);
+
+        //::ng-deep svg {
+        //  fill: var(--White);
+        //}
+      }
+
+      &:disabled {
+        color: var(--slate-400);
+        border-color: var(--slate-300);
+      }
+
+      &.secondary {
+        color: var(--slate-600);
+        border-color: var(--slate-300);
+
+        //::ng-deep svg {
+        //  fill: var(--slate-500);
+        //}
+
+        &:hover {
+          background: var(--slate-100);
+          border-color: var(--slate-400);
+          color: var(--slate-700);
+
+          //::ng-deep svg {
+          //  fill: var(--slate-600);
+          //}
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          border-color: var(--slate-200);
+          background: transparent;
+        }
+      }
+
+      &.error {
+        color: var(--rose-500);
+        border-color: var(--rose-500);
+
+        //::ng-deep svg {
+        //  fill: var(--rose-500);
+        //}
+
+        &:hover {
+          background: var(--rose-500);
+          color: var(--White);
+
+          //::ng-deep svg {
+          //  fill: var(--White);
+          //}
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          border-color: var(--slate-300);
+          background: transparent;
+        }
+      }
+    }
+
+    &.text {
+      border: none;
+      background: transparent;
+      color: var(--primary-600);
+
+      //::ng-deep svg {
+      //  fill: var(--primary-500);
+      //}
+
+      &:hover {
+        color: var(--primary-700);
+        text-decoration: underline;
+      }
+
+      &:disabled {
+        color: var(--slate-400);
+        text-decoration: none;
+      }
+
+      &.secondary {
+        color: var(--slate-600);
+
+        //::ng-deep svg {
+        //  fill: var(--slate-500);
+        //}
+
+        &:hover {
+          color: var(--slate-800);
+          text-decoration: underline;
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          text-decoration: none;
+        }
+      }
+
+      &.error {
+        color: var(--rose-500);
+
+        //::ng-deep svg {
+        //  fill: var(--rose-500);
+        //}
+
+        &:hover {
+          color: var(--rose-600);
+          text-decoration: underline;
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          text-decoration: none;
+        }
+      }
+    }
+
+    &.filled-stroke {
+      background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+      color: var(--White);
+      border: 2px solid var(--primary-500);
+      box-shadow: 0 4px 14px rgba(var(--primary-500-rgb), 0.3);
+
+      &:hover {
+        background: transparent;
+        color: var(--primary-600);
+        border-color: var(--primary-500);
+        box-shadow: none;
+
+        //::ng-deep svg {
+        //  fill: var(--primary-500);
+        //}
+      }
+
+      &:disabled {
+        color: var(--slate-400);
+        background: var(--slate-200);
+        border-color: var(--slate-200);
+        box-shadow: none;
+      }
+
+      &.secondary {
+        background: var(--slate-100);
+        color: var(--slate-700);
+        border-color: var(--slate-200);
+        box-shadow: none;
+
+        &:hover {
+          background: transparent;
+          color: var(--slate-700);
+          border-color: var(--slate-300);
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          background: var(--slate-100);
+          border-color: var(--slate-200);
+        }
+      }
+
+      &.error {
+        background: linear-gradient(135deg, var(--rose-500) 0%, var(--rose-600) 100%);
+        color: var(--White);
+        border-color: var(--rose-500);
+        box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
+
+        &:hover {
+          background: transparent;
+          color: var(--rose-500);
+          border-color: var(--rose-500);
+          box-shadow: none;
+        }
+
+        &:disabled {
+          color: var(--slate-400);
+          background: var(--slate-200);
+          border-color: var(--slate-200);
+          box-shadow: none;
+        }
+      }
+    }
+
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid var(--White);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+}
