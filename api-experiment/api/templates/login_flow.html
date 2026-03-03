@@ -59,8 +59,8 @@
             <form method="post" id="login-form" class="hidden space-y-5 mt-4">
                 {% csrf_token %}
                 <div>
-                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                    <input type="text" name="username" id="id_username" required
+                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="username" id="id_username" required
                            class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm
                                   focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
                 </div>
@@ -82,8 +82,8 @@
             <form method="post" class="space-y-5">
                 {% csrf_token %}
                 <div>
-                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                    <input type="text" name="username" id="id_username" autofocus required
+                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="username" id="id_username" autofocus required
                            class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm
                                   focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
                            value="{{ form.username.value|default:'' }}">

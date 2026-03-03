@@ -10,17 +10,10 @@ import secrets
 class User(AbstractUser):
     ROLE_CHOICES = [('user', 'User'), ('admin', 'Admin')]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-    email = models.EmailField(unique=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
         if self.is_superuser and self.role != 'admin':
             self.role = 'admin'
-        # Auto-generate username from email if not set
-        if not self.username and self.email:
-            self.username = self.email.split('@')[0]
         super().save(*args, **kwargs)
 
 class FileSystemItem(models.Model):

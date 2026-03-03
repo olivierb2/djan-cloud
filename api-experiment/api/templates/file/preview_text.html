@@ -1,0 +1,39 @@
+{% extends "file/base.html" %}
+
+{% block title %}{{ display_name }} - Djancloud{% endblock %}
+
+{% block body %}
+<div class="min-h-full flex flex-col">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm">
+        <a href="{% url 'browse_files_root' %}" class="flex items-center gap-2 text-brand-600 font-bold text-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+            </svg>
+            Djancloud
+        </a>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'download_file' file_id=file.id %}"
+               class="inline-flex items-center gap-1 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Download
+            </a>
+            <button onclick="history.back()"
+                    class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
+                Back
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-1 p-4 lg:p-6">
+        <div class="mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <h1 class="text-lg font-semibold text-gray-900">{{ display_name }}</h1>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+            <pre class="p-4 text-sm leading-relaxed text-gray-800 overflow-x-auto">{{ text_content }}</pre>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -2,3 +2,4 @@ venv
 uploads
 db.sqlite3
 **.pyc
+django.log
