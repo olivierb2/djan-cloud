@@ -1309,3 +1309,57 @@ class UserManagementView(LoginRequiredMixin, View):
     def get(self, request):
         users = User.objects.order_by('username')
         return render(request, 'file/users.html', {'users': users})
+
+
+class FileEditorView(LoginRequiredMixin, View):
+    def get(self, request, file_id):
+        file_obj, is_owner = get_accessible_file(request, file_id, permission='read')
+
+        if not file_obj.file or not os.path.exists(file_obj.file.path):
+            raise Http404("File not found")
+
+        display_name = os.path.basename(file_obj.file.name)
+
+        try:
+            with open(file_obj.file.path, 'r', errors='replace') as f:
+                content = f.read()
+        except Exception:
+            raise Http404("Cannot read file")
+
+        can_write = is_owner
+        if not is_owner:
+            membership = _get_shared_membership(request.user, file_obj)
+            if membership:
+                can_write = membership.permission in ('write', 'admin')
+
+        return render(request, 'file/editor.html', {
+            'file': file_obj,
+            'display_name': display_name,
+            'initial_content': json.dumps(content),
+            'can_write': can_write,
+        })
+
+
+class FileSaveView(LoginRequiredMixin, View):
+    def post(self, request, file_id):
+        file_obj, is_owner = get_accessible_file(request, file_id, permission='write')
+
+        if not file_obj.file or not os.path.exists(file_obj.file.path):
+            return JsonResponse({'error': 'File not found'}, status=404)
+
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        content = data.get('content', '')
+
+        try:
+            with open(file_obj.file.path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            file_obj.size = os.path.getsize(file_obj.file.path)
+            file_obj.save()
+            return JsonResponse({'ok': True})
+        except Exception as e:
+            logger.error(f"Error saving file {file_id}: {e}")
+            return JsonResponse({'error': 'Failed to save file'}, status=500)

@@ -4,3 +4,5 @@ DjangoDav==0.0.1b23
 django-webpack-loader-3.2.3
 lxml==5.4.0
 sqlparse==0.5.3
+channels==4.2.0
+daphne==4.2.0

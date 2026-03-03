@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView, SharedFolderCreateView, SharedFolderMembersView, SharedFolderMemberDeleteView, UserListView, UserCreateView, UserDeleteView, UserManagementView
+from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView, SharedFolderCreateView, SharedFolderMembersView, SharedFolderMemberDeleteView, UserListView, UserCreateView, UserDeleteView, UserManagementView, FileEditorView, FileSaveView
 from django.conf import settings
 
 from django.urls import re_path
@@ -62,6 +62,8 @@ urlpatterns = [
     path('move/<str:item_type>/<int:item_id>/', MoveItemView.as_view(), name='move_item'),
     path('rename/<str:item_type>/<int:item_id>/', RenameItemView.as_view(), name='rename_item'),
     path('preview/<int:file_id>/', FilePreviewView.as_view(), name='preview_file'),
+    path('editor/<int:file_id>/', FileEditorView.as_view(), name='editor_file'),
+    path('api/files/<int:file_id>/save/', FileSaveView.as_view(), name='api_file_save'),
     path('api/folders/', FolderSelectorView.as_view(), name='api_folder_root'),
     path('api/folders/<int:folder_id>/', FolderSelectorView.as_view(), name='api_folder_contents'),
     path('api/tree/', FolderTreeView.as_view(), name='api_folder_tree'),

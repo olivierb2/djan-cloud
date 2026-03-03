@@ -11,6 +11,7 @@ module.exports = (env, argv) => {
       browse: './src/js/browse.js',
       users: './src/js/users.js',
       move_picker: './src/js/move_picker.js',
+      editor: './src/js/editor_init.js',
     },
 
     output: {

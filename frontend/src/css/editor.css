@@ -1,0 +1,17 @@
+@import '@milkdown/crepe/theme/common/style.css';
+@import '@milkdown/crepe/theme/frame.css';
+
+.editor-container {
+  padding: 1rem;
+}
+
+.milkdown-crepe-wrapper {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.milkdown {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
