@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fileId: config.fileId,
     initialContent: config.initialContent,
     readonly: !config.canWrite,
+    userName: config.userName || 'Anonymous',
     onContentChange: (markdown) => {
       hasUnsavedChanges = true;
       if (config.canWrite) {

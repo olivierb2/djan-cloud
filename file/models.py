@@ -88,11 +88,16 @@ class File(FileSystemItem):
     parent = models.ForeignKey(
         Folder, on_delete=models.CASCADE, related_name='files')
     content_type = models.CharField(editable=False, max_length=100, null=True, blank=True)
+    display_name = models.CharField(max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
         if self.parent:
             filename = self.file.name.split('/')[-1] if '/' in self.file.name else self.file.name
             self.full_path = f"{self.parent.full_path}{filename}"
+
+            # Set display_name if not already set
+            if not self.display_name:
+                self.display_name = filename
         else:
             raise ValidationError("File must belong to a folder.")
 

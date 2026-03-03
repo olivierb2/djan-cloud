@@ -82,6 +82,7 @@ window.editorConfig = {
     fileId: {{ file.id }},
     initialContent: {{ initial_content|safe }},
     canWrite: {{ can_write|lower }},
+    userName: "{{ user.username|escapejs }}",
 };
 </script>
 {% endblock %}

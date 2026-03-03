@@ -630,9 +630,6 @@ class FileBrowseView(LoginRequiredMixin, View):
             subfolders = folder.subfolders.filter(owner=request.user).order_by('name')
             files = folder.files.filter(owner=request.user).order_by('file')
 
-        for f in files:
-            f.display_name = os.path.basename(f.file.name)
-
         for subfolder in subfolders:
             subfolder.url_path = self._folder_url_path(request, subfolder)
 
@@ -701,7 +698,8 @@ class FileBrowseView(LoginRequiredMixin, View):
                 new_file = File(
                     owner=request.user,
                     parent=folder,
-                    file=uploaded_file
+                    file=uploaded_file,
+                    display_name=uploaded_file.name
                 )
                 new_file.save()
                 messages.success(request, f'File "{uploaded_file.name}" uploaded successfully.')
@@ -764,7 +762,8 @@ class FileBrowseView(LoginRequiredMixin, View):
                 new_file = File(
                     owner=request.user,
                     parent=folder,
-                    file=file_obj
+                    file=file_obj,
+                    display_name=filename
                 )
                 new_file.save()
                 messages.success(request, f'File "{filename}" created successfully.')
@@ -1089,6 +1088,7 @@ class RenameItemView(LoginRequiredMixin, View):
             if os.path.exists(old_path):
                 os.rename(old_path, new_file_path)
             item.file.name = os.path.join(os.path.dirname(item.file.name), new_name)
+            item.display_name = new_name
             item.content_type = None  # Will be recalculated on save
             item.save()
             messages.success(request, f'File renamed to "{new_name}".')

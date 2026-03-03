@@ -9,6 +9,7 @@ export class CollaborativeEditor {
     this.fileId = options.fileId;
     this.initialContent = options.initialContent || '';
     this.readonly = options.readonly || false;
+    this.userName = options.userName || 'Anonymous';
     this.onContentChange = options.onContentChange || (() => {});
     this.onConnectionStatusChange = options.onConnectionStatusChange || (() => {});
     this.onUsersChange = options.onUsersChange || (() => {});
@@ -39,16 +40,27 @@ export class CollaborativeEditor {
       }
     });
 
-    this.wsProvider.awareness.on('change', () => {
+    const updateUsers = () => {
       if (!this.destroyed && this.wsProvider) {
-        this.onUsersChange(this.wsProvider.awareness.getStates().size);
+        // Count unique users excluding self
+        const states = this.wsProvider.awareness.getStates();
+        const uniqueUsers = new Set();
+        states.forEach((state, clientId) => {
+          if (state.user && state.user.name) {
+            uniqueUsers.add(state.user.name);
+          }
+        });
+        this.onUsersChange(uniqueUsers.size);
       }
-    });
+    };
+
+    this.wsProvider.awareness.on('change', updateUsers);
+    this.wsProvider.awareness.on('update', updateUsers);
 
     const colors = ['#30bced', '#6eeb83', '#ffbc42', '#e84855', '#8458B3', '#0d7377'];
     const color = colors[Math.floor(Math.random() * colors.length)];
     this.wsProvider.awareness.setLocalStateField('user', {
-      name: window.currentUser?.email || 'Anonymous',
+      name: this.userName,
       color,
     });
 
@@ -68,7 +80,22 @@ export class CollaborativeEditor {
         .bindDoc(this.ydoc)
         .setAwareness(this.wsProvider.awareness);
 
-      collabService.applyTemplate(this.initialContent).connect();
+      // Apply initial content only if we're the first client connecting
+      // and there's no content in Yjs yet
+      const checkAndApplyTemplate = () => {
+        const ydocContent = this.ydoc.share.get('prosemirror');
+        const isYjsEmpty = !ydocContent || ydocContent.length === 0;
+        const clientCount = this.wsProvider.awareness.getStates().size;
+
+        if (isYjsEmpty && this.initialContent && clientCount === 1) {
+          collabService.applyTemplate(this.initialContent);
+        }
+      };
+
+      // Wait a bit for initial sync, then check
+      setTimeout(checkAndApplyTemplate, 300);
+
+      collabService.connect();
     });
 
     if (this.readonly) {
