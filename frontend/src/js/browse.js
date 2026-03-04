@@ -154,6 +154,92 @@ function createSharedFolder() {
 }
 window.createSharedFolder = createSharedFolder;
 
+// Search functionality
+const searchInput = document.getElementById('search-input');
+const searchResults = document.createElement('div');
+searchResults.id = 'search-results';
+searchResults.className = 'hidden absolute top-full left-0 mt-2 w-96 max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-xl z-50';
+searchInput.parentElement.appendChild(searchResults);
+
+let searchTimeout = null;
+
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+
+    clearTimeout(searchTimeout);
+
+    if (query.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+    }
+
+    searchTimeout = setTimeout(() => {
+        fetch(`/api/search/?q=${encodeURIComponent(query)}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.results.length === 0) {
+                    searchResults.innerHTML = '<div class="p-4 text-sm text-gray-400 text-center">No results found</div>';
+                } else {
+                    searchResults.innerHTML = data.results.map(item => {
+                        const icon = item.type === 'folder'
+                            ? '<svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/></svg>'
+                            : item.content_type && item.content_type.includes('image')
+                                ? '<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>'
+                                : item.name.toLowerCase().endsWith('.md')
+                                    ? '<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>'
+                                    : '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>';
+
+                        return `
+                            <a href="${item.url}" class="flex items-start gap-3 px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                ${icon}
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium text-sm text-gray-900 truncate">${item.name}</div>
+                                    <div class="text-xs text-gray-500 truncate">${item.path}</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">${item.location}</div>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+                }
+                searchResults.classList.remove('hidden');
+            });
+    }, 300);
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', (e) => {
+    if (!searchInput.parentElement.contains(e.target)) {
+        searchResults.classList.add('hidden');
+    }
+});
+
+// Close search results on Escape
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        searchResults.classList.add('hidden');
+        searchInput.blur();
+    }
+});
+
+// Highlight and scroll to file if hash is present
+if (window.location.hash) {
+    const fileId = window.location.hash.substring(1); // Remove the #
+    const fileRow = document.getElementById(fileId);
+    if (fileRow) {
+        // Add highlight animation
+        fileRow.style.backgroundColor = '#fef3c7'; // yellow-100
+        setTimeout(() => {
+            fileRow.style.transition = 'background-color 1s ease';
+            fileRow.style.backgroundColor = '';
+        }, 100);
+
+        // Scroll to element
+        setTimeout(() => {
+            fileRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    }
+}
+
 // Sidebar folder tree
 fetch('/api/tree/').then(r => r.json()).then(data => {
     const treeEl = document.getElementById('folder-tree');

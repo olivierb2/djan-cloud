@@ -773,6 +773,104 @@ class FileBrowseView(LoginRequiredMixin, View):
         return redirect(request.path)
 
 
+class SearchView(LoginRequiredMixin, View):
+    def get(self, request):
+        query = request.GET.get('q', '').strip()
+        if not query or len(query) < 2:
+            return JsonResponse({'results': []})
+
+        results = []
+
+        # Search in personal files
+        personal_files = File.objects.filter(
+            owner=request.user,
+            display_name__icontains=query
+        ).select_related('parent')[:20]
+
+        for file in personal_files:
+            path_display = file.full_path.replace(f"/{request.user.username}/", "", 1)
+            # Navigate to parent folder with file highlight
+            parent_path = file.parent.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+            folder_url = reverse('browse_files', kwargs={'path': parent_path}) if parent_path else reverse('browse_files_root')
+            folder_url += f'#file-{file.id}'
+            results.append({
+                'type': 'file',
+                'id': file.id,
+                'name': file.display_name,
+                'path': path_display,
+                'url': folder_url,
+                'location': 'Personal',
+                'content_type': file.content_type
+            })
+
+        # Search in personal folders
+        personal_folders = Folder.objects.filter(
+            owner=request.user,
+            name__icontains=query
+        ).exclude(name__isnull=True)[:20]
+
+        for folder in personal_folders:
+            path_display = folder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+            browse_path = path_display if path_display else ''
+            results.append({
+                'type': 'folder',
+                'id': folder.id,
+                'name': folder.name,
+                'path': path_display,
+                'url': reverse('browse_files', kwargs={'path': browse_path}) if browse_path else reverse('browse_files_root'),
+                'location': 'Personal'
+            })
+
+        # Search in shared folders
+        shared_memberships = SharedFolderMembership.objects.filter(
+            user=request.user
+        ).select_related('shared_folder__root_folder')
+
+        for membership in shared_memberships:
+            root = membership.shared_folder.root_folder
+
+            # Search files in this shared folder
+            shared_files = File.objects.filter(
+                full_path__startswith=root.full_path,
+                display_name__icontains=query
+            ).select_related('parent')[:20]
+
+            for file in shared_files:
+                path_display = file.full_path.lstrip('/')
+                # Navigate to parent folder with file highlight
+                parent_path = file.parent.full_path.lstrip('/').rstrip('/')
+                folder_url = reverse('browse_files', kwargs={'path': parent_path})
+                folder_url += f'#file-{file.id}'
+                results.append({
+                    'type': 'file',
+                    'id': file.id,
+                    'name': file.display_name,
+                    'path': path_display,
+                    'url': folder_url,
+                    'location': f'Shared: {membership.shared_folder.name}',
+                    'content_type': file.content_type
+                })
+
+            # Search folders in this shared folder
+            shared_folders = Folder.objects.filter(
+                full_path__startswith=root.full_path,
+                name__icontains=query
+            ).exclude(name__isnull=True)[:20]
+
+            for folder in shared_folders:
+                path_display = folder.full_path.lstrip('/').rstrip('/')
+                results.append({
+                    'type': 'folder',
+                    'id': folder.id,
+                    'name': folder.name,
+                    'path': path_display,
+                    'url': reverse('browse_files', kwargs={'path': path_display}),
+                    'location': f'Shared: {membership.shared_folder.name}'
+                })
+
+        return JsonResponse({'results': results[:50]})
+
+
 class FileDownloadView(LoginRequiredMixin, View):
     def get(self, request, file_id):
         file_obj, _ = get_accessible_file(request, file_id, permission='read')

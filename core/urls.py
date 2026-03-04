@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 
 from djangodav.acls import FullAcl
 from djangodav.locks import DummyLock
-from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView, SharedFolderCreateView, SharedFolderMembersView, SharedFolderMemberDeleteView, UserListView, UserCreateView, UserDeleteView, UserManagementView, FileEditorView, FileSaveView
+from file.views import MyDavView, DavEntryView, RootView, StatusView, Login, LoginForm, LoginPoll, WebLoginView, WebLogoutView, FileBrowseView, SearchView, FileDownloadView, FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView, RenameItemView, FilePreviewView, FolderTreeView, OcsUserView, OcsCapabilitiesView, SharedFolderCreateView, SharedFolderMembersView, SharedFolderMemberDeleteView, UserListView, UserCreateView, UserDeleteView, UserManagementView, FileEditorView, FileSaveView
 from django.conf import settings
 
 from django.urls import re_path
@@ -56,6 +56,7 @@ urlpatterns = [
     re_path(r'^dav/(?P<path>.*)$', dav_entry_view, name='fsdav_entry'),
     path('browse/', FileBrowseView.as_view(), name='browse_files_root'),
     path('browse/<path:path>', FileBrowseView.as_view(), name='browse_files'),
+    path('api/search/', SearchView.as_view(), name='api_search'),
     path('download/<int:file_id>/', FileDownloadView.as_view(), name='download_file'),
     path('delete/file/<int:file_id>/', FileDeleteView.as_view(), name='delete_file'),
     path('delete/folder/<int:folder_id>/', FolderDeleteView.as_view(), name='delete_folder'),
