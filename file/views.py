@@ -1385,6 +1385,8 @@ class UserCreateView(LoginRequiredMixin, View):
         username = data.get('username', '').strip()
         password = data.get('password', '').strip()
         email = data.get('email', '').strip()
+        first_name = data.get('first_name', '').strip()
+        last_name = data.get('last_name', '').strip()
         role = data.get('role', 'user')
         if not username or not password:
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
@@ -1394,8 +1396,14 @@ class UserCreateView(LoginRequiredMixin, View):
             return JsonResponse({'error': 'Email already in use.'}, status=400)
         if role not in ('user', 'admin'):
             role = 'user'
-        user = User.objects.create_user(username=username, password=password, email=email, role=role)
-        return JsonResponse({'id': user.id, 'username': user.username, 'email': user.email, 'role': user.role})
+        user = User.objects.create_user(
+            username=username, password=password, email=email,
+            first_name=first_name, last_name=last_name, role=role,
+        )
+        return JsonResponse({
+            'id': user.id, 'username': user.username, 'email': user.email,
+            'first_name': user.first_name, 'last_name': user.last_name, 'role': user.role,
+        })
 
 
 class UserUpdateView(LoginRequiredMixin, View):
@@ -1404,6 +1412,12 @@ class UserUpdateView(LoginRequiredMixin, View):
             return JsonResponse({'error': 'Forbidden'}, status=403)
         user = get_object_or_404(User, id=user_id)
         data = json.loads(request.body)
+
+        if 'first_name' in data:
+            user.first_name = data['first_name'].strip()
+
+        if 'last_name' in data:
+            user.last_name = data['last_name'].strip()
 
         if 'email' in data:
             email_val = data['email'].strip()
@@ -1423,6 +1437,7 @@ class UserUpdateView(LoginRequiredMixin, View):
         user.save()
         return JsonResponse({
             'id': user.id, 'username': user.username,
+            'first_name': user.first_name, 'last_name': user.last_name,
             'email': user.email, 'role': user.role,
             'is_active': user.is_active,
         })
