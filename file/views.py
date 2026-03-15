@@ -119,9 +119,21 @@ class BasicAuthMixin:
                 request.user = user
                 return super().dispatch(request, *args, **kwargs)
 
+        # Also check Bearer token (some clients use OAuth-style flow)
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ", 1)[1]
+            try:
+                app_token = AppToken.objects.select_related('user').get(token=token)
+                app_token.last_used_at = timezone.now()
+                app_token.save(update_fields=['last_used_at'])
+                request.user = app_token.user
+                return super().dispatch(request, *args, **kwargs)
+            except AppToken.DoesNotExist:
+                pass
+
         # If authentication fails -> return 401 with WWW-Authenticate header
         response = HttpResponse("Unauthorized", status=401)
-        response["WWW-Authenticate"] = 'Basic realm="Restricted"'
+        response["WWW-Authenticate"] = 'Basic realm="Djancloud"'
         return response
 
 @method_decorator(csrf_exempt, name='dispatch')

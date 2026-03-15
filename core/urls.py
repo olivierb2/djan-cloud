@@ -44,6 +44,7 @@ from file.caldav_views import (
     DavRootView, PrincipalView,
     CalendarListView, CalendarView, EventView,
     AddressBookListView, AddressBookView, ContactView,
+    DavOptionsView,
 )
 from django.conf import settings
 
@@ -103,6 +104,9 @@ urlpatterns = [
     path('ocs/v2.php/cloud/user', OcsUserView.as_view()),
     path('ocs/v1.php/cloud/capabilities', OcsCapabilitiesView.as_view()),
     path('ocs/v2.php/cloud/capabilities', OcsCapabilitiesView.as_view()),
+    # WebDAV discovery endpoint for GNOME Online Accounts / clients
+    path('remote.php/webdav', DavOptionsView.as_view()),
+    path('remote.php/webdav/', DavOptionsView.as_view()),
     re_path(fr'^{settings.ROOT_DAV}(?P<username>[^/]+)/(?P<path>.*)$', dav_view, name='fsdav'),
     re_path(r'^remote\.php/dav/files/(?P<username>[^/]+)/(?P<path>.*)$', dav_view, name='fsdav_alt'),
     re_path(r'^dav/(?P<path>.*)$', dav_entry_view, name='fsdav_entry'),

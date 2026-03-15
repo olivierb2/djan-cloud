@@ -94,6 +94,18 @@ class DavAuthView(BasicAuthMixin, View):
     http_method_names = ['options', 'get', 'head', 'put', 'delete',
                          'propfind', 'proppatch', 'report', 'mkcalendar', 'mkcol']
 
+    def dispatch(self, request, *args, **kwargs):
+        # OPTIONS must pass without authentication (CORS preflight / DAV discovery)
+        if request.method == 'OPTIONS':
+            return self.options(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+    def options(self, request, *args, **kwargs):
+        response = HttpResponse(status=200)
+        response['Allow'] = 'OPTIONS, GET, HEAD, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCALENDAR, MKCOL'
+        response['DAV'] = '1, 2, 3, calendar-access, addressbook'
+        return response
+
 
 # ─── Principal Discovery View ──────────────────────────────────
 
@@ -1162,6 +1174,16 @@ class ContactView(DavAuthView):
 
 
 # ─── Well-Known Redirects ──────────────────────────────────────
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DavOptionsView(View):
+    """Respond to OPTIONS on /remote.php/webdav for DAV discovery."""
+    def dispatch(self, request, *args, **kwargs):
+        response = HttpResponse(status=200)
+        response['Allow'] = 'OPTIONS, GET, HEAD, PUT, DELETE, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE'
+        response['DAV'] = '1, 2, 3'
+        return response
+
 
 class WellKnownCalDavView(View):
     def dispatch(self, request, *args, **kwargs):
