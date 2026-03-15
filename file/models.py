@@ -414,13 +414,25 @@ class Email(models.Model):
     body_html = models.TextField(blank=True)
     raw_data = models.TextField()  # Full raw email
     is_read = models.BooleanField(default=False)
+    flagged = models.BooleanField(default=False)
+    answered = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
+    draft = models.BooleanField(default=False)
+    imap_uid = models.PositiveIntegerField(null=True, blank=True, db_index=True)
     received_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-received_at']
         indexes = [
             models.Index(fields=['mailbox', '-received_at'], name='email_mailbox_date_idx'),
+            models.Index(fields=['mailbox', 'imap_uid'], name='email_mailbox_uid_idx'),
         ]
+
+    def save(self, *args, **kwargs):
+        if not self.imap_uid:
+            last = Email.objects.filter(mailbox=self.mailbox).order_by('-imap_uid').values_list('imap_uid', flat=True).first()
+            self.imap_uid = (last or 0) + 1
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.subject or '(no subject)'} - {self.from_address}"
