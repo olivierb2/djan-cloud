@@ -174,44 +174,6 @@
         {% if selected_email %}
         <!-- Email detail view -->
         <main class="flex-1 overflow-y-auto p-4 lg:p-6">
-            <div class="mb-4 flex items-center justify-between">
-                <a href="?mailbox={{ selected_mailbox_name }}"
-                   class="lg:hidden inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                    Back
-                </a>
-                <div class="flex items-center gap-2 ml-auto">
-                    <!-- Move to folder -->
-                    <form method="post" action="{% url 'email_move' email_id=selected_email.id %}" class="inline-flex items-center gap-1">
-                        {% csrf_token %}
-                        <select name="mailbox" class="rounded-lg border border-gray-300 px-2 py-1.5 text-sm">
-                            {% for mb in mailboxes %}
-                            {% if mb.id != selected_mailbox.id %}
-                            <option value="{{ mb.name }}">{{ mb.name }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        <button type="submit" title="Move"
-                                class="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                            Move
-                        </button>
-                    </form>
-                    <!-- Delete -->
-                    <form method="post" action="{% url 'email_delete' email_id=selected_email.id %}">
-                        {% csrf_token %}
-                        <button type="submit" title="{% if selected_mailbox.name == 'Trash' %}Delete permanently{% else %}Move to Trash{% endif %}"
-                                {% if selected_mailbox.name == 'Trash' %}onclick="return confirm('Permanently delete this email?')"{% endif %}
-                                class="rounded-lg border border-gray-300 bg-white p-2 text-red-600 hover:bg-red-50 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
                 <div class="border-b border-gray-100 px-6 py-4">
                     <h1 class="text-lg font-semibold text-gray-900">{{ selected_email.subject|default:"(no subject)" }}</h1>
@@ -260,7 +222,7 @@
                 </div>
                 {% endif %}
 
-                <!-- Reply / Forward -->
+                <!-- Reply / Forward / Delete -->
                 <div class="border-t border-gray-100 px-6 py-4 flex items-center gap-2">
                     <a href="{% url 'mail_compose' %}?reply_to={{ selected_email.id }}"
                        class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
@@ -276,6 +238,17 @@
                         </svg>
                         Forward
                     </a>
+                    <form method="post" action="{% url 'email_delete' email_id=selected_email.id %}" class="ml-auto">
+                        {% csrf_token %}
+                        <button type="submit" title="{% if selected_mailbox.name == 'Trash' %}Delete permanently{% else %}Move to Trash{% endif %}"
+                                {% if selected_mailbox.name == 'Trash' %}onclick="return confirm('Permanently delete this email?')"{% endif %}
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </form>
                 </div>
                 </div>
         </main>
