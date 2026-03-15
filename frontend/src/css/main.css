@@ -8,3 +8,5 @@
 .tree-toggle { transition: transform 0.15s; }
 .tree-item.open > div > .tree-toggle,
 .tree-item.open > a > .tree-toggle { transform: rotate(90deg); }
+.email-row[draggable] { cursor: grab; }
+.email-row[draggable]:active { cursor: grabbing; }

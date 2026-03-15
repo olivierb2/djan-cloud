@@ -2330,11 +2330,64 @@ class EmailDeleteView(LoginRequiredMixin, View):
         return redirect(f'/mail/?mailbox={mailbox.name}')
 
 
+class EmailToggleReadView(LoginRequiredMixin, View):
+    def post(self, request, email_id):
+        # Try personal mailbox first, then shared
+        mail = Email.objects.filter(id=email_id, mailbox__owner=request.user).first()
+        if not mail:
+            from .models import SharedMailboxMembership
+            mail = Email.objects.filter(
+                id=email_id,
+                mailbox__shared_mailbox__memberships__user=request.user
+            ).first()
+        if not mail:
+            return JsonResponse({'error': 'Not found'}, status=404)
+        mail.is_read = not mail.is_read
+        mail.save(update_fields=['is_read'])
+        return JsonResponse({'ok': True, 'is_read': mail.is_read})
+
+
 class EmailMoveView(LoginRequiredMixin, View):
     def post(self, request, email_id):
-        mail = get_object_or_404(Email, id=email_id, mailbox__owner=request.user)
+        # Find email in personal or shared mailboxes
+        mail = Email.objects.filter(id=email_id, mailbox__owner=request.user).first()
+        if not mail:
+            from .models import SharedMailboxMembership
+            mail = Email.objects.filter(
+                id=email_id,
+                mailbox__shared_mailbox__memberships__user=request.user
+            ).exclude(
+                mailbox__shared_mailbox__memberships__permission='read'
+            ).first()
+        if not mail:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'Not found'}, status=404)
+            messages.error(request, 'Email not found.')
+            return redirect('/mail/')
+
         target_name = request.POST.get('mailbox', '').strip()
-        target = get_object_or_404(Mailbox, owner=request.user, name=target_name)
+        # Resolve target mailbox (personal or shared)
+        from .models import SharedMailbox, SharedMailboxMembership
+        target = None
+        if target_name.startswith('__shared__/'):
+            parts = target_name[len('__shared__/'):].split('/', 1)
+            sm_name = parts[0]
+            folder = parts[1] if len(parts) > 1 else 'INBOX'
+            membership = SharedMailboxMembership.objects.filter(
+                user=request.user, shared_mailbox__name=sm_name
+            ).exclude(permission='read').first()
+            if membership:
+                target = Mailbox.objects.filter(
+                    shared_mailbox=membership.shared_mailbox, name=folder).first()
+        else:
+            target = Mailbox.objects.filter(owner=request.user, name=target_name).first()
+
+        if not target:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'Target mailbox not found'}, status=404)
+            messages.error(request, 'Target mailbox not found.')
+            return redirect('/mail/')
+
         old_mailbox = mail.mailbox
         mail.mailbox = target
         mail.save(update_fields=['mailbox_id'])

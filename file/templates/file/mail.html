@@ -251,34 +251,42 @@
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                 <div class="divide-y divide-gray-100">
                     {% for mail in emails %}
-                    <a href="?mailbox={{ selected_mailbox_name }}&email={{ mail.id }}"
-                       class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors
-                              {% if not mail.is_read %}bg-blue-50/30{% endif %}">
-                        <div class="flex-shrink-0">
-                            {% if not mail.is_read %}
-                            <div class="w-2 h-2 rounded-full bg-brand-600"></div>
+                    <div class="email-row flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors
+                                {% if not mail.is_read %}bg-blue-50/30{% endif %}"
+                         draggable="true" data-email-id="{{ mail.id }}" data-is-read="{% if mail.is_read %}true{% else %}false{% endif %}">
+                        <button type="button" class="toggle-read flex-shrink-0 p-0.5 rounded hover:bg-gray-200 transition-colors"
+                                data-email-id="{{ mail.id }}" title="Toggle read/unread">
+                            {% if mail.is_read %}
+                            <svg class="w-4 h-4 text-gray-400 envelope-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19V8a2 2 0 012-2h14a2 2 0 012 2v11M3 8l9 6 9-6"/>
+                            </svg>
                             {% else %}
-                            <div class="w-2 h-2"></div>
+                            <svg class="w-4 h-4 text-brand-600 envelope-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
                             {% endif %}
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm {% if not mail.is_read %}font-semibold text-gray-900{% else %}font-medium text-gray-700{% endif %} truncate">
-                                    {{ mail.from_address|truncatechars:40 }}
-                                </span>
-                                <span class="ml-auto text-xs text-gray-400 flex-shrink-0">{{ mail.received_at|timesince }} ago</span>
+                        </button>
+                        <a href="?mailbox={{ selected_mailbox_name }}&email={{ mail.id }}"
+                           class="flex items-center gap-3 flex-1 min-w-0">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm {% if not mail.is_read %}font-semibold text-gray-900{% else %}font-medium text-gray-700{% endif %} truncate">
+                                        {{ mail.from_address|truncatechars:40 }}
+                                    </span>
+                                    <span class="ml-auto text-xs text-gray-400 flex-shrink-0">{{ mail.received_at|timesince }} ago</span>
+                                </div>
+                                <p class="text-sm {% if not mail.is_read %}font-medium text-gray-800{% else %}text-gray-600{% endif %} truncate">
+                                    {{ mail.subject|default:"(no subject)" }}
+                                </p>
+                                <p class="text-xs text-gray-400 truncate">{{ mail.body_text|truncatechars:100 }}</p>
                             </div>
-                            <p class="text-sm {% if not mail.is_read %}font-medium text-gray-800{% else %}text-gray-600{% endif %} truncate">
-                                {{ mail.subject|default:"(no subject)" }}
-                            </p>
-                            <p class="text-xs text-gray-400 truncate">{{ mail.body_text|truncatechars:100 }}</p>
-                        </div>
-                        {% if mail.attachments.exists %}
-                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
-                        </svg>
-                        {% endif %}
-                    </a>
+                            {% if mail.attachments.exists %}
+                            <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                            </svg>
+                            {% endif %}
+                        </a>
+                    </div>
                     {% empty %}
                     <div class="px-4 py-12 text-center text-sm text-gray-400">
                         <svg class="mx-auto mb-2 w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,5 +483,103 @@ function deleteFolder(mailboxId, name) {
     document.body.appendChild(form);
     form.submit();
 }
+
+// Toggle read/unread
+var csrfToken = (document.querySelector('[name=csrfmiddlewaretoken]') || {}).value || '';
+
+document.querySelectorAll('.toggle-read').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var emailId = this.dataset.emailId;
+        var row = this.closest('.email-row');
+        fetch('/mail/' + emailId + '/toggle-read/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': csrfToken, 'X-Requested-With': 'XMLHttpRequest'}
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            if (!data.ok) return;
+            var isRead = data.is_read;
+            row.dataset.isRead = isRead ? 'true' : 'false';
+            // Update row styling
+            if (isRead) {
+                row.classList.remove('bg-blue-50/30');
+            } else {
+                row.classList.add('bg-blue-50/30');
+            }
+            // Swap envelope icon
+            var iconHtml = isRead
+                ? '<svg class="w-4 h-4 text-gray-400 envelope-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19V8a2 2 0 012-2h14a2 2 0 012 2v11M3 8l9 6 9-6"/></svg>'
+                : '<svg class="w-4 h-4 text-brand-600 envelope-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>';
+            btn.innerHTML = iconHtml;
+            // Update text weight
+            var from = row.querySelector('a span.truncate');
+            var subj = row.querySelector('a p');
+            if (from) {
+                from.className = from.className.replace(/font-semibold|font-medium/g, '').trim();
+                from.className = from.className.replace(/text-gray-900|text-gray-700/g, '').trim();
+                from.classList.add(isRead ? 'font-medium' : 'font-semibold');
+                from.classList.add(isRead ? 'text-gray-700' : 'text-gray-900');
+            }
+            if (subj) {
+                subj.className = subj.className.replace(/font-medium/g, '').trim();
+                subj.className = subj.className.replace(/text-gray-800|text-gray-600/g, '').trim();
+                if (!isRead) subj.classList.add('font-medium');
+                subj.classList.add(isRead ? 'text-gray-600' : 'text-gray-800');
+            }
+        });
+    });
+});
+
+// Drag and drop emails to folders
+var draggedEmailId = null;
+
+document.querySelectorAll('.email-row[draggable]').forEach(function(row) {
+    row.addEventListener('dragstart', function(e) {
+        draggedEmailId = this.dataset.emailId;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedEmailId);
+        this.style.opacity = '0.5';
+    });
+    row.addEventListener('dragend', function() {
+        this.style.opacity = '';
+        draggedEmailId = null;
+        document.querySelectorAll('.drop-target').forEach(function(t) {
+            t.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50');
+        });
+    });
+});
+
+document.querySelectorAll('.drop-target[data-mailbox]').forEach(function(target) {
+    target.addEventListener('dragover', function(e) {
+        if (!draggedEmailId) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        this.classList.add('ring-2', 'ring-brand-500', 'bg-brand-50');
+    });
+    target.addEventListener('dragleave', function() {
+        this.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50');
+    });
+    target.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50');
+        var emailId = e.dataTransfer.getData('text/plain');
+        var mailbox = this.dataset.mailbox;
+        if (!emailId || !mailbox) return;
+        fetch('/mail/' + emailId + '/move/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'mailbox=' + encodeURIComponent(mailbox)
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            if (data.ok) {
+                var row = document.querySelector('.email-row[data-email-id="' + emailId + '"]');
+                if (row) row.remove();
+            }
+        });
+    });
+});
 </script>
 {% endblock %}
