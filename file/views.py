@@ -1537,7 +1537,10 @@ class CalendarWebView(LoginRequiredMixin, View):
         from .caldav_views import ensure_defaults_for_user
         ensure_defaults_for_user(request.user)
 
-        own_calendars = list(Calendar.objects.filter(owner=request.user).order_by('display_name'))
+        all_own = list(Calendar.objects.filter(owner=request.user).order_by('display_name'))
+        # Personal = default 'personal' calendar; shareable = all others created by user
+        own_calendars = [c for c in all_own if c.name == 'personal']
+        shareable_calendars = [c for c in all_own if c.name != 'personal']
         shared_ids = CalendarShare.objects.filter(user=request.user).values_list('calendar_id', flat=True)
         shared_calendars = list(Calendar.objects.filter(id__in=shared_ids).select_related('owner').order_by('display_name'))
 
@@ -1547,8 +1550,8 @@ class CalendarWebView(LoginRequiredMixin, View):
         can_write = False
 
         cal_id = request.GET.get('calendar')
-        if not cal_id and own_calendars:
-            cal_id = own_calendars[0].id
+        if not cal_id and all_own:
+            cal_id = all_own[0].id
         if cal_id:
             try:
                 selected_calendar = Calendar.objects.select_related('owner').get(id=cal_id)
@@ -1568,6 +1571,7 @@ class CalendarWebView(LoginRequiredMixin, View):
 
         return render(request, 'file/calendars.html', {
             'calendars': own_calendars,
+            'shareable_calendars': shareable_calendars,
             'shared_calendars': shared_calendars,
             'selected_calendar': selected_calendar,
             'events': events,
@@ -1578,6 +1582,8 @@ class CalendarWebView(LoginRequiredMixin, View):
 
 class CalendarCreateView(LoginRequiredMixin, View):
     def post(self, request):
+        if request.user.role != 'admin':
+            return redirect('calendars')
         display_name = request.POST.get('display_name', '').strip()
         if not display_name:
             messages.error(request, 'Calendar name is required.')
@@ -1610,22 +1616,42 @@ class CalendarDeleteView(LoginRequiredMixin, View):
 
 
 class CalendarShareAddView(LoginRequiredMixin, View):
+    def get(self, request, calendar_id):
+        cal = get_object_or_404(Calendar, id=calendar_id, owner=request.user)
+        shares = CalendarShare.objects.filter(calendar=cal).select_related('user')
+        return JsonResponse({'shares': [
+            {'user_id': s.user_id, 'username': s.user.username, 'permission': s.permission}
+            for s in shares
+        ]})
+
     def post(self, request, calendar_id):
         cal = get_object_or_404(Calendar, id=calendar_id, owner=request.user)
-        username = request.POST.get('username', '').strip()
-        permission = request.POST.get('permission', 'read')
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            data = json.loads(request.body)
+            username = data.get('username', '').strip()
+            permission = data.get('permission', 'read')
+        else:
+            username = request.POST.get('username', '').strip()
+            permission = request.POST.get('permission', 'read')
         try:
             target_user = User.objects.get(username=username)
         except User.DoesNotExist:
+            if is_ajax:
+                return JsonResponse({'error': f'User "{username}" not found.'}, status=400)
             messages.error(request, f'User "{username}" not found.')
             return redirect(f'/calendars/?calendar={calendar_id}')
         if target_user == request.user:
+            if is_ajax:
+                return JsonResponse({'error': 'Cannot share with yourself.'}, status=400)
             messages.error(request, 'Cannot share with yourself.')
             return redirect(f'/calendars/?calendar={calendar_id}')
         CalendarShare.objects.update_or_create(
             calendar=cal, user=target_user,
             defaults={'permission': permission},
         )
+        if is_ajax:
+            return JsonResponse({'ok': True})
         messages.success(request, f'Shared with {username}.')
         return redirect(f'/calendars/?calendar={calendar_id}')
 
@@ -1634,6 +1660,8 @@ class CalendarShareDeleteView(LoginRequiredMixin, View):
     def post(self, request, calendar_id, user_id):
         cal = get_object_or_404(Calendar, id=calendar_id, owner=request.user)
         CalendarShare.objects.filter(calendar=cal, user_id=user_id).delete()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
         messages.success(request, 'Share removed.')
         return redirect(f'/calendars/?calendar={calendar_id}')
 
@@ -1785,7 +1813,9 @@ class ContactsWebView(LoginRequiredMixin, View):
         from .caldav_views import ensure_defaults_for_user
         ensure_defaults_for_user(request.user)
 
-        own_addressbooks = list(AddressBook.objects.filter(owner=request.user).order_by('display_name'))
+        all_own = list(AddressBook.objects.filter(owner=request.user).order_by('display_name'))
+        own_addressbooks = [a for a in all_own if a.name == 'contacts']
+        shareable_addressbooks = [a for a in all_own if a.name != 'contacts']
         shared_ids = AddressBookShare.objects.filter(user=request.user).values_list('addressbook_id', flat=True)
         shared_addressbooks = list(AddressBook.objects.filter(id__in=shared_ids).select_related('owner').order_by('display_name'))
 
@@ -1795,8 +1825,8 @@ class ContactsWebView(LoginRequiredMixin, View):
         can_write = False
 
         ab_id = request.GET.get('addressbook')
-        if not ab_id and own_addressbooks:
-            ab_id = own_addressbooks[0].id
+        if not ab_id and all_own:
+            ab_id = all_own[0].id
         if ab_id:
             try:
                 selected_addressbook = AddressBook.objects.select_related('owner').get(id=ab_id)
@@ -1816,6 +1846,7 @@ class ContactsWebView(LoginRequiredMixin, View):
 
         return render(request, 'file/contacts.html', {
             'addressbooks': own_addressbooks,
+            'shareable_addressbooks': shareable_addressbooks,
             'shared_addressbooks': shared_addressbooks,
             'selected_addressbook': selected_addressbook,
             'contacts': contacts,
@@ -1826,6 +1857,8 @@ class ContactsWebView(LoginRequiredMixin, View):
 
 class AddressBookCreateView(LoginRequiredMixin, View):
     def post(self, request):
+        if request.user.role != 'admin':
+            return redirect('contacts')
         display_name = request.POST.get('display_name', '').strip()
         if not display_name:
             messages.error(request, 'Address book name is required.')
@@ -1856,22 +1889,42 @@ class AddressBookDeleteView(LoginRequiredMixin, View):
 
 
 class AddressBookShareAddView(LoginRequiredMixin, View):
+    def get(self, request, addressbook_id):
+        ab = get_object_or_404(AddressBook, id=addressbook_id, owner=request.user)
+        shares = AddressBookShare.objects.filter(addressbook=ab).select_related('user')
+        return JsonResponse({'shares': [
+            {'user_id': s.user_id, 'username': s.user.username, 'permission': s.permission}
+            for s in shares
+        ]})
+
     def post(self, request, addressbook_id):
         ab = get_object_or_404(AddressBook, id=addressbook_id, owner=request.user)
-        username = request.POST.get('username', '').strip()
-        permission = request.POST.get('permission', 'read')
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            data = json.loads(request.body)
+            username = data.get('username', '').strip()
+            permission = data.get('permission', 'read')
+        else:
+            username = request.POST.get('username', '').strip()
+            permission = request.POST.get('permission', 'read')
         try:
             target_user = User.objects.get(username=username)
         except User.DoesNotExist:
+            if is_ajax:
+                return JsonResponse({'error': f'User "{username}" not found.'}, status=400)
             messages.error(request, f'User "{username}" not found.')
             return redirect(f'/contacts/?addressbook={addressbook_id}')
         if target_user == request.user:
+            if is_ajax:
+                return JsonResponse({'error': 'Cannot share with yourself.'}, status=400)
             messages.error(request, 'Cannot share with yourself.')
             return redirect(f'/contacts/?addressbook={addressbook_id}')
         AddressBookShare.objects.update_or_create(
             addressbook=ab, user=target_user,
             defaults={'permission': permission},
         )
+        if is_ajax:
+            return JsonResponse({'ok': True})
         messages.success(request, f'Shared with {username}.')
         return redirect(f'/contacts/?addressbook={addressbook_id}')
 
@@ -1880,6 +1933,8 @@ class AddressBookShareDeleteView(LoginRequiredMixin, View):
     def post(self, request, addressbook_id, user_id):
         ab = get_object_or_404(AddressBook, id=addressbook_id, owner=request.user)
         AddressBookShare.objects.filter(addressbook=ab, user_id=user_id).delete()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
         messages.success(request, 'Share removed.')
         return redirect(f'/contacts/?addressbook={addressbook_id}')
 

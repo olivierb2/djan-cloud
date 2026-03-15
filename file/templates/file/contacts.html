@@ -13,14 +13,8 @@
         <!-- Sidebar: Address book list -->
         <aside class="hidden lg:flex w-64 flex-col border-r border-gray-200 bg-white overflow-y-auto">
             <div class="px-3 py-4">
-                <div class="flex items-center justify-between mb-3 px-2">
+                <div class="mb-3 px-2">
                     <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Address Books</h2>
-                    <button onclick="openModal('addressbook-modal')"
-                            class="rounded p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100" title="New address book">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                    </button>
                 </div>
                 {% for ab in addressbooks %}
                 <a href="?addressbook={{ ab.id }}"
@@ -30,14 +24,38 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
                     <span class="truncate">{{ ab.display_name }}</span>
-                    {% if ab.owner != user %}
-                    <span class="ml-auto text-xs text-gray-400">shared</span>
-                    {% endif %}
                 </a>
                 {% endfor %}
 
-                {% if shared_addressbooks %}
-                <h2 class="mt-4 mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Shared with me</h2>
+                <!-- Shared section -->
+                <div class="flex items-center justify-between mt-4 mb-2 px-2">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Shared</h2>
+                    {% if user.role == 'admin' %}
+                    <button onclick="openModal('addressbook-modal')"
+                            class="rounded p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100" title="New shared address book">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </button>
+                    {% endif %}
+                </div>
+                {% for ab in shareable_addressbooks %}
+                <div class="group flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors
+                          {% if selected_addressbook and selected_addressbook.id == ab.id %}bg-gray-100 text-gray-900 font-medium{% else %}text-gray-600 hover:bg-gray-50{% endif %}">
+                    <a href="?addressbook={{ ab.id }}" class="flex items-center gap-2 flex-1 min-w-0">
+                        <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        <span class="truncate">{{ ab.display_name }}</span>
+                    </a>
+                    <button type="button" onclick="event.stopPropagation(); openShareModal('addressbook', {{ ab.id }}, '{{ ab.display_name|escapejs }}')"
+                            class="hidden group-hover:block flex-shrink-0 rounded p-0.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50" title="Share">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                    </button>
+                </div>
+                {% endfor %}
                 {% for ab in shared_addressbooks %}
                 <a href="?addressbook={{ ab.id }}"
                    class="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors
@@ -49,7 +67,6 @@
                     <span class="ml-auto text-xs text-gray-400">{{ ab.owner.username }}</span>
                 </a>
                 {% endfor %}
-                {% endif %}
             </div>
         </aside>
 
@@ -87,14 +104,7 @@
                         New contact
                     </button>
                     {% endif %}
-                    {% if selected_addressbook.owner == user %}
-                    <button onclick="openModal('ab-share-modal')"
-                            class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-                        </svg>
-                        Share
-                    </button>
+                    {% if selected_addressbook.owner == user and selected_addressbook.name != 'contacts' %}
                     <form method="post" action="{% url 'addressbook_delete' addressbook_id=selected_addressbook.id %}" class="inline"
                           onsubmit="return confirm('Delete address book \'{{ selected_addressbook.display_name|escapejs }}\' and all its contacts?')">
                         {% csrf_token %}
@@ -277,49 +287,30 @@
 </div>
 {% endif %}
 
-{% if selected_addressbook and selected_addressbook.owner == user %}
-<!-- Share Address Book modal -->
-<div id="ab-share-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+<!-- Dynamic Share modal -->
+<div id="share-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
     <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Share &mdash; {{ selected_addressbook.display_name }}</h3>
-        <div class="mb-4 max-h-60 overflow-y-auto divide-y divide-gray-100">
-            {% for share in shares %}
-            <div class="flex items-center justify-between py-2">
-                <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">{{ share.user.username }}</span>
-                    <span class="text-xs text-gray-400">({{ share.permission }})</span>
-                </div>
-                <form method="post" action="{% url 'addressbook_share_delete' addressbook_id=selected_addressbook.id user_id=share.user.id %}" class="inline">
-                    {% csrf_token %}
-                    <button type="submit" class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-            {% empty %}
-            <p class="py-2 text-sm text-gray-400">Not shared with anyone yet.</p>
-            {% endfor %}
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Share &mdash; <span id="share-modal-title"></span></h3>
+        <div id="share-list" class="mb-4 max-h-60 overflow-y-auto divide-y divide-gray-100">
+            <p class="py-2 text-sm text-gray-400">Loading...</p>
         </div>
-        <form method="post" action="{% url 'addressbook_share_add' addressbook_id=selected_addressbook.id %}" class="flex items-center gap-2 border-t border-gray-100 pt-4">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Username" required
+        <div class="flex items-center gap-2 border-t border-gray-100 pt-4">
+            <input type="text" id="share-username" placeholder="Username" required
                    class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
-            <select name="permission" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+            <select id="share-permission" class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
                 <option value="read">Read</option>
                 <option value="write">Write</option>
             </select>
-            <button type="submit"
+            <button type="button" onclick="addShare()"
                     class="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700">Add</button>
-        </form>
+        </div>
+        <div id="share-error" class="hidden mt-2 text-sm text-red-600"></div>
         <div class="flex justify-end mt-4">
-            <button type="button" onclick="closeModal('ab-share-modal')"
+            <button type="button" onclick="closeModal('share-modal')"
                     class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Close</button>
         </div>
     </div>
 </div>
-{% endif %}
 
 {% endblock %}
 
@@ -345,6 +336,82 @@ function openEditContact(contactId, fn, email, tel, org) {
     document.getElementById('edit-contact-tel').value = tel;
     document.getElementById('edit-contact-org').value = org;
     openModal('edit-contact-modal');
+}
+
+var shareType = '', shareId = null;
+var csrf = '{{ csrf_token }}';
+
+function openShareModal(type, id, name) {
+    shareType = type;
+    shareId = id;
+    document.getElementById('share-modal-title').textContent = name;
+    document.getElementById('share-error').classList.add('hidden');
+    document.getElementById('share-username').value = '';
+    openModal('share-modal');
+    loadShares();
+}
+
+function getShareUrl() {
+    return '/contacts/addressbooks/' + shareId + '/share/';
+}
+
+function getShareDeleteUrl(userId) {
+    return '/contacts/addressbooks/' + shareId + '/share/' + userId + '/delete/';
+}
+
+function loadShares() {
+    var list = document.getElementById('share-list');
+    list.innerHTML = '<p class="py-2 text-sm text-gray-400">Loading...</p>';
+    fetch(getShareUrl(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.shares || data.shares.length === 0) {
+                list.innerHTML = '<p class="py-2 text-sm text-gray-400">Not shared with anyone yet.</p>';
+                return;
+            }
+            list.innerHTML = '';
+            data.shares.forEach(function(s) {
+                var row = document.createElement('div');
+                row.className = 'flex items-center justify-between py-2';
+                row.innerHTML =
+                    '<div class="flex items-center gap-2">' +
+                        '<span class="text-sm font-medium text-gray-900">' + s.username + '</span>' +
+                        '<span class="text-xs text-gray-400">(' + s.permission + ')</span>' +
+                    '</div>' +
+                    '<button type="button" class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50" title="Remove">' +
+                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
+                    '</button>';
+                row.querySelector('button').addEventListener('click', function() { removeShare(s.user_id); });
+                list.appendChild(row);
+            });
+        });
+}
+
+function addShare() {
+    var username = document.getElementById('share-username').value.trim();
+    var permission = document.getElementById('share-permission').value;
+    var errEl = document.getElementById('share-error');
+    errEl.classList.add('hidden');
+    if (!username) return;
+    fetch(getShareUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf, 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify({ username: username, permission: permission })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.error) { errEl.textContent = data.error; errEl.classList.remove('hidden'); return; }
+        document.getElementById('share-username').value = '';
+        loadShares();
+    });
+}
+
+function removeShare(userId) {
+    fetch(getShareDeleteUrl(userId), {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf, 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function() { loadShares(); });
 }
 </script>
 {% endblock %}
