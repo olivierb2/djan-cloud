@@ -1575,6 +1575,50 @@ class CalendarShareDeleteView(LoginRequiredMixin, View):
         return redirect(f'/calendars/?calendar={calendar_id}')
 
 
+class CalendarEventsApiView(LoginRequiredMixin, View):
+    def get(self, request, calendar_id):
+        cal = get_object_or_404(Calendar, id=calendar_id)
+        is_owner = cal.owner_id == request.user.id
+        if not is_owner:
+            share = CalendarShare.objects.filter(calendar=cal, user=request.user).first()
+            if not share:
+                raise Http404
+
+        from datetime import datetime as dt
+        start = request.GET.get('start', '')
+        end = request.GET.get('end', '')
+        events = cal.events.all()
+        if start:
+            try:
+                events = events.filter(dtstart__gte=dt.fromisoformat(start.replace('Z', '+00:00')))
+            except ValueError:
+                pass
+        if end:
+            try:
+                events = events.filter(dtstart__lte=dt.fromisoformat(end.replace('Z', '+00:00')))
+            except ValueError:
+                pass
+
+        can_write = is_owner or (share and share.permission in ('write', 'admin'))
+        data = []
+        for ev in events:
+            entry = {
+                'id': ev.id,
+                'title': ev.summary or '(No title)',
+                'start': ev.dtstart.isoformat() if ev.dtstart else None,
+                'end': ev.dtend.isoformat() if ev.dtend else None,
+                'allDay': ev.all_day,
+                'extendedProps': {
+                    'description': ev.description or '',
+                    'location': ev.location or '',
+                },
+            }
+            if can_write:
+                entry['extendedProps']['deleteUrl'] = reverse('event_delete', kwargs={'event_id': ev.id})
+            data.append(entry)
+        return JsonResponse(data, safe=False)
+
+
 class EventCreateView(LoginRequiredMixin, View):
     def post(self, request, calendar_id):
         cal = get_object_or_404(Calendar, id=calendar_id)
@@ -1649,6 +1693,8 @@ class EventCreateView(LoginRequiredMixin, View):
             dtend=dtend,
             all_day=all_day,
         )
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
         messages.success(request, f'Event "{summary}" created.')
         return redirect(f'/calendars/?calendar={calendar_id}')
 
@@ -1663,6 +1709,8 @@ class EventDeleteView(LoginRequiredMixin, View):
             if not share:
                 raise Http404
         event.delete()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
         messages.success(request, 'Event deleted.')
         return redirect(f'/calendars/?calendar={cal.id}')
 

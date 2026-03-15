@@ -1,0 +1,56 @@
+/* FullCalendar theme overrides */
+
+.fc {
+  --fc-border-color: #e5e7eb;
+  --fc-button-bg-color: #0082c9;
+  --fc-button-border-color: #0082c9;
+  --fc-button-hover-bg-color: #006ba1;
+  --fc-button-hover-border-color: #006ba1;
+  --fc-button-active-bg-color: #005a87;
+  --fc-button-active-border-color: #005a87;
+  --fc-today-bg-color: #eff6ff;
+  --fc-event-border-color: transparent;
+  font-size: 0.875rem;
+}
+
+.fc .fc-button {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  text-transform: capitalize;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.fc .fc-daygrid-day-number,
+.fc .fc-col-header-cell-cushion {
+  text-decoration: none;
+  color: #374151;
+}
+
+.fc .fc-daygrid-day-number:hover {
+  color: #0082c9;
+}
+
+.fc .fc-event {
+  border-radius: 0.25rem;
+  padding: 1px 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background: var(--fc-today-bg-color);
+}
+
+.fc .fc-timegrid-slot {
+  height: 2.5rem;
+}
+
+.fc .fc-list-event:hover td {
+  background-color: #f9fafb;
+}

@@ -29,7 +29,7 @@ from file.views import (
     UserManagementView, FileEditorView, FileSaveView,
     CalendarWebView, CalendarCreateView, CalendarDeleteView,
     CalendarShareAddView, CalendarShareDeleteView,
-    EventCreateView, EventDeleteView,
+    EventCreateView, EventDeleteView, CalendarEventsApiView,
     ContactsWebView, AddressBookCreateView, AddressBookDeleteView,
     AddressBookShareAddView, AddressBookShareDeleteView,
     ContactCreateView, ContactDeleteView,
@@ -130,6 +130,7 @@ urlpatterns = [
     path('calendars/<int:calendar_id>/share/', CalendarShareAddView.as_view(), name='calendar_share_add'),
     path('calendars/<int:calendar_id>/share/<int:user_id>/delete/', CalendarShareDeleteView.as_view(), name='calendar_share_delete'),
     path('calendars/<int:calendar_id>/events/create/', EventCreateView.as_view(), name='event_create'),
+    path('calendars/<int:calendar_id>/events.json', CalendarEventsApiView.as_view(), name='calendar_events_api'),
     path('events/<int:event_id>/delete/', EventDeleteView.as_view(), name='event_delete'),
 
     # Contacts web UI

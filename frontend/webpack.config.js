@@ -12,6 +12,7 @@ module.exports = (env, argv) => {
       users: './src/js/users.js',
       move_picker: './src/js/move_picker.js',
       editor: './src/js/editor_init.js',
+      calendar: './src/js/calendar.js',
     },
 
     output: {

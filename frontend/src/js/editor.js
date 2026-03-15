@@ -2,6 +2,7 @@ import { Crepe } from '@milkdown/crepe';
 import { collab, collabServiceCtx } from '@milkdown/plugin-collab';
 import { Doc } from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
+import { frontmatterPlugin } from './frontmatter-plugin.js';
 
 export class CollaborativeEditor {
   constructor(options) {
@@ -70,6 +71,7 @@ export class CollaborativeEditor {
     });
 
     this.crepe.editor.use(collab);
+    this.crepe.editor.use(frontmatterPlugin);
     await this.crepe.create();
 
     if (this.destroyed) return;

@@ -7,10 +7,15 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.20",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/list": "^6.1.20",
+    "@fullcalendar/timegrid": "^6.1.20",
     "@milkdown/crepe": "^7.5.1",
     "@milkdown/plugin-collab": "^7.5.1",
-    "yjs": "^13.6.23",
-    "y-websocket": "^2.0.4"
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.23"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",

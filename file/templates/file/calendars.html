@@ -107,77 +107,51 @@
                 </div>
             </div>
 
-            <!-- Events list -->
-            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b border-gray-100 bg-gray-50/50 text-xs font-medium uppercase tracking-wider text-gray-500">
-                            <th class="px-4 py-3 text-left">Event</th>
-                            <th class="px-4 py-3 text-left hidden sm:table-cell">Start</th>
-                            <th class="px-4 py-3 text-left hidden md:table-cell">End</th>
-                            <th class="px-4 py-3 text-left hidden lg:table-cell">Location</th>
-                            <th class="px-4 py-3 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        {% for event in events %}
-                        <tr class="group hover:bg-gray-50/50 transition-colors">
-                            <td class="px-4 py-2.5">
-                                <div class="font-medium text-gray-900">{{ event.summary|default:"(No title)" }}</div>
-                                {% if event.description %}
-                                <div class="text-xs text-gray-500 truncate max-w-xs">{{ event.description|truncatewords:10 }}</div>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">
-                                {% if event.all_day %}
-                                    {{ event.dtstart|date:"M d, Y" }}
-                                    <span class="text-xs text-gray-400">(all day)</span>
-                                {% else %}
-                                    {{ event.dtstart|date:"M d, Y H:i" }}
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">
-                                {% if event.dtend %}
-                                    {% if event.all_day %}
-                                        {{ event.dtend|date:"M d, Y" }}
-                                    {% else %}
-                                        {{ event.dtend|date:"M d, Y H:i" }}
-                                    {% endif %}
-                                {% else %}
-                                    &mdash;
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden lg:table-cell">
-                                {{ event.location|default:"&mdash;" }}
-                            </td>
-                            <td class="px-4 py-2.5 text-right">
-                                {% if can_write %}
-                                <form method="post" action="{% url 'event_delete' event_id=event.id %}" class="inline"
-                                      onsubmit="return confirm('Delete event \'{{ event.summary|default:"this event"|escapejs }}\'?')">
-                                    {% csrf_token %}
-                                    <button type="submit" title="Delete"
-                                            class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                        </svg>
-                                    </button>
-                                </form>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="px-4 py-12 text-center text-sm text-gray-400">
-                                <svg class="mx-auto mb-2 w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                No events in this calendar
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <!-- FullCalendar view -->
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm p-4">
+                <div id="fullcalendar"
+                     data-events-url="{% url 'calendar_events_api' calendar_id=selected_calendar.id %}"
+                     data-can-write="{{ can_write|yesno:'true,false' }}"
+                     data-calendar-color="{{ selected_calendar.color }}">
+                </div>
+            </div>
+
+            <!-- Event detail modal -->
+            <div id="event-detail" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+                <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+                    <h3 id="detail-title" class="text-lg font-semibold text-gray-900 mb-3"></h3>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex gap-2">
+                            <span class="font-medium text-gray-500 w-20">Start:</span>
+                            <span id="detail-start"></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="font-medium text-gray-500 w-20">End:</span>
+                            <span id="detail-end"></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="font-medium text-gray-500 w-20">Location:</span>
+                            <span id="detail-location"></span>
+                        </div>
+                        <div id="detail-description" class="mt-2 text-gray-700"></div>
+                    </div>
+                    {% if can_write %}
+                    <form id="detail-delete-form" method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </form>
+                    {% endif %}
+                    <div class="flex justify-end mt-4">
+                        <button type="button" onclick="closeModal('event-detail')"
+                                class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Close</button>
+                    </div>
+                </div>
             </div>
 
             {% else %}
@@ -315,7 +289,12 @@
 
 {% endblock %}
 
+{% block extra_head %}
+{% render_bundle 'calendar' 'css' %}
+{% endblock %}
+
 {% block extra_js %}
+{% render_bundle 'calendar' 'js' %}
 <script>
 function openModal(id) {
     const m = document.getElementById(id);
