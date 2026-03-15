@@ -448,3 +448,32 @@ class EmailAttachment(models.Model):
 
     def __str__(self):
         return self.filename
+
+
+class EmailSignature(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='email_signatures')
+    name = models.CharField(max_length=100)
+    html_content = models.TextField(blank=True, default='')
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_default', 'name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['owner', 'name'], name='unique_signature_per_user'),
+        ]
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        # If this signature is set as default, unset others
+        if self.is_default:
+            EmailSignature.objects.filter(
+                owner=self.owner, is_default=True
+            ).exclude(pk=self.pk).update(is_default=False)
+        super().save(*args, **kwargs)

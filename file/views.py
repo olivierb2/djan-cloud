@@ -17,7 +17,7 @@ from .models import (
     User, AppToken, LoginToken, Folder, File, SharedFolder, SharedFolderMembership,
     Calendar, CalendarShare, Event,
     AddressBook, AddressBookShare, Contact,
-    Mailbox, Email, EmailAttachment,
+    Mailbox, Email, EmailAttachment, EmailSignature,
 )
 from django.views import View
 from djangodav.views.views import DavView
@@ -2079,3 +2079,231 @@ class EmailAttachmentDownloadView(LoginRequiredMixin, View):
         response = HttpResponse(att.data, content_type=att.content_type)
         response['Content-Disposition'] = f'attachment; filename="{att.filename}"'
         return response
+
+
+class MailComposeView(LoginRequiredMixin, View):
+    def get(self, request):
+        Mailbox.ensure_defaults(request.user)
+        mailboxes = _get_sorted_mailboxes(request.user)
+        signatures = EmailSignature.objects.filter(owner=request.user)
+        default_sig = signatures.filter(is_default=True).first()
+
+        # Unread counts
+        unread_counts = dict(
+            Email.objects.filter(mailbox__owner=request.user, is_read=False)
+            .values_list('mailbox_id')
+            .annotate(count=models.Count('id'))
+            .values_list('mailbox_id', 'count')
+        )
+        for mb in mailboxes:
+            mb.unread_count = unread_counts.get(mb.id, 0)
+
+        # Pre-fill reply/forward
+        reply_to = request.GET.get('reply_to')
+        forward = request.GET.get('forward')
+        prefill = {}
+        if reply_to:
+            orig = Email.objects.filter(id=reply_to, mailbox__owner=request.user).first()
+            if orig:
+                prefill['to'] = orig.from_address
+                prefill['subject'] = f'Re: {orig.subject}' if not orig.subject.startswith('Re:') else orig.subject
+                prefill['quote'] = orig.body_html or orig.body_text or ''
+        elif forward:
+            orig = Email.objects.filter(id=forward, mailbox__owner=request.user).first()
+            if orig:
+                prefill['subject'] = f'Fwd: {orig.subject}' if not orig.subject.startswith('Fwd:') else orig.subject
+                prefill['quote'] = orig.body_html or orig.body_text or ''
+
+        return render(request, 'file/mail_compose.html', {
+            'mailboxes': mailboxes,
+            'signatures': signatures,
+            'default_signature': default_sig,
+            'prefill': prefill,
+        })
+
+
+class MailSendView(LoginRequiredMixin, View):
+    def post(self, request):
+        import uuid
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.utils import formatdate, make_msgid
+
+        to_addresses = request.POST.get('to', '').strip()
+        cc_addresses = request.POST.get('cc', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        body_html = request.POST.get('body_html', '').strip()
+
+        if not to_addresses:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'Recipient is required.'}, status=400)
+            messages.error(request, 'Recipient is required.')
+            return redirect('/mail/compose/')
+
+        from_address = request.user.email or f'{request.user.username}@localhost'
+
+        # Build MIME message
+        msg = MIMEMultipart('alternative')
+        msg['From'] = from_address
+        msg['To'] = to_addresses
+        if cc_addresses:
+            msg['Cc'] = cc_addresses
+        msg['Subject'] = subject
+        msg['Date'] = formatdate(localtime=True)
+        message_id = make_msgid()
+        msg['Message-ID'] = message_id
+
+        # Plain text fallback
+        import re
+        body_text = re.sub(r'<[^>]+>', '', body_html)
+        msg.attach(MIMEText(body_text, 'plain', 'utf-8'))
+        msg.attach(MIMEText(body_html, 'html', 'utf-8'))
+
+        # Try to send via SMTP relay if configured
+        smtp_host = getattr(settings, 'SMTP_RELAY_HOST', None)
+        smtp_port = getattr(settings, 'SMTP_RELAY_PORT', 587)
+        smtp_user = getattr(settings, 'SMTP_RELAY_USER', None)
+        smtp_pass = getattr(settings, 'SMTP_RELAY_PASSWORD', None)
+        smtp_tls = getattr(settings, 'SMTP_RELAY_USE_TLS', True)
+
+        sent_ok = False
+        if smtp_host:
+            try:
+                server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
+                if smtp_tls:
+                    server.starttls()
+                if smtp_user and smtp_pass:
+                    server.login(smtp_user, smtp_pass)
+                all_recipients = [a.strip() for a in to_addresses.split(',')]
+                if cc_addresses:
+                    all_recipients += [a.strip() for a in cc_addresses.split(',')]
+                server.sendmail(from_address, all_recipients, msg.as_string())
+                server.quit()
+                sent_ok = True
+            except Exception:
+                pass
+
+        # Store in Sent folder
+        sent_box, _ = Mailbox.objects.get_or_create(
+            owner=request.user, name='Sent', defaults={'system': True})
+        Email.objects.create(
+            mailbox=sent_box,
+            message_id=message_id,
+            from_address=from_address,
+            to_addresses=to_addresses,
+            cc_addresses=cc_addresses,
+            subject=subject,
+            body_text=body_text,
+            body_html=body_html,
+            raw_data=msg.as_string(),
+            is_read=True,
+        )
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True, 'relayed': sent_ok})
+        messages.success(request, 'Email sent.')
+        return redirect('/mail/?mailbox=Sent')
+
+
+class ContactSearchView(LoginRequiredMixin, View):
+    """API endpoint for contact autocomplete in compose form."""
+    def get(self, request):
+        q = request.GET.get('q', '').strip()
+        if len(q) < 1:
+            return JsonResponse([], safe=False)
+
+        # Search user's own contacts + shared address books
+        from django.db.models import Q
+        own_books = AddressBook.objects.filter(owner=request.user).values_list('id', flat=True)
+        shared_books = AddressBookShare.objects.filter(user=request.user).values_list('addressbook_id', flat=True)
+        all_books = list(own_books) + list(shared_books)
+
+        contacts = Contact.objects.filter(
+            addressbook_id__in=all_books
+        ).filter(
+            Q(fn__icontains=q) | Q(email__icontains=q)
+        )[:20]
+
+        results = []
+        for c in contacts:
+            if c.email:
+                label = f'{c.fn} <{c.email}>' if c.fn else c.email
+                results.append({'label': label, 'email': c.email, 'name': c.fn or ''})
+        return JsonResponse(results, safe=False)
+
+
+# ─── Signature Views ──────────────────────────────────────────
+
+class SignatureListView(LoginRequiredMixin, View):
+    def get(self, request):
+        sigs = EmailSignature.objects.filter(owner=request.user)
+        Mailbox.ensure_defaults(request.user)
+        mailboxes = _get_sorted_mailboxes(request.user)
+        unread_counts = dict(
+            Email.objects.filter(mailbox__owner=request.user, is_read=False)
+            .values_list('mailbox_id')
+            .annotate(count=models.Count('id'))
+            .values_list('mailbox_id', 'count')
+        )
+        for mb in mailboxes:
+            mb.unread_count = unread_counts.get(mb.id, 0)
+
+        selected_sig = None
+        sig_id = request.GET.get('sig')
+        if sig_id:
+            selected_sig = EmailSignature.objects.filter(id=sig_id, owner=request.user).first()
+
+        return render(request, 'file/mail_signatures.html', {
+            'mailboxes': mailboxes,
+            'signatures': sigs,
+            'selected_signature': selected_sig,
+        })
+
+
+class SignatureCreateView(LoginRequiredMixin, View):
+    def post(self, request):
+        name = request.POST.get('name', '').strip()
+        html_content = request.POST.get('html_content', '').strip()
+        is_default = 'is_default' in request.POST
+
+        if not name:
+            messages.error(request, 'Signature name is required.')
+            return redirect('/mail/signatures/')
+
+        sig = EmailSignature.objects.create(
+            owner=request.user, name=name,
+            html_content=html_content, is_default=is_default)
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True, 'id': sig.id})
+        return redirect(f'/mail/signatures/?sig={sig.id}')
+
+
+class SignatureUpdateView(LoginRequiredMixin, View):
+    def post(self, request, sig_id):
+        sig = get_object_or_404(EmailSignature, id=sig_id, owner=request.user)
+        sig.name = request.POST.get('name', sig.name).strip()
+        sig.html_content = request.POST.get('html_content', sig.html_content)
+        sig.is_default = 'is_default' in request.POST
+        sig.save()
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
+        return redirect(f'/mail/signatures/?sig={sig.id}')
+
+
+class SignatureDeleteView(LoginRequiredMixin, View):
+    def post(self, request, sig_id):
+        sig = get_object_or_404(EmailSignature, id=sig_id, owner=request.user)
+        sig.delete()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
+        return redirect('/mail/signatures/')
+
+
+class SignatureContentView(LoginRequiredMixin, View):
+    """Return signature HTML content as JSON for the compose form."""
+    def get(self, request, sig_id):
+        sig = get_object_or_404(EmailSignature, id=sig_id, owner=request.user)
+        return JsonResponse({'html': sig.html_content})

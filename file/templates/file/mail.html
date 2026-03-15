@@ -12,6 +12,14 @@
         <!-- Sidebar: Mailboxes -->
         <aside class="hidden lg:flex w-56 flex-col border-r border-gray-200 bg-white overflow-y-auto">
             <div class="px-3 py-4">
+                <a href="{% url 'mail_compose' %}"
+                   class="mb-3 flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Compose
+                </a>
+
                 <div class="flex items-center justify-between mb-3 px-2">
                     <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Folders</h2>
                     <button onclick="openModal('folder-modal')"
@@ -56,6 +64,16 @@
                     {% endif %}
                 </a>
                 {% endfor %}
+
+                <div class="mt-6 border-t border-gray-200 pt-4">
+                    <a href="{% url 'mail_signatures' %}"
+                       class="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        Signatures
+                    </a>
+                </div>
             </div>
         </aside>
 
@@ -147,7 +165,25 @@
                     </div>
                 </div>
                 {% endif %}
-            </div>
+
+                <!-- Reply / Forward -->
+                <div class="border-t border-gray-100 px-6 py-4 flex items-center gap-2">
+                    <a href="{% url 'mail_compose' %}?reply_to={{ selected_email.id }}"
+                       class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                        </svg>
+                        Reply
+                    </a>
+                    <a href="{% url 'mail_compose' %}?forward={{ selected_email.id }}"
+                       class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                        Forward
+                    </a>
+                </div>
+                </div>
         </main>
 
         {% elif selected_mailbox %}

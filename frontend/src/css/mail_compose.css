@@ -1,0 +1,21 @@
+#editor[contenteditable]:empty::before,
+#editor[contenteditable].is-empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+#editor[contenteditable]:focus {
+  outline: none;
+}
+
+#editor blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 12px;
+  margin-left: 0;
+  color: #6b7280;
+}
+
+.email-tag {
+  white-space: nowrap;
+}

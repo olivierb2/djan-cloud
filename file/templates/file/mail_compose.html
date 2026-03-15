@@ -1,0 +1,232 @@
+{% extends "file/base.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}Compose - Mail - Djancloud{% endblock %}
+
+{% block extra_head %}
+{% render_bundle 'mail_compose' 'css' %}
+{% endblock %}
+
+{% block body %}
+<div class="flex h-full min-h-screen flex-col">
+
+    {% include "file/_navbar.html" with active_nav='mail' %}
+
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- Sidebar: Mailboxes -->
+        <aside class="hidden lg:flex w-56 flex-col border-r border-gray-200 bg-white overflow-y-auto">
+            <div class="px-3 py-4">
+                <a href="{% url 'mail_compose' %}"
+                   class="mb-3 flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Compose
+                </a>
+
+                <div class="flex items-center justify-between mb-3 px-2">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Folders</h2>
+                </div>
+                {% for mb in mailboxes %}
+                <a href="{% url 'mail' %}?mailbox={{ mb.name }}"
+                   class="group flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                    {% if mb.name == 'INBOX' %}
+                    <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                    </svg>
+                    {% elif mb.name == 'Sent' %}
+                    <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                    {% elif mb.name == 'Drafts' %}
+                    <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    {% elif mb.name == 'Trash' %}
+                    <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    {% elif mb.name == 'Junk' %}
+                    <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                    </svg>
+                    {% else %}
+                    <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                    {% endif %}
+                    <span class="truncate flex-1">{{ mb.name }}</span>
+                    {% if mb.unread_count %}
+                    <span class="ml-auto min-w-[1.25rem] rounded-full bg-brand-600 px-1.5 py-0.5 text-center text-xs font-medium text-white leading-none">{{ mb.unread_count }}</span>
+                    {% endif %}
+                </a>
+                {% endfor %}
+
+                <div class="mt-6 border-t border-gray-200 pt-4">
+                    <a href="{% url 'mail_signatures' %}"
+                       class="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        Signatures
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Compose form -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-4 flex items-center justify-between">
+                    <h1 class="text-xl font-semibold text-gray-900">New message</h1>
+                    <a href="{% url 'mail' %}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+                </div>
+
+                <form id="compose-form" method="post" action="{% url 'mail_send' %}" class="rounded-xl border border-gray-200 bg-white shadow-sm">
+                    {% csrf_token %}
+
+                    <!-- To field with autocomplete -->
+                    <div class="border-b border-gray-100 px-4 py-2 flex items-center gap-2">
+                        <label class="text-sm font-medium text-gray-500 w-10 flex-shrink-0">To</label>
+                        <div class="relative flex-1">
+                            <div id="to-tags" class="flex flex-wrap items-center gap-1 min-h-[2rem]">
+                                <input type="text" id="to-input" autocomplete="off" placeholder="Type name or email..."
+                                       class="flex-1 min-w-[200px] border-0 p-0 text-sm outline-none focus:ring-0"
+                                       {% if prefill.to %}value="{{ prefill.to }}"{% endif %}>
+                            </div>
+                            <input type="hidden" name="to" id="to-hidden" value="{{ prefill.to|default:'' }}">
+                            <div id="to-suggestions" class="hidden absolute left-0 top-full mt-1 z-50 w-full max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cc field -->
+                    <div class="border-b border-gray-100 px-4 py-2 flex items-center gap-2">
+                        <label class="text-sm font-medium text-gray-500 w-10 flex-shrink-0">Cc</label>
+                        <div class="relative flex-1">
+                            <div id="cc-tags" class="flex flex-wrap items-center gap-1 min-h-[2rem]">
+                                <input type="text" id="cc-input" autocomplete="off" placeholder="Add Cc..."
+                                       class="flex-1 min-w-[200px] border-0 p-0 text-sm outline-none focus:ring-0">
+                            </div>
+                            <input type="hidden" name="cc" id="cc-hidden" value="">
+                            <div id="cc-suggestions" class="hidden absolute left-0 top-full mt-1 z-50 w-full max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"></div>
+                        </div>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="border-b border-gray-100 px-4 py-2 flex items-center gap-2">
+                        <label class="text-sm font-medium text-gray-500 w-10 flex-shrink-0">Subj</label>
+                        <input type="text" name="subject" id="subject-input" placeholder="Subject"
+                               value="{{ prefill.subject|default:'' }}"
+                               class="flex-1 border-0 p-0 text-sm outline-none focus:ring-0">
+                    </div>
+
+                    <!-- Signature selector -->
+                    {% if signatures %}
+                    <div class="border-b border-gray-100 px-4 py-2 flex items-center gap-2">
+                        <label class="text-sm font-medium text-gray-500 flex-shrink-0">Signature</label>
+                        <select id="signature-select" class="rounded-lg border border-gray-300 px-2 py-1 text-sm">
+                            <option value="">None</option>
+                            {% for sig in signatures %}
+                            <option value="{{ sig.id }}" {% if default_signature and default_signature.id == sig.id %}selected{% endif %}>{{ sig.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    <!-- WYSIWYG Toolbar -->
+                    <div id="editor-toolbar" class="border-b border-gray-100 px-4 py-1.5 flex items-center gap-1 flex-wrap">
+                        <button type="button" data-cmd="bold" title="Bold"
+                                class="toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg>
+                        </button>
+                        <button type="button" data-cmd="italic" title="Italic"
+                                class="toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+                        </button>
+                        <button type="button" data-cmd="underline" title="Underline"
+                                class="toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+                        </button>
+                        <div class="w-px h-5 bg-gray-200 mx-1"></div>
+                        <button type="button" data-cmd="insertUnorderedList" title="Bullet list"
+                                class="toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor"/><circle cx="3" cy="12" r="1" fill="currentColor"/><circle cx="3" cy="18" r="1" fill="currentColor"/></svg>
+                        </button>
+                        <button type="button" data-cmd="insertOrderedList" title="Numbered list"
+                                class="toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="1" y="8" font-size="8" fill="currentColor" stroke="none">1</text><text x="1" y="14" font-size="8" fill="currentColor" stroke="none">2</text><text x="1" y="20" font-size="8" fill="currentColor" stroke="none">3</text></svg>
+                        </button>
+                        <div class="w-px h-5 bg-gray-200 mx-1"></div>
+                        <button type="button" data-cmd="createLink" title="Insert link"
+                                class="toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                        </button>
+                        <div class="w-px h-5 bg-gray-200 mx-1"></div>
+                        <select id="format-block" title="Paragraph format"
+                                class="rounded border border-gray-300 px-1 py-0.5 text-xs text-gray-600">
+                            <option value="p">Paragraph</option>
+                            <option value="h1">Heading 1</option>
+                            <option value="h2">Heading 2</option>
+                            <option value="h3">Heading 3</option>
+                        </select>
+                        <select id="font-size" title="Font size"
+                                class="rounded border border-gray-300 px-1 py-0.5 text-xs text-gray-600">
+                            <option value="3">Normal</option>
+                            <option value="1">Small</option>
+                            <option value="5">Large</option>
+                            <option value="7">Huge</option>
+                        </select>
+                        <div class="w-px h-5 bg-gray-200 mx-1"></div>
+                        <input type="color" id="text-color" value="#000000" title="Text color"
+                               class="w-6 h-6 rounded border border-gray-300 cursor-pointer p-0">
+                    </div>
+
+                    <!-- Editor area -->
+                    <div id="editor" contenteditable="true"
+                         class="px-4 py-4 min-h-[350px] text-sm text-gray-800 outline-none focus:ring-0 prose max-w-none"
+                         data-placeholder="Write your message...">
+                        {% if prefill.quote %}
+                        <br><br>
+                        <blockquote style="border-left: 3px solid #ccc; padding-left: 12px; margin-left: 0; color: #666;">
+                            {{ prefill.quote|safe }}
+                        </blockquote>
+                        {% endif %}
+                    </div>
+
+                    <!-- Signature preview -->
+                    <div id="signature-preview" class="px-4 pb-2">
+                        {% if default_signature %}
+                        <div class="border-t border-gray-100 pt-2 text-sm text-gray-500">
+                            {{ default_signature.html_content|safe }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <input type="hidden" name="body_html" id="body-html-hidden">
+
+                    <!-- Actions -->
+                    <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-between">
+                        <button type="submit" id="send-btn"
+                                class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                            Send
+                        </button>
+                        <a href="{% url 'mail' %}" class="text-sm text-gray-500 hover:text-gray-700">Discard</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-t border-gray-200 bg-white px-4 py-3 text-center text-xs text-gray-400">
+        Djancloud &mdash; Nextcloud-compatible file server powered by Django
+    </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% render_bundle 'mail_compose' 'js' %}
+{% endblock %}

@@ -35,6 +35,9 @@ from file.views import (
     ContactCreateView, ContactDeleteView,
     MailWebView, MailboxCreateView, MailboxRenameView, MailboxDeleteView,
     EmailDeleteView, EmailMoveView, TrashEmptyView, EmailAttachmentDownloadView,
+    MailComposeView, MailSendView, ContactSearchView,
+    SignatureListView, SignatureCreateView, SignatureUpdateView,
+    SignatureDeleteView, SignatureContentView,
 )
 from file.caldav_views import (
     WellKnownCalDavView, WellKnownCardDavView,
@@ -154,4 +157,12 @@ urlpatterns = [
     path('mail/<int:email_id>/move/', EmailMoveView.as_view(), name='email_move'),
     path('mail/trash/empty/', TrashEmptyView.as_view(), name='trash_empty'),
     path('mail/attachment/<int:attachment_id>/', EmailAttachmentDownloadView.as_view(), name='email_attachment_download'),
+    path('mail/compose/', MailComposeView.as_view(), name='mail_compose'),
+    path('mail/send/', MailSendView.as_view(), name='mail_send'),
+    path('mail/signatures/', SignatureListView.as_view(), name='mail_signatures'),
+    path('mail/signatures/create/', SignatureCreateView.as_view(), name='signature_create'),
+    path('mail/signatures/<int:sig_id>/update/', SignatureUpdateView.as_view(), name='signature_update'),
+    path('mail/signatures/<int:sig_id>/delete/', SignatureDeleteView.as_view(), name='signature_delete'),
+    path('mail/signatures/<int:sig_id>/content/', SignatureContentView.as_view(), name='signature_content'),
+    path('api/contacts/search/', ContactSearchView.as_view(), name='contact_search'),
 ]
