@@ -126,7 +126,7 @@ export function buildSidebarSections(treeEl, data, currentPath, options) {
         if (data.shared) data.shared.forEach(s => renderTree(s, treeEl, currentPath, 0, 'shared', options));
     }
 
-    if (data.is_admin) {
+    if (data.is_admin && !options.hideConfig) {
         const configHeading = document.createElement('h2');
         configHeading.className = 'mt-4 mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400';
         configHeading.textContent = 'Configuration';

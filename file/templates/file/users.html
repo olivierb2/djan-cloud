@@ -11,12 +11,16 @@
     <div class="flex flex-1 overflow-hidden">
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="hidden lg:flex w-60 flex-col border-r border-gray-200 bg-white overflow-y-auto">
+        <aside class="hidden lg:flex w-60 flex-col border-r border-gray-200 bg-white overflow-y-auto">
             <div class="px-3 py-4">
-                <h2 class="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">My files</h2>
-                <div id="folder-tree" class="text-sm">
-                    <div class="flex items-center gap-1 px-2 py-1.5 rounded-md text-gray-400 text-xs">Loading...</div>
-                </div>
+                <h2 class="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Configuration</h2>
+                <a href="{% url 'user_management' %}"
+                   class="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm font-medium bg-brand-50 text-brand-700">
+                    <svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    Users
+                </a>
             </div>
         </aside>
 

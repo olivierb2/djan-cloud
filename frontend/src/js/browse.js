@@ -249,5 +249,6 @@ fetch('/api/tree/').then(r => r.json()).then(data => {
     buildSidebarSections(treeEl, data, currentPath, {
         onShareClick: openMembersModal,
         onAddShared: () => openModal('shared-folder-modal'),
+        hideConfig: true,
     });
 });

@@ -1,15 +1,4 @@
-import { renderTree, getCsrfToken, buildSidebarSections } from './common.js';
-
-// Sidebar folder tree
-fetch('/api/tree/').then(r => r.json()).then(data => {
-    const treeEl = document.getElementById('folder-tree');
-    treeEl.innerHTML = '';
-    if (data.tree) renderTree(data.tree, treeEl, '', 0, 'folder');
-
-    buildSidebarSections(treeEl, data, '', {
-        activeSection: 'users',
-    });
-});
+import { getCsrfToken } from './common.js';
 
 // Delete user
 function deleteUser(userId, username) {
