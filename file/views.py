@@ -1384,15 +1384,48 @@ class UserCreateView(LoginRequiredMixin, View):
         data = json.loads(request.body)
         username = data.get('username', '').strip()
         password = data.get('password', '').strip()
+        email = data.get('email', '').strip()
         role = data.get('role', 'user')
         if not username or not password:
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
         if User.objects.filter(username=username).exists():
             return JsonResponse({'error': 'Username already exists.'}, status=400)
+        if email and User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Email already in use.'}, status=400)
         if role not in ('user', 'admin'):
             role = 'user'
-        user = User.objects.create_user(username=username, password=password, role=role)
-        return JsonResponse({'id': user.id, 'username': user.username, 'role': user.role})
+        user = User.objects.create_user(username=username, password=password, email=email, role=role)
+        return JsonResponse({'id': user.id, 'username': user.username, 'email': user.email, 'role': user.role})
+
+
+class UserUpdateView(LoginRequiredMixin, View):
+    def post(self, request, user_id):
+        if request.user.role != 'admin':
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        user = get_object_or_404(User, id=user_id)
+        data = json.loads(request.body)
+
+        if 'email' in data:
+            email_val = data['email'].strip()
+            if email_val and User.objects.filter(email=email_val).exclude(id=user.id).exists():
+                return JsonResponse({'error': 'Email already in use.'}, status=400)
+            user.email = email_val
+
+        if 'role' in data and data['role'] in ('user', 'admin'):
+            user.role = data['role']
+
+        if 'password' in data and data['password'].strip():
+            user.set_password(data['password'].strip())
+
+        if 'is_active' in data:
+            user.is_active = bool(data['is_active'])
+
+        user.save()
+        return JsonResponse({
+            'id': user.id, 'username': user.username,
+            'email': user.email, 'role': user.role,
+            'is_active': user.is_active,
+        })
 
 
 class UserDeleteView(LoginRequiredMixin, View):

@@ -25,7 +25,7 @@ from file.views import (
     FileDeleteView, FolderDeleteView, MoveItemView, FolderSelectorView,
     RenameItemView, FilePreviewView, FolderTreeView, OcsUserView,
     OcsCapabilitiesView, SharedFolderCreateView, SharedFolderMembersView,
-    SharedFolderMemberDeleteView, UserListView, UserCreateView, UserDeleteView,
+    SharedFolderMemberDeleteView, UserListView, UserCreateView, UserUpdateView, UserDeleteView,
     UserManagementView, FileEditorView, FileSaveView,
     CalendarWebView, CalendarCreateView, CalendarDeleteView,
     CalendarShareAddView, CalendarShareDeleteView,
@@ -124,6 +124,7 @@ urlpatterns = [
     path('api/users/', UserListView.as_view(), name='api_users'),
     path('api/users/create/', UserCreateView.as_view(), name='api_user_create'),
     path('api/users/<int:user_id>/', UserDeleteView.as_view(), name='api_user_delete'),
+    path('api/users/<int:user_id>/update/', UserUpdateView.as_view(), name='api_user_update'),
 
     # Calendar web UI
     path('calendars/', CalendarWebView.as_view(), name='calendars'),

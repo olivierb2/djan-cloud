@@ -26,20 +26,25 @@
 
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto p-4 lg:p-6">
-            <div class="max-w-3xl">
+            <div class="max-w-4xl">
                 <h1 class="text-xl font-bold text-gray-900 mb-6">Users</h1>
 
                 <!-- Add user form -->
                 <div class="mb-6 rounded-xl border border-gray-200 bg-white shadow-sm p-5">
                     <h2 class="text-sm font-semibold text-gray-700 mb-3">Add user</h2>
-                    <form id="add-user-form" class="flex items-end gap-3">
+                    <form id="add-user-form" class="flex items-end gap-3 flex-wrap">
                         {% csrf_token %}
-                        <div class="flex-1">
+                        <div class="flex-1 min-w-[120px]">
                             <label class="block text-xs text-gray-500 mb-1">Username</label>
                             <input type="text" id="new-user-username" placeholder="username" required
                                    class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1 min-w-[120px]">
+                            <label class="block text-xs text-gray-500 mb-1">Email</label>
+                            <input type="email" id="new-user-email" placeholder="user@example.com"
+                                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div class="flex-1 min-w-[120px]">
                             <label class="block text-xs text-gray-500 mb-1">Password</label>
                             <input type="password" id="new-user-password" placeholder="password" required
                                    class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
@@ -65,6 +70,7 @@
                         <thead>
                             <tr class="border-b border-gray-100 bg-gray-50/50 text-xs font-medium uppercase tracking-wider text-gray-500">
                                 <th class="px-4 py-3 text-left">Username</th>
+                                <th class="px-4 py-3 text-left">Email</th>
                                 <th class="px-4 py-3 text-left">Role</th>
                                 <th class="px-4 py-3 text-left">Status</th>
                                 <th class="px-4 py-3 text-right">Actions</th>
@@ -72,8 +78,10 @@
                         </thead>
                         <tbody id="users-tbody" class="divide-y divide-gray-100">
                             {% for u in users %}
-                            <tr class="group hover:bg-gray-50/50 transition-colors" data-user-id="{{ u.id }}">
+                            <tr class="group hover:bg-gray-50/50 transition-colors" data-user-id="{{ u.id }}"
+                                data-email="{{ u.email|default:'' }}" data-role="{{ u.role }}" data-active="{{ u.is_active|yesno:'true,false' }}">
                                 <td class="px-4 py-2.5 text-sm font-medium text-gray-900">{{ u.username }}</td>
+                                <td class="px-4 py-2.5 text-sm text-gray-500">{{ u.email|default:"&mdash;" }}</td>
                                 <td class="px-4 py-2.5">
                                     {% if u.role == 'admin' %}
                                     <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-purple-50 text-purple-700">admin</span>
@@ -89,13 +97,20 @@
                                     {% endif %}
                                 </td>
                                 <td class="px-4 py-2.5 text-right">
-                                    {% if u.id != request.user.id %}
-                                    <button onclick="deleteUser({{ u.id }}, '{{ u.username|escapejs }}')"
-                                            class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            title="Delete user">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
-                                    {% endif %}
+                                    <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button onclick="openEditModal({{ u.id }}, '{{ u.username|escapejs }}', '{{ u.email|default:''|escapejs }}', '{{ u.role }}', {{ u.is_active|yesno:'true,false' }})"
+                                                class="rounded p-1 text-gray-400 hover:text-brand-600 hover:bg-brand-50"
+                                                title="Edit user">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        </button>
+                                        {% if u.id != request.user.id %}
+                                        <button onclick="deleteUser({{ u.id }}, '{{ u.username|escapejs }}')"
+                                                class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                                                title="Delete user">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -110,6 +125,44 @@
     <footer class="border-t border-gray-200 bg-white px-4 py-3 text-center text-xs text-gray-400">
         Djancloud &mdash; Nextcloud-compatible file server powered by Django
     </footer>
+</div>
+
+<!-- Edit User modal -->
+<div id="edit-user-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Edit user &mdash; <span id="edit-user-title"></span></h3>
+        <form id="edit-user-form" class="space-y-3">
+            <input type="hidden" id="edit-user-id">
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Email</label>
+                <input type="email" id="edit-user-email" placeholder="user@example.com"
+                       class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Role</label>
+                <select id="edit-user-role" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">New password <span class="text-gray-400">(leave empty to keep current)</span></label>
+                <input type="password" id="edit-user-password" placeholder="new password"
+                       class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="edit-user-active" class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
+                <label for="edit-user-active" class="text-sm text-gray-700">Active</label>
+            </div>
+            <div id="edit-user-error" class="hidden text-sm text-red-600"></div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="closeEditModal()"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Save</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock %}
