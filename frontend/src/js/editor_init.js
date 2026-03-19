@@ -1,4 +1,5 @@
 import { CollaborativeEditor } from './editor.js';
+import { getExportFormats, exportMarkdown } from './pandoc-export.js';
 import '../css/editor.css';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -139,6 +140,63 @@ document.addEventListener('DOMContentLoaded', () => {
     saveBtn.addEventListener('click', () => {
       saveContent();
     });
+  }
+
+  // Export dropdown
+  const exportBtn = document.getElementById('export-btn');
+  const exportDropdown = document.getElementById('export-dropdown');
+  const exportFormatsContainer = document.getElementById('export-formats');
+
+  if (exportBtn && exportDropdown && exportFormatsContainer) {
+    const formats = getExportFormats();
+    formats.forEach((format) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors';
+      btn.textContent = format.label;
+      btn.addEventListener('click', () => handleExport(format.id));
+      exportFormatsContainer.appendChild(btn);
+    });
+
+    exportBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      exportDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+      exportDropdown.classList.add('hidden');
+    });
+
+    exportDropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  async function handleExport(formatId) {
+    const exportDropdown = document.getElementById('export-dropdown');
+    exportDropdown.classList.add('hidden');
+
+    const exportBtn = document.getElementById('export-btn');
+    const originalHtml = exportBtn.innerHTML;
+    exportBtn.disabled = true;
+    exportBtn.innerHTML = `
+      <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+      Loading...
+    `;
+
+    try {
+      const markdown = editor.getMarkdown();
+      const baseName = (config.fileName || 'document').replace(/\.[^.]+$/, '');
+      await exportMarkdown(markdown, formatId, baseName);
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Export failed: ' + err.message);
+    } finally {
+      exportBtn.disabled = false;
+      exportBtn.innerHTML = originalHtml;
+    }
   }
 
   window.addEventListener('beforeunload', (e) => {

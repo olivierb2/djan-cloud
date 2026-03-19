@@ -47,6 +47,21 @@
                 Save
             </button>
             {% endif %}
+            <div class="relative" id="export-wrapper">
+                <button id="export-btn"
+                        class="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Export
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div id="export-dropdown" class="hidden absolute right-0 mt-1 w-56 rounded-lg border border-gray-200 bg-white shadow-lg z-50">
+                    <div class="py-1" id="export-formats"></div>
+                </div>
+            </div>
             <a href="{% url 'download_file' file_id=file.id %}"
                class="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,6 +98,7 @@ window.editorConfig = {
     initialContent: {{ initial_content|safe }},
     canWrite: {{ can_write|lower }},
     userName: "{{ user.username|escapejs }}",
+    fileName: "{{ display_name|escapejs }}",
 };
 </script>
 {% endblock %}
