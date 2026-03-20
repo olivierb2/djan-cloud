@@ -3,6 +3,7 @@ module.exports = {
   content: [
     '../file/templates/**/*.html',
     './src/js/**/*.js',
+    './src/components/**/*.vue',
   ],
   theme: {
     extend: {

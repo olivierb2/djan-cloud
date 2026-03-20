@@ -59,19 +59,25 @@ def get_accessible_file(request, file_id, permission='read'):
 
 
 def get_accessible_folder(request, folder_id, permission='read'):
-    """Get a folder the user can access (personal or shared)."""
+    """Get a folder the user can access (personal, shared, or contact)."""
     try:
         return Folder.objects.get(id=folder_id, owner=request.user), True
     except Folder.DoesNotExist:
         pass
     folder = get_object_or_404(Folder, id=folder_id)
+    # Check shared folder access
     membership = _get_shared_membership(request.user, folder)
-    if not membership:
-        raise Http404
-    if permission == 'write' and membership.permission not in ('write', 'admin'):
-        raise Http404
-    can_write = membership.permission in ('write', 'admin')
-    return folder, can_write
+    if membership:
+        if permission == 'write' and membership.permission not in ('write', 'admin'):
+            raise Http404
+        can_write = membership.permission in ('write', 'admin')
+        return folder, can_write
+    # Check contact folder access
+    if folder.full_path.startswith('/__contacts__/'):
+        parts = folder.full_path.split('/')
+        if len(parts) >= 4 and parts[2] == request.user.username:
+            return folder, True
+    raise Http404
 
 
 def _redirect_to_folder(request, folder):
@@ -2524,7 +2530,7 @@ class FilePickerView(LoginRequiredMixin, View):
                 Folder, owner=request.user,
                 full_path=f"/{request.user.username}/")
 
-        is_shared = folder.full_path.startswith('/__shared__/')
+        is_special = folder.full_path.startswith('/__shared__/') or folder.full_path.startswith('/__contacts__/')
 
         # Breadcrumbs
         breadcrumbs = []
@@ -2538,7 +2544,7 @@ class FilePickerView(LoginRequiredMixin, View):
             current = current.parent
 
         # Subfolders
-        if is_shared:
+        if is_special:
             children = folder.subfolders.all().order_by('name')
         else:
             children = folder.subfolders.filter(owner=request.user).order_by('name')
@@ -2549,7 +2555,7 @@ class FilePickerView(LoginRequiredMixin, View):
         ]
 
         # Files
-        if is_shared:
+        if is_special:
             file_qs = File.objects.filter(parent=folder).order_by('display_name')
         else:
             file_qs = File.objects.filter(
@@ -2570,7 +2576,7 @@ class FilePickerView(LoginRequiredMixin, View):
             'items': subfolders + files,
         }
 
-        # Shared folders at root
+        # Shared folders and contact folders at root
         if not folder_id or folder.full_path == f"/{request.user.username}/":
             memberships = SharedFolderMembership.objects.filter(
                 user=request.user
@@ -2581,6 +2587,16 @@ class FilePickerView(LoginRequiredMixin, View):
                 for m in memberships
             ]
             response['shared'] = shared
+
+            contact_folders = ContactFolder.objects.filter(
+                owner=request.user
+            ).select_related('contact', 'folder')
+            contacts = [
+                {'id': cf.folder.id,
+                 'name': cf.contact.fn or cf.contact.uid, 'type': 'contact'}
+                for cf in contact_folders
+            ]
+            response['contacts'] = contacts
 
         return JsonResponse(response)
 

@@ -147,7 +147,7 @@
   <!-- File Picker Modal -->
   <teleport to="body">
     <div v-if="pickerOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="pickerOpen = false">
-      <div class="w-full max-w-lg rounded-xl bg-white shadow-xl flex flex-col" style="max-height: 80vh" @click.stop>
+      <div class="w-[40rem] rounded-xl bg-white shadow-xl flex flex-col" style="max-height: 80vh" @click.stop>
         <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3">
           <h3 class="text-lg font-semibold text-gray-900">Attach from Djancloud</h3>
           <button type="button" @click="pickerOpen = false" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
@@ -164,38 +164,72 @@
           </template>
         </div>
         <!-- Items -->
-        <div class="flex-1 overflow-y-auto divide-y divide-gray-100">
-          <div v-for="item in pickerShared" :key="'s'+item.id"
-               @click="navigatePicker(item.id)"
-               class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
-            <svg class="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
-            <span class="text-xs text-gray-400 ml-auto">Shared</span>
-          </div>
-          <template v-for="item in pickerItems" :key="item.id">
-            <div v-if="item.type === 'folder'" @click="navigatePicker(item.id)"
-                 class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
-              <svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
-              </svg>
-              <span class="text-sm text-gray-700">{{ item.name }}</span>
+        <div class="flex-1 overflow-y-auto">
+          <!-- My Files section -->
+          <div v-if="pickerIsRoot">
+            <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">My files</span>
             </div>
-            <div v-else @click="togglePickerFile(item)"
-                 class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
-                 :class="{'bg-brand-50 ring-1 ring-brand-200': isPickerSelected(item.id)}">
-              <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-              </svg>
-              <span class="text-sm text-gray-700 flex-1">{{ item.name }}</span>
-              <span class="text-xs text-gray-400">{{ formatSize(item.size) }}</span>
-              <svg v-if="isPickerSelected(item.id)" class="w-4 h-4 text-brand-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-              </svg>
+          </div>
+          <div class="divide-y divide-gray-100">
+            <template v-for="item in pickerItems" :key="item.id">
+              <div v-if="item.type === 'folder'" @click="navigatePicker(item.id)"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                <svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                </svg>
+                <span class="text-sm text-gray-700">{{ item.name }}</span>
+              </div>
+              <div v-else @click="togglePickerFile(item)"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
+                   :class="{'bg-brand-50 ring-1 ring-brand-200': isPickerSelected(item.id)}">
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                <span class="text-sm text-gray-700 flex-1">{{ item.name }}</span>
+                <span class="text-xs text-gray-400">{{ formatSize(item.size) }}</span>
+                <svg v-if="isPickerSelected(item.id)" class="w-4 h-4 text-brand-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </template>
+          </div>
+
+          <!-- Shared section -->
+          <template v-if="pickerShared.length">
+            <div class="px-4 py-2 bg-gray-50 border-y border-gray-100">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Shared</span>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div v-for="item in pickerShared" :key="'s'+item.id"
+                   @click="navigatePicker(item.id)"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
+              </div>
             </div>
           </template>
-          <div v-if="!pickerItems.length && !pickerShared.length" class="px-4 py-8 text-center text-sm text-gray-400">Empty folder</div>
+
+          <!-- Contacts section -->
+          <template v-if="pickerContacts.length">
+            <div class="px-4 py-2 bg-gray-50 border-y border-gray-100">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Shared with contact</span>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div v-for="item in pickerContacts" :key="'c'+item.id"
+                   @click="navigatePicker(item.id)"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                <svg class="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
+              </div>
+            </div>
+          </template>
+
+          <div v-if="!pickerItems.length && !pickerShared.length && !pickerContacts.length" class="px-4 py-8 text-center text-sm text-gray-400">Empty folder</div>
         </div>
         <div class="border-t border-gray-200 px-5 py-3 flex justify-end gap-2">
           <button type="button" @click="pickerOpen = false"
@@ -243,6 +277,8 @@ export default {
       pickerBreadcrumbs: [],
       pickerItems: [],
       pickerShared: [],
+      pickerContacts: [],
+      pickerIsRoot: true,
       pickerSelected: [],
 
       searchTimers: { to: null, cc: null },
@@ -389,6 +425,8 @@ export default {
           this.pickerBreadcrumbs = data.breadcrumbs;
           this.pickerItems = data.items;
           this.pickerShared = data.shared || [];
+          this.pickerContacts = data.contacts || [];
+          this.pickerIsRoot = !!(data.shared || data.contacts);
         });
     },
 
