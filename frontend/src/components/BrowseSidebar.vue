@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, watch } from 'vue';
 import TreeNode from './TreeNode.vue';
 
 export default defineComponent({
@@ -83,7 +83,7 @@ export default defineComponent({
     const contacts = ref([]);
     const loading = ref(true);
 
-    onMounted(() => {
+    function loadTree() {
       fetch('/api/tree/')
         .then(r => r.json())
         .then(data => {
@@ -92,6 +92,15 @@ export default defineComponent({
           contacts.value = data.contacts || [];
           loading.value = false;
         });
+    }
+
+    onMounted(() => {
+      loadTree();
+    });
+
+    // Reload tree when currentPath changes (SPA navigation)
+    watch(() => props.currentPath, () => {
+      loadTree();
     });
 
     function onAddShared() {

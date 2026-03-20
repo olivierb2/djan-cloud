@@ -5,6 +5,7 @@
       class="flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm select-none no-underline"
       :class="isActive ? 'bg-brand-50 text-brand-700 font-medium' : 'text-gray-700 hover:bg-gray-100'"
       :style="{ paddingLeft: (depth * 12 + 8) + 'px' }"
+      @click.prevent="onNavigate"
     >
       <!-- Toggle chevron -->
       <svg
@@ -99,7 +100,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, inject } from 'vue';
 
 export default defineComponent({
   name: 'TreeNode',
@@ -124,6 +125,8 @@ export default defineComponent({
   },
   emits: ['share-click'],
   setup(props) {
+    const navigateToFolder = inject('navigateToFolder', null);
+
     const hasChildren = computed(() => props.node.children && props.node.children.length > 0);
 
     const isActive = computed(() => props.node.url_path === props.currentPath);
@@ -136,7 +139,17 @@ export default defineComponent({
 
     const isOpen = ref(isOnPath.value && hasChildren.value);
 
-    return { hasChildren, isActive, isOpen };
+    // Navigate using injected function or fall back to page navigation
+    function onNavigate() {
+      const path = props.node.url_path || '';
+      if (navigateToFolder) {
+        navigateToFolder(path);
+      } else {
+        window.location.href = '/browse/' + (path || '');
+      }
+    }
+
+    return { hasChildren, isActive, isOpen, onNavigate };
   },
 });
 </script>

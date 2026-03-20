@@ -2991,3 +2991,357 @@ class SharedMailboxMemberDeleteView(LoginRequiredMixin, View):
         SharedMailboxMembership.objects.filter(
             shared_mailbox=sm, user_id=user_id).delete()
         return redirect(f'/mail/?mailbox=__shared__/{sm.name}/INBOX')
+
+
+class BrowseApiView(LoginRequiredMixin, View):
+    """JSON API for the browse page SPA. Reuses FileBrowseView logic."""
+
+    def _resolve_folder(self, request, path):
+        """Resolve path to (folder, is_shared, can_write, is_shared_root, is_contacts_root, contact_folder)."""
+        stripped = path.strip('/')
+
+        # Contacts listing
+        if stripped == '__contacts__':
+            return None, False, False, False, True, None
+
+        # Inside a contact folder
+        if stripped.startswith('__contacts__/'):
+            parts = stripped.split('/')
+            contact_id = parts[1]
+            cf = get_object_or_404(
+                ContactFolder, contact_id=contact_id, owner=request.user)
+            if len(parts) == 2:
+                return cf.folder, False, True, False, False, cf
+            sub_path = '/'.join(parts[2:])
+            full_path = f"/__contacts__/{request.user.username}/{contact_id}/{sub_path}/"
+            folder = get_object_or_404(Folder, full_path=full_path)
+            return folder, False, True, False, False, cf
+
+        # Shared folders listing
+        if stripped == '__shared__':
+            return None, True, False, True, False, None
+
+        # Inside a shared folder
+        if stripped.startswith('__shared__/'):
+            parts = stripped.split('/')
+            share_name = parts[1]
+            sf = get_object_or_404(SharedFolder, name=share_name)
+            membership = get_object_or_404(
+                SharedFolderMembership, shared_folder=sf, user=request.user)
+            can_write = membership.permission in ('write', 'admin')
+            if len(parts) == 2:
+                return sf.root_folder, True, can_write, False, False, None
+            sub_path = '/'.join(parts[2:])
+            full_path = f"/__shared__/{share_name}/{sub_path}/"
+            folder = get_object_or_404(Folder, full_path=full_path)
+            return folder, True, can_write, False, False, None
+
+        # Personal folder
+        normalized_path = '/' + stripped
+        if normalized_path == '/':
+            folder = get_object_or_404(
+                Folder, owner=request.user, full_path=f"/{request.user.username}/")
+        else:
+            user_path = f"/{request.user.username}{normalized_path}/"
+            folder = get_object_or_404(Folder, owner=request.user, full_path=user_path)
+        return folder, False, True, False, False, None
+
+    def _folder_url_path(self, request, subfolder):
+        """Convert a folder's full_path to a browse URL path."""
+        if subfolder.full_path.startswith('/__shared__/'):
+            return subfolder.full_path.lstrip('/').rstrip('/')
+        if subfolder.full_path.startswith('/__contacts__/'):
+            parts = subfolder.full_path.strip('/').split('/')
+            return '__contacts__/' + '/'.join(parts[2:])
+        if subfolder.full_path == f"/{request.user.username}/":
+            return ''
+        return subfolder.full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+
+    def get(self, request, path=''):
+        folder, is_shared, can_write, is_shared_root, is_contacts_root, contact_folder = self._resolve_folder(request, path)
+
+        # Contacts root listing
+        if is_contacts_root:
+            contact_folders = ContactFolder.objects.filter(
+                owner=request.user
+            ).select_related('contact', 'folder')
+            contacts_list = []
+            for cf in contact_folders:
+                contacts_list.append({
+                    'id': cf.contact.id,
+                    'name': str(cf.contact),
+                    'url_path': f"__contacts__/{cf.contact.id}",
+                })
+            return JsonResponse({
+                'current_folder': None,
+                'current_path': '__contacts__',
+                'parent_path': '',
+                'breadcrumb_parts': [{'name': 'Contacts', 'path': '__contacts__'}],
+                'is_shared': False,
+                'is_shared_root': False,
+                'is_contacts_root': True,
+                'can_write': False,
+                'subfolders': [],
+                'files': [],
+                'contacts_list': contacts_list,
+            })
+
+        # Shared root listing
+        if is_shared_root:
+            memberships = SharedFolderMembership.objects.filter(
+                user=request.user
+            ).select_related('shared_folder__root_folder')
+            shared_folders = []
+            for m in memberships:
+                sf = m.shared_folder
+                shared_folders.append({
+                    'id': sf.id,
+                    'name': sf.name,
+                    'url_path': f"__shared__/{sf.name}",
+                    'permission': m.permission,
+                })
+            return JsonResponse({
+                'current_folder': None,
+                'current_path': '__shared__',
+                'parent_path': '',
+                'breadcrumb_parts': [{'name': 'Shared', 'path': '__shared__'}],
+                'is_shared': True,
+                'is_shared_root': True,
+                'is_contacts_root': False,
+                'can_write': False,
+                'subfolders': [],
+                'files': [],
+                'shared_folders': shared_folders,
+            })
+
+        # Regular folder listing
+        is_contact = contact_folder is not None
+        if is_shared or is_contact:
+            subfolders = folder.subfolders.all().order_by('name')
+            files = folder.files.all().order_by('file')
+        else:
+            subfolders = folder.subfolders.filter(owner=request.user).order_by('name')
+            files = folder.files.filter(owner=request.user).order_by('file')
+
+        subfolder_list = []
+        for sf in subfolders:
+            subfolder_list.append({
+                'id': sf.id,
+                'name': sf.name,
+                'url_path': self._folder_url_path(request, sf),
+                'updated_at': sf.updated_at.isoformat() if hasattr(sf, 'updated_at') and sf.updated_at else None,
+            })
+
+        file_list = []
+        for f in files:
+            file_list.append({
+                'id': f.id,
+                'display_name': f.display_name,
+                'content_type': f.content_type,
+                'updated_at': f.updated_at.isoformat() if hasattr(f, 'updated_at') and f.updated_at else None,
+                'size': f.file.size if f.file else 0,
+                'is_markdown': f.display_name.lower().endswith('.md') if f.display_name else False,
+            })
+
+        # Parent path
+        parent_path = None
+        stripped = path.strip('/')
+        if is_shared:
+            parts = stripped.split('/')
+            if len(parts) == 2:
+                parent_path = '__shared__'
+            elif len(parts) > 2:
+                parent_path = '/'.join(parts[:-1])
+        elif is_contact:
+            parts = stripped.split('/')
+            if len(parts) == 2:
+                parent_path = '__contacts__'
+            elif len(parts) > 2:
+                parent_path = '/'.join(parts[:-1])
+        elif folder.parent:
+            parent_full_path = folder.parent.full_path
+            if parent_full_path == f"/{request.user.username}/":
+                parent_path = ''
+            else:
+                parent_path = parent_full_path.replace(f"/{request.user.username}/", "", 1).rstrip('/')
+
+        # Breadcrumbs
+        breadcrumb_parts = []
+        if path:
+            parts = path.strip('/').split('/')
+            for i, part in enumerate(parts):
+                breadcrumb_parts.append({
+                    'name': part,
+                    'path': '/'.join(parts[:i + 1]),
+                })
+
+        return JsonResponse({
+            'current_folder': {'id': folder.id, 'name': folder.name} if folder else None,
+            'current_path': path,
+            'parent_path': parent_path,
+            'breadcrumb_parts': breadcrumb_parts,
+            'is_shared': is_shared,
+            'is_shared_root': False,
+            'is_contacts_root': False,
+            'can_write': can_write,
+            'subfolders': subfolder_list,
+            'files': file_list,
+        })
+
+
+class ApiFolderCreateView(LoginRequiredMixin, View):
+    """POST JSON {parent_id, name} to create a subfolder."""
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        parent_id = data.get('parent_id')
+        name = (data.get('name') or '').strip()
+        if not parent_id or not name:
+            return JsonResponse({'error': 'parent_id and name are required'}, status=400)
+
+        if '/' in name:
+            return JsonResponse({'error': 'Folder name cannot contain slash characters'}, status=400)
+
+        parent, can_write = get_accessible_folder(request, parent_id, permission='write')
+        if not can_write:
+            return JsonResponse({'error': 'No write access to this folder'}, status=403)
+
+        # Check for duplicate
+        if Folder.objects.filter(parent=parent, name=name).exists():
+            return JsonResponse({'error': f'Folder "{name}" already exists'}, status=409)
+
+        # Determine owner: None for shared/contact folders
+        owner = request.user
+        if parent.full_path.startswith('/__shared__/') or parent.full_path.startswith('/__contacts__/'):
+            owner = None
+
+        new_folder = Folder(owner=owner, parent=parent, name=name)
+        new_folder.save()
+        return JsonResponse({'ok': True, 'folder': {'id': new_folder.id, 'name': new_folder.name}})
+
+
+class ApiFileUploadView(LoginRequiredMixin, View):
+    """POST multipart with parent_id + file to upload a file."""
+
+    def post(self, request):
+        parent_id = request.POST.get('parent_id')
+        uploaded_file = request.FILES.get('file')
+
+        if not parent_id or not uploaded_file:
+            return JsonResponse({'error': 'parent_id and file are required'}, status=400)
+
+        parent, can_write = get_accessible_folder(request, int(parent_id), permission='write')
+        if not can_write:
+            return JsonResponse({'error': 'No write access to this folder'}, status=403)
+
+        # Check for duplicate
+        if File.objects.filter(parent=parent, full_path=f"{parent.full_path}{uploaded_file.name}").exists():
+            return JsonResponse({'error': f'File "{uploaded_file.name}" already exists in this folder'}, status=409)
+
+        # Determine owner: None for shared/contact folders
+        owner = request.user
+        if parent.full_path.startswith('/__shared__/') or parent.full_path.startswith('/__contacts__/'):
+            owner = None
+
+        new_file = File(
+            owner=owner,
+            parent=parent,
+            file=uploaded_file,
+            display_name=uploaded_file.name,
+        )
+        new_file.save()
+        return JsonResponse({'ok': True, 'file': {'id': new_file.id, 'display_name': new_file.display_name}})
+
+
+class ApiTextFileCreateView(LoginRequiredMixin, View):
+    """POST JSON {parent_id, filename} to create an empty text file."""
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        parent_id = data.get('parent_id')
+        filename = (data.get('filename') or '').strip()
+        if not parent_id or not filename:
+            return JsonResponse({'error': 'parent_id and filename are required'}, status=400)
+
+        parent, can_write = get_accessible_folder(request, parent_id, permission='write')
+        if not can_write:
+            return JsonResponse({'error': 'No write access to this folder'}, status=403)
+
+        # Check for duplicate
+        if File.objects.filter(parent=parent, full_path=f"{parent.full_path}{filename}").exists():
+            return JsonResponse({'error': f'File "{filename}" already exists in this folder'}, status=409)
+
+        # Determine owner: None for shared/contact folders
+        owner = request.user
+        if parent.full_path.startswith('/__shared__/') or parent.full_path.startswith('/__contacts__/'):
+            owner = None
+
+        new_file = File(
+            owner=owner,
+            parent=parent,
+            file=ContentFile(b'', name=filename),
+            display_name=filename,
+        )
+        new_file.save()
+        return JsonResponse({'ok': True, 'file': {'id': new_file.id, 'display_name': new_file.display_name}})
+
+
+class ApiRenameView(LoginRequiredMixin, View):
+    """POST JSON {new_name} to rename a file or folder."""
+
+    def post(self, request, item_type, item_id):
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        new_name = (data.get('new_name') or '').strip()
+        if not new_name:
+            return JsonResponse({'error': 'new_name is required'}, status=400)
+
+        if item_type == 'file':
+            file_obj, can_write = get_accessible_file(request, item_id, permission='write')
+            if not can_write:
+                return JsonResponse({'error': 'No write access'}, status=403)
+            file_obj.display_name = new_name
+            file_obj.save()
+            return JsonResponse({'ok': True})
+        elif item_type == 'folder':
+            folder_obj, can_write = get_accessible_folder(request, item_id, permission='write')
+            if not can_write:
+                return JsonResponse({'error': 'No write access'}, status=403)
+            folder_obj.name = new_name
+            folder_obj.save()
+            return JsonResponse({'ok': True})
+        else:
+            return JsonResponse({'error': 'Invalid item_type, must be "file" or "folder"'}, status=400)
+
+
+class ApiDeleteFileView(LoginRequiredMixin, View):
+    """DELETE to remove a file."""
+
+    def delete(self, request, file_id):
+        file_obj, can_write = get_accessible_file(request, file_id, permission='write')
+        if not can_write:
+            return JsonResponse({'error': 'No write access'}, status=403)
+        file_obj.delete()
+        return JsonResponse({'ok': True})
+
+
+class ApiDeleteFolderView(LoginRequiredMixin, View):
+    """DELETE to remove a folder."""
+
+    def delete(self, request, folder_id):
+        folder_obj, can_write = get_accessible_folder(request, folder_id, permission='write')
+        if not can_write:
+            return JsonResponse({'error': 'No write access'}, status=403)
+        folder_obj.delete()
+        return JsonResponse({'ok': True})

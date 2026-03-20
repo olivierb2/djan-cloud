@@ -40,6 +40,8 @@ from file.views import (
     SignatureDeleteView, SignatureContentView,
     SharedMailboxCreateView, SharedMailboxDeleteView,
     SharedMailboxMemberAddView, SharedMailboxMemberDeleteView,
+    BrowseApiView, ApiFolderCreateView, ApiFileUploadView, ApiTextFileCreateView,
+    ApiRenameView, ApiDeleteFileView, ApiDeleteFolderView,
 )
 from file.caldav_views import (
     WellKnownCalDavView, WellKnownCardDavView,
@@ -180,4 +182,14 @@ urlpatterns = [
     path('api/contacts/search/', ContactSearchView.as_view(), name='contact_search'),
     path('api/filepicker/', FilePickerView.as_view(), name='filepicker_root'),
     path('api/filepicker/<int:folder_id>/', FilePickerView.as_view(), name='filepicker_folder'),
+
+    # Browse SPA API
+    path('api/browse/', BrowseApiView.as_view(), name='api_browse_root'),
+    path('api/browse/<path:path>', BrowseApiView.as_view(), name='api_browse'),
+    path('api/folders/create/', ApiFolderCreateView.as_view(), name='api_folder_create'),
+    path('api/files/upload/', ApiFileUploadView.as_view(), name='api_file_upload'),
+    path('api/files/create-text/', ApiTextFileCreateView.as_view(), name='api_text_file_create'),
+    path('api/rename/<str:item_type>/<int:item_id>/', ApiRenameView.as_view(), name='api_rename'),
+    path('api/files/<int:file_id>/delete/', ApiDeleteFileView.as_view(), name='api_file_delete'),
+    path('api/folders/<int:folder_id>/delete/', ApiDeleteFolderView.as_view(), name='api_folder_delete'),
 ]
