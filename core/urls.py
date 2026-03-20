@@ -41,7 +41,7 @@ from file.views import (
     SharedMailboxCreateView, SharedMailboxDeleteView,
     SharedMailboxMemberAddView, SharedMailboxMemberDeleteView,
     BrowseApiView, ApiFolderCreateView, ApiFileUploadView, ApiTextFileCreateView,
-    ApiRenameView, ApiDeleteFileView, ApiDeleteFolderView,
+    ApiRenameView, ApiDeleteFileView, ApiDeleteFolderView, ApiMoveItemView,
 )
 from file.caldav_views import (
     WellKnownCalDavView, WellKnownCardDavView,
@@ -192,4 +192,5 @@ urlpatterns = [
     path('api/rename/<str:item_type>/<int:item_id>/', ApiRenameView.as_view(), name='api_rename'),
     path('api/files/<int:file_id>/delete/', ApiDeleteFileView.as_view(), name='api_file_delete'),
     path('api/folders/<int:folder_id>/delete/', ApiDeleteFolderView.as_view(), name='api_folder_delete'),
+    path('api/move/<str:item_type>/<int:item_id>/', ApiMoveItemView.as_view(), name='api_move_item'),
 ]

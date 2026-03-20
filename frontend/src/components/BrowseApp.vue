@@ -208,7 +208,7 @@
                   </a>
                 </td>
                 <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">Shared folder</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ sf.created_at }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ formatDate(sf.created_at) }}</td>
                 <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">
                   <span
                     class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
@@ -245,7 +245,7 @@
                   </a>
                 </td>
                 <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">Folder</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ folder.updated_at }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ formatDate(folder.updated_at) }}</td>
                 <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">&mdash;</td>
                 <td class="px-4 py-2.5 text-right">
                   <div v-if="canWrite" class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -254,11 +254,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                       </svg>
                     </button>
-                    <a :href="'/move/folder/' + folder.id + '/'" title="Move" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                    <button @click="openMoveModal('folder', folder.id, folder.name)" title="Move" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
                       </svg>
-                    </a>
+                    </button>
                     <button title="Delete" class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50" @click="deleteItem('folder', folder.id, folder.name)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -303,8 +303,8 @@
                   </a>
                 </td>
                 <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">{{ file.content_type || 'File' }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ file.updated_at }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 text-right hidden sm:table-cell">{{ file.size_display }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ formatDate(file.updated_at) }}</td>
+                <td class="px-4 py-2.5 text-sm text-gray-500 text-right hidden sm:table-cell">{{ formatSize(file.size) }}</td>
                 <td class="px-4 py-2.5 text-right">
                   <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <a :href="'/download/' + file.id + '/'" title="Download" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
@@ -318,11 +318,11 @@
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                       </button>
-                      <a :href="'/move/file/' + file.id + '/'" title="Move" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+                      <button @click="openMoveModal('file', file.id, file.display_name)" title="Move" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
                         </svg>
-                      </a>
+                      </button>
                       <button title="Delete" class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50" @click="deleteItem('file', file.id, file.display_name)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -484,6 +484,94 @@
   <!-- Contact search modal -->
   <contact-search-modal ref="contactModal" />
 
+  <!-- Move picker modal -->
+  <teleport to="body">
+    <div v-if="showMoveModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="showMoveModal = false">
+      <div class="w-[40rem] rounded-xl bg-white shadow-xl flex flex-col" style="max-height: 80vh" @click.stop>
+        <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3">
+          <h3 class="text-lg font-semibold text-gray-900">
+            Move <span class="text-gray-500">{{ moveItemName }}</span>
+          </h3>
+          <button type="button" @click="showMoveModal = false" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <!-- Breadcrumb -->
+        <div class="border-b border-gray-100 px-5 py-2 flex items-center gap-1 text-sm text-gray-500 overflow-x-auto">
+          <template v-for="(bc, i) in moveBreadcrumbs" :key="bc.id">
+            <svg v-if="i > 0" class="w-3 h-3 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <button type="button" @click="navigateMovePicker(bc.id)" class="hover:text-brand-600 whitespace-nowrap">{{ bc.name }}</button>
+          </template>
+        </div>
+        <!-- Items -->
+        <div class="flex-1 overflow-y-auto">
+          <div v-if="moveIsRoot">
+            <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">My files</span>
+            </div>
+          </div>
+          <div class="divide-y divide-gray-100">
+            <div v-for="item in moveSubfolders" :key="item.id"
+                 @click="navigateMovePicker(item.id)"
+                 class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+              <svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+              </svg>
+              <span class="text-sm text-gray-700">{{ item.name }}</span>
+              <svg class="w-4 h-4 text-gray-300 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+
+          <!-- Shared section -->
+          <template v-if="moveShared.length">
+            <div class="px-4 py-2 bg-gray-50 border-y border-gray-100">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Shared</span>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div v-for="item in moveShared" :key="'s'+item.id"
+                   @click="navigateMovePicker(item.id)"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
+              </div>
+            </div>
+          </template>
+
+          <!-- Contacts section -->
+          <template v-if="moveContacts.length">
+            <div class="px-4 py-2 bg-gray-50 border-y border-gray-100">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Shared with contact</span>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div v-for="item in moveContacts" :key="'c'+item.id"
+                   @click="navigateMovePicker(item.id)"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                <svg class="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">{{ item.name }}</span>
+              </div>
+            </div>
+          </template>
+
+          <div v-if="!moveSubfolders.length && !moveShared.length && !moveContacts.length" class="px-4 py-8 text-center text-sm text-gray-400">No subfolders</div>
+        </div>
+        <div class="border-t border-gray-200 px-5 py-3 flex justify-end gap-2">
+          <button type="button" @click="showMoveModal = false"
+                  class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+          <button type="button" @click="confirmMove" :disabled="moveDestinationId === null"
+                  class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            Move here
+          </button>
+        </div>
+      </div>
+    </div>
+  </teleport>
+
   <!-- Toast notifications -->
   <teleport to="body">
     <div class="fixed bottom-4 right-4 z-50 space-y-2">
@@ -542,6 +630,21 @@ export default defineComponent({
       setTimeout(() => {
         toasts.value = toasts.value.filter(t => t.id !== id);
       }, 4000);
+    }
+
+    // -- Formatters --
+    function formatSize(bytes) {
+      if (!bytes) return '—';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function formatDate(isoString) {
+      if (!isoString) return '—';
+      const d = new Date(isoString);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+        ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
     // -- API helper --
@@ -670,6 +773,18 @@ export default defineComponent({
     const showSharedFolderModal = ref(false);
     const showMembersModal = ref(false);
     const showContactModal = ref(false);
+    const showMoveModal = ref(false);
+
+    // Move picker state
+    const moveItemType = ref('');
+    const moveItemId = ref(null);
+    const moveItemName = ref('');
+    const moveDestinationId = ref(null);
+    const moveBreadcrumbs = ref([]);
+    const moveSubfolders = ref([]);
+    const moveShared = ref([]);
+    const moveContacts = ref([]);
+    const moveIsRoot = ref(true);
 
     const newFolderName = ref('');
     const newFileName = ref('');
@@ -912,6 +1027,56 @@ export default defineComponent({
         });
     }
 
+    // -- Move picker --
+    function openMoveModal(type, id, name) {
+      moveItemType.value = type;
+      moveItemId.value = id;
+      moveItemName.value = name;
+      showMoveModal.value = true;
+      navigateMovePicker(null);
+    }
+
+    async function navigateMovePicker(folderId) {
+      if (moveItemType.value === 'folder' && folderId === moveItemId.value) {
+        addToast('Cannot move folder into itself.', 'error');
+        return;
+      }
+      const url = folderId ? `/api/folders/${folderId}/` : '/api/folders/';
+      try {
+        const r = await fetch(url);
+        const data = await r.json();
+        moveDestinationId.value = data.folder.id;
+        moveBreadcrumbs.value = data.breadcrumbs || [];
+        moveSubfolders.value = (data.subfolders || []).filter(
+          f => !(moveItemType.value === 'folder' && f.id === moveItemId.value)
+        );
+        moveShared.value = data.shared_folders || [];
+        moveContacts.value = data.contact_folders || [];
+        moveIsRoot.value = !!(data.shared_folders || data.contact_folders);
+      } catch (err) {
+        console.error('Failed to load move picker:', err);
+      }
+    }
+
+    async function confirmMove() {
+      try {
+        const r = await apiFetch(`/api/move/${moveItemType.value}/${moveItemId.value}/`, {
+          method: 'POST',
+          body: JSON.stringify({ destination_folder_id: moveDestinationId.value }),
+        });
+        const data = await r.json();
+        if (data.error) {
+          addToast(data.error, 'error');
+        } else {
+          showMoveModal.value = false;
+          addToast('Moved successfully.', 'success');
+          navigateToFolder(currentPath.value);
+        }
+      } catch (err) {
+        addToast('Move failed.', 'error');
+      }
+    }
+
     // -- Lifecycle --
     onMounted(() => {
       // Initial load
@@ -952,6 +1117,9 @@ export default defineComponent({
       subfolders, files, canWrite, isShared, isSharedRoot, isContactsRoot,
       sharedFolders, contactsList, loading, toasts,
 
+      // Formatters
+      formatSize, formatDate,
+
       // Navigation
       navigateToFolder,
 
@@ -972,6 +1140,11 @@ export default defineComponent({
       // Actions
       createFolder, createTextFile, openRenameModal, submitRename,
       deleteItem, createSharedFolder,
+
+      // Move picker
+      showMoveModal, moveItemName, moveDestinationId,
+      moveBreadcrumbs, moveSubfolders, moveShared, moveContacts, moveIsRoot,
+      openMoveModal, navigateMovePicker, confirmMove,
 
       // Upload
       fileInput, onFileSelected, showDropZone,

@@ -3345,3 +3345,59 @@ class ApiDeleteFolderView(LoginRequiredMixin, View):
             return JsonResponse({'error': 'No write access'}, status=403)
         folder_obj.delete()
         return JsonResponse({'ok': True})
+
+
+class ApiMoveItemView(LoginRequiredMixin, View):
+    """POST JSON {destination_folder_id} to move a file or folder."""
+
+    def post(self, request, item_type, item_id):
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        destination_id = data.get('destination_folder_id')
+        if not destination_id:
+            return JsonResponse({'error': 'destination_folder_id required'}, status=400)
+
+        if item_type == 'file':
+            item, _ = get_accessible_file(request, item_id, permission='write')
+        elif item_type == 'folder':
+            item, _ = get_accessible_folder(request, item_id, permission='write')
+        else:
+            return JsonResponse({'error': 'Invalid item type'}, status=400)
+
+        dest_folder, _ = get_accessible_folder(request, int(destination_id), permission='write')
+
+        try:
+            with transaction.atomic():
+                if item_type == 'file':
+                    if item.parent == dest_folder:
+                        return JsonResponse({'error': 'File is already in the destination folder.'}, status=400)
+                    item.parent = dest_folder
+                    item.save()
+                else:
+                    if item.parent == dest_folder:
+                        return JsonResponse({'error': 'Folder is already in the destination folder.'}, status=400)
+                    if item == dest_folder:
+                        return JsonResponse({'error': 'Cannot move folder into itself.'}, status=400)
+                    # Check circular reference
+                    current = dest_folder
+                    while current and current.parent:
+                        current = current.parent
+                        if current == item:
+                            return JsonResponse({'error': 'Cannot move folder into its own subfolder.'}, status=400)
+                    item.parent = dest_folder
+                    item.save()
+                    self._update_paths_recursive(item)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return JsonResponse({'ok': True})
+
+    def _update_paths_recursive(self, folder):
+        for subfolder in folder.subfolders.all():
+            subfolder.save()
+            self._update_paths_recursive(subfolder)
+        for file in folder.files.all():
+            file.save()
