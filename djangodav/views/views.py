@@ -177,21 +177,79 @@ class DavView(View):
             return HttpResponseRedirect(request.build_absolute_uri() + "/")
         if path.endswith("/") and self.resource.is_object:
             return HttpResponseRedirect(request.build_absolute_uri().rstrip("/"))
-        response = HttpResponse()
-        if head:
-            response['Content-Length'] = 0
         if not self.has_access(self.resource, 'read'):
             return self.no_access()
         if self.resource.is_object:
-            response['Content-Type'] = self.resource.content_type
-            response['ETag'] = self.resource.getetag
+            total_size = self.resource.getcontentlength
+            etag = self.resource.getetag
+            content_type = self.resource.content_type
+            range_header = request.META.get('HTTP_RANGE')
+
+            if range_header and not head:
+                return self._handle_range_request(request, range_header, total_size, etag, content_type)
+
+            response = HttpResponse()
+            response['Content-Type'] = content_type
+            response['ETag'] = etag
+            response['Accept-Ranges'] = 'bytes'
             if not head:
-                response['Content-Length'] = self.resource.getcontentlength
+                response['Content-Length'] = total_size
                 response.content = self.resource.read()
-        elif not head:
+            else:
+                response['Content-Length'] = total_size
+            response['Last-Modified'] = self.resource.getlastmodified
+            return response
+        if not head:
             response = render(request, self.template_name, dict(resource=self.resource, base_url=self.base_url))
+        else:
+            response = HttpResponse()
+            response['Content-Length'] = 0
         response['Last-Modified'] = self.resource.getlastmodified
         return response
+
+    def _handle_range_request(self, request, range_header, total_size, etag, content_type):
+        """Handle HTTP Range requests for partial content delivery."""
+        try:
+            range_spec = range_header.replace('bytes=', '')
+            ranges = range_spec.split(',')
+            # Support single range only
+            range_part = ranges[0].strip()
+            if range_part.startswith('-'):
+                # Last N bytes: bytes=-500
+                suffix_length = int(range_part[1:])
+                start = max(0, total_size - suffix_length)
+                end = total_size - 1
+            elif range_part.endswith('-'):
+                # From offset to end: bytes=500-
+                start = int(range_part[:-1])
+                end = total_size - 1
+            else:
+                parts = range_part.split('-')
+                start = int(parts[0])
+                end = int(parts[1])
+
+            if start > end or start >= total_size:
+                response = HttpResponse(status=416)
+                response['Content-Range'] = f'bytes */{total_size}'
+                return response
+
+            end = min(end, total_size - 1)
+            length = end - start + 1
+
+            file_obj = self.resource.object.file
+            file_obj.seek(start)
+            data = file_obj.read(length)
+
+            response = HttpResponse(data, status=206, content_type=content_type)
+            response['Content-Length'] = length
+            response['Content-Range'] = f'bytes {start}-{end}/{total_size}'
+            response['Accept-Ranges'] = 'bytes'
+            response['ETag'] = etag
+            return response
+        except (ValueError, IndexError):
+            response = HttpResponse(status=416)
+            response['Content-Range'] = f'bytes */{total_size}'
+            return response
 
     def head(self, request, path, *args, **kwargs):
         return self.get(request, path, head=True, *args, **kwargs)
