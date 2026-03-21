@@ -149,6 +149,14 @@ LOGIN_URL = '/login/'
 ROOT_DAV = 'remote.php/webdav/files/'
 
 # File upload settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'djangodav-cache',
+        'TIMEOUT': 10,  # 10 seconds default TTL
+    }
+}
+
 FILE_UPLOAD_MAX_MEMORY_SIZE = 524288000  # 500 MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 524288000  # 500 MB
 FILE_UPLOAD_TEMP_DIR = None  # Use system temp dir

@@ -1,5 +1,6 @@
 from typing import Optional, Union
 from django.conf import settings
+from django.core.cache import cache
 from djangodav.base.resources import MetaEtagMixIn, BaseDavResource
 from .models import File, Folder, FileSystemItem, SharedFolder, SharedFolderMembership, ContactFolder
 from django.core.files.base import ContentFile
@@ -7,6 +8,8 @@ import logging
 import mimetypes
 
 logger = logging.getLogger(__name__)
+
+DAV_CACHE_TTL = 10  # seconds
 
 OC_NS = "http://owncloud.org/ns"
 NC_NS = "http://nextcloud.org/ns"
@@ -106,9 +109,15 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                 self._object = VirtualContactsRoot(self.user)
                 return self._object
 
+            # Try cache first
+            cache_key = f"dav_obj:{self.user.pk}:{self.db_path}"
+            cached = cache.get(cache_key)
+            if cached is not None:
+                self._object = cached if cached != '__none__' else None
+                return self._object
+
             if self.is_shared or self.is_contact:
                 if self.is_contact:
-                    # __contacts__/<contact_id>/... -> /__contacts__/<username>/<contact_id>/...
                     parts = self.db_path.split('/')
                     db_path = f"/__contacts__/{self.user.username}/{'/'.join(parts[1:])}"
                 else:
@@ -117,7 +126,6 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                     db_path = db_path[:-1]
                 try:
                     self._object = File.objects.get(full_path=db_path)
-                    return self._object
                 except File.DoesNotExist:
                     try:
                         if not db_path.endswith('/'):
@@ -131,7 +139,6 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                     db_path = db_path[:-1]
                 try:
                     self._object = File.objects.get(full_path=db_path, owner=self.user)
-                    return self._object
                 except File.DoesNotExist:
                     try:
                         if not db_path.endswith('/'):
@@ -140,6 +147,8 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                     except Folder.DoesNotExist:
                         logger.debug(f"Resource not found: {self.db_path} for user {self.user.username}")
                         self._object = None
+
+            cache.set(cache_key, self._object if self._object is not None else '__none__', DAV_CACHE_TTL)
 
         return self._object
 
@@ -202,48 +211,53 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
 
     @property
     def getetag(self):
+        if not self.object:
+            return None
+
+        # For files, etag is cheap - no cache needed
+        if isinstance(self.object, File):
+            return f'"{self.object.pk}-{int(self.object.updated_at.timestamp())}"'
+
+        # For folders and virtual roots, use cache to avoid expensive aggregate queries
+        cache_key = f"dav_etag:{self.user.pk}:{self.db_path}"
+        cached_etag = cache.get(cache_key)
+        if cached_etag is not None:
+            return cached_etag
+
+        from django.db.models import Max
+
         if isinstance(self.object, VirtualSharedRoot):
-            from django.db.models import Max
             latest_membership = SharedFolderMembership.objects.filter(
                 user=self.user
             ).aggregate(m=Max('joined_at'))['m']
             latest_file = File.objects.filter(full_path__startswith='/__shared__/').aggregate(m=Max('updated_at'))['m']
             latest_folder = Folder.objects.filter(full_path__startswith='/__shared__/').aggregate(m=Max('updated_at'))['m']
-            timestamps = []
-            if latest_membership:
-                timestamps.append(latest_membership)
-            if latest_file:
-                timestamps.append(latest_file)
-            if latest_folder:
-                timestamps.append(latest_folder)
+            timestamps = [t for t in [latest_membership, latest_file, latest_folder] if t]
             ts = int(max(timestamps).timestamp()) if timestamps else 0
-            return f'"shared-{ts}"'
-        if isinstance(self.object, VirtualContactsRoot):
-            from django.db.models import Max
+            etag = f'"shared-{ts}"'
+        elif isinstance(self.object, VirtualContactsRoot):
             prefix = f"/__contacts__/{self.user.username}/"
             latest_file = File.objects.filter(full_path__startswith=prefix).aggregate(m=Max('updated_at'))['m']
             latest_folder = Folder.objects.filter(full_path__startswith=prefix).aggregate(m=Max('updated_at'))['m']
-            timestamps = []
+            timestamps = [t for t in [latest_file, latest_folder] if t]
+            ts = int(max(timestamps).timestamp()) if timestamps else 0
+            etag = f'"contacts-{ts}"'
+        elif isinstance(self.object, Folder):
+            prefix = self.object.full_path
+            latest_file = File.objects.filter(full_path__startswith=prefix).aggregate(m=Max('updated_at'))['m']
+            latest_subfolder = Folder.objects.filter(full_path__startswith=prefix).exclude(pk=self.object.pk).aggregate(m=Max('updated_at'))['m']
+            timestamps = [self.object.updated_at]
             if latest_file:
                 timestamps.append(latest_file)
-            if latest_folder:
-                timestamps.append(latest_folder)
-            ts = int(max(timestamps).timestamp()) if timestamps else 0
-            return f'"contacts-{ts}"'
-        if self.object:
-            if isinstance(self.object, Folder):
-                from django.db.models import Max
-                prefix = self.object.full_path
-                latest_file = File.objects.filter(full_path__startswith=prefix).aggregate(m=Max('updated_at'))['m']
-                latest_subfolder = Folder.objects.filter(full_path__startswith=prefix).exclude(pk=self.object.pk).aggregate(m=Max('updated_at'))['m']
-                timestamps = [self.object.updated_at]
-                if latest_file:
-                    timestamps.append(latest_file)
-                if latest_subfolder:
-                    timestamps.append(latest_subfolder)
-                latest = max(timestamps)
-                return f'"{self.object.pk}-{int(latest.timestamp())}"'
-            return f'"{self.object.pk}-{int(self.object.updated_at.timestamp())}"'
+            if latest_subfolder:
+                timestamps.append(latest_subfolder)
+            latest = max(timestamps)
+            etag = f'"{self.object.pk}-{int(latest.timestamp())}"'
+        else:
+            return None
+
+        cache.set(cache_key, etag, DAV_CACHE_TTL)
+        return etag
 
     @property
     def oc_permissions(self):
@@ -345,6 +359,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
             obj.file.name = new_file_name
 
         obj.save()
+        self._invalidate_cache()
 
     @property
     def parent(self) -> Optional[Folder]:
@@ -380,6 +395,17 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
         except Folder.DoesNotExist:
             logger.warning(f"Parent folder {db_path} not found for user {self.user.username}")
             return None
+
+    def _invalidate_cache(self):
+        """Invalidate cached object and etag for this resource and its parents."""
+        cache.delete(f"dav_obj:{self.user.pk}:{self.db_path}")
+        cache.delete(f"dav_etag:{self.user.pk}:{self.db_path}")
+        # Invalidate parent etags up the tree
+        parts = self.db_path.split('/')
+        for i in range(len(parts)):
+            parent_path = '/'.join(parts[:i])
+            cache.delete(f"dav_etag:{self.user.pk}:{parent_path}")
+            cache.delete(f"dav_obj:{self.user.pk}:{parent_path}")
 
     def write(self, content):
         try:
@@ -425,6 +451,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                 )
                 self._object = new_file
 
+            self._invalidate_cache()
         except Exception as e:
             logger.error(f"Error writing file {self.displayname} for user {self.user.username}: {e}")
             raise
@@ -457,7 +484,9 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
             ).select_related('shared_folder__root_folder')
             for m in memberships:
                 sf = m.shared_folder
-                yield self.obj_to_resource(sf.root_folder)
+                res = self.obj_to_resource(sf.root_folder)
+                res._object = sf.root_folder
+                yield res
             return
 
         if isinstance(self.object, VirtualContactsRoot):
@@ -466,21 +495,30 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
             ).select_related('contact', 'folder')
             for cf in contact_folders:
                 res = self.obj_to_resource(cf.folder)
+                res._object = cf.folder
                 res._display_name = cf.contact.fn or cf.contact.uid
                 yield res
             return
 
         if isinstance(self.object, Folder):
             if self.is_shared or self.is_contact:
-                for child in File.objects.filter(parent=self.object):
-                    yield self.obj_to_resource(child)
-                for child in self.object.subfolders.all():
-                    yield self.obj_to_resource(child)
+                for child in File.objects.filter(parent=self.object).select_related('parent'):
+                    res = self.obj_to_resource(child)
+                    res._object = child
+                    yield res
+                for child in self.object.subfolders.all().select_related('parent'):
+                    res = self.obj_to_resource(child)
+                    res._object = child
+                    yield res
             else:
-                for child in File.objects.filter(parent=self.object, owner=self.user):
-                    yield self.obj_to_resource(child)
-                for child in self.object.subfolders.filter(owner=self.user):
-                    yield self.obj_to_resource(child)
+                for child in File.objects.filter(parent=self.object, owner=self.user).select_related('parent'):
+                    res = self.obj_to_resource(child)
+                    res._object = child
+                    yield res
+                for child in self.object.subfolders.filter(owner=self.user).select_related('parent'):
+                    res = self.obj_to_resource(child)
+                    res._object = child
+                    yield res
 
                 # If root folder, yield virtual folders
                 if not self.db_path:
@@ -492,6 +530,7 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
                         yield MyDavResource('__contacts__', self.user)
 
     def delete(self):
+        self._invalidate_cache()
         self.object.delete()
 
     def create_collection(self):
@@ -506,3 +545,4 @@ class MyDavResource(MetaEtagMixIn, BaseDavResource):
             name=self.displayname,
             owner=folder_owner
         )
+        self._invalidate_cache()

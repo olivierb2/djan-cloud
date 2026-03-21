@@ -110,29 +110,53 @@ class BasicAuthMixin:
 
             # Try app token authentication first
             try:
+                from django.core.cache import cache as auth_cache
+                token_cache_key = f"apptoken:{username}:{password}"
+                cached_user = auth_cache.get(token_cache_key)
+                if cached_user is not None:
+                    request.user = cached_user
+                    return super().dispatch(request, *args, **kwargs)
+
                 app_token = AppToken.objects.select_related('user').get(
                     token=password, user__username=username)
                 app_token.last_used_at = timezone.now()
                 app_token.save(update_fields=['last_used_at'])
                 request.user = app_token.user
+                auth_cache.set(token_cache_key, app_token.user, 30)
                 return super().dispatch(request, *args, **kwargs)
             except AppToken.DoesNotExist:
                 pass
 
             # Fall back to Django's auth backend
+            from django.core.cache import cache as auth_cache
+            user_cache_key = f"authuser:{username}"
+            cached_user = auth_cache.get(user_cache_key)
+            if cached_user is not None:
+                request.user = cached_user
+                return super().dispatch(request, *args, **kwargs)
+
             user = authenticate(username=username, password=password)
             if user:
                 request.user = user
+                auth_cache.set(user_cache_key, user, 30)
                 return super().dispatch(request, *args, **kwargs)
 
         # Also check Bearer token (some clients use OAuth-style flow)
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ", 1)[1]
             try:
+                from django.core.cache import cache as auth_cache
+                bearer_cache_key = f"bearer:{token}"
+                cached_user = auth_cache.get(bearer_cache_key)
+                if cached_user is not None:
+                    request.user = cached_user
+                    return super().dispatch(request, *args, **kwargs)
+
                 app_token = AppToken.objects.select_related('user').get(token=token)
                 app_token.last_used_at = timezone.now()
                 app_token.save(update_fields=['last_used_at'])
                 request.user = app_token.user
+                auth_cache.set(bearer_cache_key, app_token.user, 30)
                 return super().dispatch(request, *args, **kwargs)
             except AppToken.DoesNotExist:
                 pass

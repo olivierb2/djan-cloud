@@ -365,6 +365,15 @@ class DavView(View):
         if not self.get_access(self.resource):
             return self.no_access()
 
+        # ETag-based conditional response for PROPFIND
+        resource_etag = self.resource.getetag
+        if resource_etag:
+            cond_if_none_match = request.META.get('HTTP_IF_NONE_MATCH')
+            if cond_if_none_match:
+                client_etags = parse_etags(cond_if_none_match)
+                if resource_etag in client_etags:
+                    return HttpResponseNotModified()
+
         get_all_props, get_prop, get_prop_names = True, False, False
         if xbody:
             get_prop = [p.xpath('local-name()') for p in xbody('/d:propfind/d:prop/*')]
@@ -403,7 +412,11 @@ class DavView(View):
             ]
 
         body = D.multistatus(*responses)
-        return self.build_xml_response(body, HttpResponseMultiStatus)
+        response = self.build_xml_response(body, HttpResponseMultiStatus)
+        if resource_etag:
+            response['ETag'] = resource_etag
+            response['Cache-Control'] = 'private, must-revalidate'
+        return response
 
     def proppatch(self, request, path, xbody, *args, **kwargs):
         if not self.resource.exists:
