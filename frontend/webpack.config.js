@@ -16,6 +16,7 @@ module.exports = (env, argv) => {
       editor: './src/js/editor_init.js',
       calendar: './src/js/calendar.js',
       mail_compose: './src/js/mail_compose.js',
+      mail_reader: './src/js/mail_reader.js',
     },
 
     output: {

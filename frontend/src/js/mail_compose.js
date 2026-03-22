@@ -2,10 +2,6 @@ import { createApp } from 'vue';
 import MailCompose from '../components/MailCompose.vue';
 import '../css/mail_compose.css';
 
-// Expose for inline reply mounting
-window.__vue_createApp = createApp;
-window.__vue_MailCompose = MailCompose;
-
 const el = document.getElementById('mail-compose-app');
 if (el) {
   const app = createApp(MailCompose, {

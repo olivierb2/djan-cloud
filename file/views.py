@@ -2391,16 +2391,10 @@ class MailWebView(LoginRequiredMixin, View):
 
         mailboxes = _get_sorted_mailboxes(request.user)
 
-        selected_email = None
+        selected_email_id = request.GET.get('email', '')
         emails = []
         if mailbox:
             emails = mailbox.emails.all()
-            email_id = request.GET.get('email')
-            if email_id:
-                selected_email = Email.objects.filter(id=email_id, mailbox=mailbox).first()
-                if selected_email and not selected_email.is_read:
-                    selected_email.is_read = True
-                    selected_email.save(update_fields=['is_read'])
 
         # Unread counts for personal mailboxes
         unread_counts = dict(
@@ -2470,12 +2464,53 @@ class MailWebView(LoginRequiredMixin, View):
             'selected_mailbox': mailbox,
             'selected_mailbox_name': mailbox_name,
             'emails': emails,
-            'selected_email': selected_email,
+            'selected_email_id': selected_email_id,
             'signatures': signatures,
             'signatures_json': signatures_json,
             'default_signature': default_sig,
             'is_admin': is_admin,
             'all_users': all_users,
+        })
+
+
+class EmailDetailApiView(LoginRequiredMixin, View):
+    def get(self, request, email_id):
+        from .models import SharedMailboxMembership
+        email_obj = Email.objects.filter(id=email_id).select_related('mailbox').first()
+        if not email_obj:
+            return JsonResponse({'error': 'Not found'}, status=404)
+
+        # Check access
+        mb = email_obj.mailbox
+        if mb.owner_id and mb.owner_id != request.user.id:
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        if mb.shared_mailbox_id:
+            if not SharedMailboxMembership.objects.filter(
+                user=request.user, shared_mailbox_id=mb.shared_mailbox_id).exists():
+                return JsonResponse({'error': 'Forbidden'}, status=403)
+
+        # Mark as read
+        if not email_obj.is_read:
+            email_obj.is_read = True
+            email_obj.save(update_fields=['is_read'])
+
+        attachments = [
+            {'id': att.id, 'filename': att.filename, 'size': att.size,
+             'url': f'/mail/attachment/{att.id}/'}
+            for att in email_obj.attachments.all()
+        ]
+
+        return JsonResponse({
+            'id': email_obj.id,
+            'subject': email_obj.subject,
+            'from_address': email_obj.from_address,
+            'to_addresses': email_obj.to_addresses,
+            'cc_addresses': email_obj.cc_addresses,
+            'body_html': email_obj.body_html,
+            'body_text': email_obj.body_text,
+            'received_at': email_obj.received_at.isoformat(),
+            'attachments': attachments,
+            'mailbox_name': mb.name,
         })
 
 

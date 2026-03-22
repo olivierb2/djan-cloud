@@ -135,7 +135,7 @@
             <div class="flex-1 overflow-y-auto divide-y divide-gray-100">
                 {% for mail in emails %}
                 <div class="email-row flex items-center gap-2 px-3 py-2 hover:bg-gray-50 transition-colors cursor-pointer
-                            {% if selected_email and mail.id == selected_email.id %}bg-brand-50 border-l-2 border-brand-600{% endif %}
+                            {% if selected_email_id and mail.id|stringformat:'d' == selected_email_id %}bg-brand-50 border-l-2 border-brand-600{% endif %}
                             {% if not mail.is_read %}bg-blue-50/30{% endif %}"
                      draggable="true" data-email-id="{{ mail.id }}" data-is-read="{% if mail.is_read %}true{% else %}false{% endif %}">
                     <button type="button" class="toggle-read flex-shrink-0 p-0.5 rounded hover:bg-gray-200 transition-colors"
@@ -151,7 +151,7 @@
                         {% endif %}
                     </button>
                     <a href="?mailbox={{ selected_mailbox_name }}&email={{ mail.id }}"
-                       class="flex-1 min-w-0">
+                       class="flex-1 min-w-0 email-link" data-email-id="{{ mail.id }}">
                         <div class="flex items-center gap-1">
                             <span class="text-xs {% if not mail.is_read %}font-semibold text-gray-900{% else %}font-medium text-gray-600{% endif %} truncate flex-1">
                                 {{ mail.from_address|truncatechars:30 }}
@@ -176,122 +176,19 @@
             </div>
         </div>
 
-        {% if selected_email %}
-        <!-- Email detail view -->
+        <!-- Email detail view (Vue component) -->
         <main class="flex-1 overflow-y-auto p-4 lg:p-6">
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
-                <div class="border-b border-gray-100 px-6 py-4">
-                    <h1 class="text-lg font-semibold text-gray-900">{{ selected_email.subject|default:"(no subject)" }}</h1>
-                    <p class="mt-1 text-sm text-gray-500">
-                        From: <span class="text-gray-700">{{ selected_email.from_address }}</span>
-                    </p>
-                    <p class="text-sm text-gray-500">
-                        To: <span class="text-gray-700">{{ selected_email.to_addresses }}</span>
-                    </p>
-                    {% if selected_email.cc_addresses %}
-                    <p class="text-sm text-gray-500">
-                        Cc: <span class="text-gray-700">{{ selected_email.cc_addresses }}</span>
-                    </p>
-                    {% endif %}
-                    <p class="text-xs text-gray-400 mt-1">{{ selected_email.received_at }}</p>
-                </div>
-
-                <div class="px-6 py-4">
-                    {% if selected_email.body_html %}
-                    <div class="prose max-w-none">
-                        <iframe id="email-frame" srcdoc="{{ selected_email.body_html }}"
-                                class="w-full border-0" style="min-height: 300px"
-                                sandbox="allow-same-origin"
-                                onload="this.style.height = this.contentDocument.body.scrollHeight + 'px'"></iframe>
-                    </div>
-                    {% else %}
-                    <pre class="whitespace-pre-wrap text-sm text-gray-700 font-sans">{{ selected_email.body_text }}</pre>
-                    {% endif %}
-                </div>
-
-                {% if selected_email.attachments.exists %}
-                <div class="border-t border-gray-100 px-6 py-4">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Attachments</h3>
-                    <div class="flex flex-wrap gap-2">
-                        {% for att in selected_email.attachments.all %}
-                        <a href="{% url 'email_attachment_download' attachment_id=att.id %}"
-                           class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
-                            </svg>
-                            {{ att.filename }}
-                            <span class="text-xs text-gray-400">({{ att.size|filesizeformat }})</span>
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Reply / Forward / Delete -->
-                <div class="border-t border-gray-100 px-6 py-4 flex items-center gap-2">
-                    <button type="button" onclick="openInlineReply('reply')"
-                       class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                        </svg>
-                        Reply
-                    </button>
-                    <button type="button" onclick="openInlineReply('forward')"
-                       class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                        </svg>
-                        Forward
-                    </button>
-                    <form method="post" action="{% url 'email_delete' email_id=selected_email.id %}" class="ml-auto">
-                        {% csrf_token %}
-                        <button type="submit" title="{% if selected_mailbox.name == 'Trash' %}Delete permanently{% else %}Move to Trash{% endif %}"
-                                {% if selected_mailbox.name == 'Trash' %}onclick="return confirm('Permanently delete this email?')"{% endif %}
-                                class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-                </div>
-
-                <!-- Inline reply/forward form (Vue component) -->
-                <div id="inline-reply" class="hidden mt-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 id="inline-reply-title" class="text-sm font-semibold text-gray-900">Reply</h3>
-                        <button type="button" onclick="closeInlineReply()"
-                                class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div id="inline-compose-app"
-                         class="rounded-xl border border-gray-200 bg-white shadow-sm"
-                         data-csrf-token="{{ csrf_token }}"
-                         data-send-url="{% url 'mail_send' %}"
-                         data-prefill-to=""
-                         data-prefill-subject=""
-                         data-prefill-quote=""
-                         data-signatures="{{ signatures_json }}"
-                         data-default-signature-id="{{ default_signature.id|default:'' }}"
-                         data-default-signature-html="{{ default_signature.html_content|default:'' }}">
-                    </div>
-                </div>
+            <div id="mail-reader-app"
+                 data-csrf-token="{{ csrf_token }}"
+                 data-send-url="{% url 'mail_send' %}"
+                 data-signatures="{{ signatures_json }}"
+                 data-default-signature-id="{{ default_signature.id|default:'' }}"
+                 data-default-signature-html="{{ default_signature.html_content|default:'' }}"
+                 data-initial-email-id="{{ selected_email_id }}"
+                 data-mailbox-name="{{ selected_mailbox_name }}"
+                 data-is-trash="{% if selected_mailbox.name == 'Trash' %}true{% else %}false{% endif %}">
+            </div>
         </main>
-
-        {% else %}
-        <!-- No email selected — placeholder -->
-        <main class="flex-1 hidden lg:flex flex-col items-center justify-center text-gray-400">
-            <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-            <p class="text-sm font-medium text-gray-400">Select an email to read</p>
-        </main>
-        {% endif %}
 
         {% else %}
         <main class="flex-1 flex flex-col items-center justify-center py-20 text-gray-400">
@@ -409,7 +306,7 @@
 {% endblock %}
 
 {% block extra_js %}
-{% render_bundle 'mail_compose' 'js' %}
+{% render_bundle 'mail_reader' 'js' %}
 <script>
 function openModal(id) {
     const m = document.getElementById(id);
@@ -576,73 +473,6 @@ document.querySelectorAll('.drop-target[data-mailbox]').forEach(function(target)
     });
 });
 
-// Inline reply/forward using Vue MailCompose component
-var origEmail = { from: '', subject: '', bodyHtml: '' };
-{% if selected_email %}
-origEmail.from = '{{ selected_email.from_address|escapejs }}';
-origEmail.subject = '{{ selected_email.subject|escapejs }}';
-origEmail.bodyHtml = '{{ selected_email.body_html|default:selected_email.body_text|escapejs }}';
-{% endif %}
-
-var inlineApp = null;
-
-function openInlineReply(mode) {
-    var panel = document.getElementById('inline-reply');
-    var title = document.getElementById('inline-reply-title');
-    var el = document.getElementById('inline-compose-app');
-
-    var prefillTo = '';
-    var prefillSubject = '';
-    var prefillQuote = origEmail.bodyHtml;
-
-    if (mode === 'reply') {
-        title.textContent = 'Reply';
-        prefillTo = origEmail.from;
-        prefillSubject = origEmail.subject.startsWith('Re:') ? origEmail.subject : 'Re: ' + origEmail.subject;
-    } else {
-        title.textContent = 'Forward';
-        prefillSubject = origEmail.subject.startsWith('Fwd:') ? origEmail.subject : 'Fwd: ' + origEmail.subject;
-    }
-
-    // Update data attributes
-    el.dataset.prefillTo = prefillTo;
-    el.dataset.prefillSubject = prefillSubject;
-    el.dataset.prefillQuote = prefillQuote;
-
-    // Unmount previous instance if any
-    if (inlineApp) {
-        inlineApp.unmount();
-        el.innerHTML = '';
-    }
-
-    // Mount Vue MailCompose
-    var vue = window.__vue_createApp;
-    var comp = window.__vue_MailCompose;
-    if (vue && comp) {
-        inlineApp = vue(comp, {
-            csrfToken: el.dataset.csrfToken,
-            sendUrl: el.dataset.sendUrl,
-            prefillTo: prefillTo,
-            prefillSubject: prefillSubject,
-            prefillQuote: prefillQuote,
-            signaturesJson: el.dataset.signatures || '[]',
-            defaultSignatureId: el.dataset.defaultSignatureId || '',
-            defaultSignatureHtml: el.dataset.defaultSignatureHtml || '',
-        });
-        inlineApp.mount(el);
-    }
-
-    panel.classList.remove('hidden');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function closeInlineReply() {
-    document.getElementById('inline-reply').classList.add('hidden');
-    if (inlineApp) {
-        inlineApp.unmount();
-        document.getElementById('inline-compose-app').innerHTML = '';
-        inlineApp = null;
-    }
-}
+// Email link clicks are handled by mail_reader.js
 </script>
 {% endblock %}
