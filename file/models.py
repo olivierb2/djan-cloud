@@ -563,6 +563,44 @@ class EmailSignature(models.Model):
         super().save(*args, **kwargs)
 
 
+class OutOfOffice(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='out_of_office')
+    enabled = models.BooleanField(default=False)
+    subject = models.CharField(max_length=255, default='Out of office')
+    body = models.TextField(blank=True, default='I am currently out of the office and will reply when I return.')
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"OOO:{self.user.username} ({'on' if self.enabled else 'off'})"
+
+    def is_active(self):
+        if not self.enabled:
+            return False
+        from datetime import date
+        today = date.today()
+        if self.start_date and today < self.start_date:
+            return False
+        if self.end_date and today > self.end_date:
+            return False
+        return True
+
+
+class OutOfOfficeReply(models.Model):
+    """Track sent auto-replies to avoid spamming the same sender."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='ooo_replies')
+    sender_email = models.CharField(max_length=500)
+    replied_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'sender_email']
+
+
 class AllowedDomain(models.Model):
     domain = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)

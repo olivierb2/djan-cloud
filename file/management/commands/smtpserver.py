@@ -129,6 +129,13 @@ class DjancloudSMTPHandler:
 
                 delivered += 1
                 logger.info("Delivered email to %s (user: %s)", bare, user.username)
+
+                # Trigger out-of-office auto-reply via Celery
+                from file.tasks import send_out_of_office_reply
+                sender = from_addr
+                if '<' in sender and '>' in sender:
+                    sender = sender.split('<')[1].split('>')[0]
+                send_out_of_office_reply.delay(user.id, sender.strip(), subject)
                 continue
 
             # Try shared mailbox alias

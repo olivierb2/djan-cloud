@@ -1,0 +1,302 @@
+{% extends "file/base.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}Settings - Mail - Djancloud{% endblock %}
+
+{% block extra_head %}
+{% render_bundle 'mail_compose' 'css' %}
+{% endblock %}
+
+{% block body %}
+<div class="flex h-full min-h-screen flex-col">
+
+    {% include "file/_navbar.html" with active_nav='mail' %}
+
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- Sidebar: same as mail.html -->
+        <aside class="hidden lg:flex w-56 flex-col border-r border-gray-200 bg-white overflow-y-auto">
+            <div class="px-3 py-4">
+                <a href="{% url 'mail_compose' %}"
+                   class="mb-3 flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Compose
+                </a>
+
+                <div class="flex items-center justify-between mb-3 px-2">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Folders</h2>
+                </div>
+                {% include "file/_mailbox_tree_node.html" with nodes=mailbox_tree depth=0 %}
+
+                {% if shared_tree or is_admin %}
+                <div class="mt-4 border-t border-gray-200 pt-4">
+                    <div class="flex items-center justify-between mb-2 px-2">
+                        <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Shared</h2>
+                    </div>
+                    {% for entry in shared_tree %}
+                    <div class="mb-2">
+                        <div class="group flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-gray-500">
+                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span class="flex-1 truncate">{{ entry.shared_mailbox.name }}</span>
+                        </div>
+                        {% include "file/_mailbox_tree_node.html" with nodes=entry.folders depth=1 %}
+                    </div>
+                    {% endfor %}
+                    {% if not shared_tree %}
+                    <p class="px-2 text-xs text-gray-400">No shared mailboxes</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="mt-6 border-t border-gray-200 pt-4">
+                    <a href="{% url 'mail_settings' %}"
+                       class="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm bg-gray-100 text-gray-900 font-medium transition-colors">
+                        <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        Settings
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+            <div class="max-w-4xl mx-auto">
+
+                {% if messages %}
+                <div class="mb-4 space-y-2">
+                    {% for message in messages %}
+                    <div class="rounded-lg px-4 py-3 text-sm
+                        {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200
+                        {% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200
+                        {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Out of Office -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Out of office</h2>
+                    <form method="post" action="{% url 'ooo_update' %}"
+                          class="rounded-xl border border-gray-200 bg-white shadow-sm p-5 space-y-4">
+                        {% csrf_token %}
+                        <label class="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                            <input type="checkbox" name="enabled" {% if ooo.enabled %}checked{% endif %}
+                                   class="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                                   onchange="document.getElementById('ooo-fields').classList.toggle('hidden', !this.checked)">
+                            Enable automatic replies
+                        </label>
+                        <div id="ooo-fields" class="space-y-3 {% if not ooo.enabled %}hidden{% endif %}">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <input type="text" name="subject" value="{{ ooo.subject }}" maxlength="255"
+                                       class="block w-full max-w-md rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                <textarea name="body" rows="4"
+                                          class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">{{ ooo.body }}</textarea>
+                            </div>
+                            <div class="flex gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Start date <span class="text-gray-400 font-normal">(optional)</span></label>
+                                    <input type="date" name="start_date" value="{{ ooo.start_date|date:'Y-m-d' }}"
+                                           class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">End date <span class="text-gray-400 font-normal">(optional)</span></label>
+                                    <input type="date" name="end_date" value="{{ ooo.end_date|date:'Y-m-d' }}"
+                                           class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit"
+                                class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                            Save
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Signatures -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">Signatures</h2>
+                        <button onclick="openModal('new-sig-modal')"
+                                class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            New signature
+                        </button>
+                    </div>
+
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <!-- Signature list -->
+                        <div class="md:col-span-1">
+                            <div class="rounded-xl border border-gray-200 bg-white shadow-sm divide-y divide-gray-100">
+                                {% for sig in signatures %}
+                                <a href="?sig={{ sig.id }}"
+                                   class="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 transition-colors
+                                          {% if selected_signature and selected_signature.id == sig.id %}bg-gray-50{% endif %}">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate">{{ sig.name }}</p>
+                                        {% if sig.is_default %}
+                                        <span class="text-xs text-brand-600">Default</span>
+                                        {% endif %}
+                                    </div>
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                                {% empty %}
+                                <div class="px-4 py-8 text-center text-sm text-gray-400">
+                                    No signatures yet
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Signature editor -->
+                        <div class="md:col-span-2">
+                            {% if selected_signature %}
+                            <form method="post" action="{% url 'signature_update' sig_id=selected_signature.id %}"
+                                  class="rounded-xl border border-gray-200 bg-white shadow-sm">
+                                {% csrf_token %}
+                                <div class="border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+                                    <input type="text" name="name" value="{{ selected_signature.name }}" required
+                                           class="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                                    <label class="flex items-center gap-1.5 text-sm text-gray-600">
+                                        <input type="checkbox" name="is_default" {% if selected_signature.is_default %}checked{% endif %}
+                                               class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
+                                        Default
+                                    </label>
+                                </div>
+
+                                <!-- Toolbar -->
+                                <div class="border-b border-gray-100 px-4 py-1.5 flex items-center gap-1">
+                                    <button type="button" data-cmd="bold" title="Bold"
+                                            class="sig-toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg>
+                                    </button>
+                                    <button type="button" data-cmd="italic" title="Italic"
+                                            class="sig-toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+                                    </button>
+                                    <button type="button" data-cmd="underline" title="Underline"
+                                            class="sig-toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+                                    </button>
+                                    <button type="button" data-cmd="createLink" title="Insert link"
+                                            class="sig-toolbar-btn rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                                    </button>
+                                </div>
+
+                                <div id="sig-editor" contenteditable="true"
+                                     class="px-4 py-4 min-h-[200px] text-sm text-gray-800 outline-none focus:ring-0 prose max-w-none">
+                                    {{ selected_signature.html_content|safe }}
+                                </div>
+                                <input type="hidden" name="html_content" id="sig-html-hidden">
+
+                                <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-between">
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors">
+                                        Save
+                                    </button>
+                                    <form method="post" action="{% url 'signature_delete' sig_id=selected_signature.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" onclick="return confirm('Delete this signature?')"
+                                                class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </form>
+                            {% else %}
+                            <div class="rounded-xl border border-gray-200 bg-white shadow-sm px-4 py-12 text-center text-sm text-gray-400">
+                                Select a signature to edit or create a new one
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-t border-gray-200 bg-white px-4 py-3 text-center text-xs text-gray-400">
+        Djancloud &mdash; Nextcloud-compatible file server powered by Django
+    </footer>
+</div>
+
+<!-- New Signature modal -->
+<div id="new-sig-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">New signature</h3>
+        <form method="post" action="{% url 'signature_create' %}">
+            {% csrf_token %}
+            <input type="text" name="name" required maxlength="100" placeholder="Signature name" autofocus
+                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+            <label class="flex items-center gap-1.5 text-sm text-gray-600 mt-3">
+                <input type="checkbox" name="is_default" class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
+                Set as default
+            </label>
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" onclick="closeModal('new-sig-modal')"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openModal(id) {
+    const m = document.getElementById(id);
+    if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+}
+function closeModal(id) {
+    const m = document.getElementById(id);
+    if (m) { m.classList.remove('flex'); m.classList.add('hidden'); }
+}
+document.querySelectorAll('[id$="-modal"]').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal(modal.id);
+    });
+});
+
+// Signature editor toolbar
+document.querySelectorAll('.sig-toolbar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const cmd = btn.dataset.cmd;
+        if (cmd === 'createLink') {
+            const url = prompt('Enter URL:');
+            if (url) document.execCommand(cmd, false, url);
+        } else {
+            document.execCommand(cmd, false, null);
+        }
+    });
+});
+
+// Save signature HTML to hidden field before submit
+const sigForm = document.querySelector('form[action*="/update/"]');
+if (sigForm) {
+    sigForm.addEventListener('submit', () => {
+        const editor = document.getElementById('sig-editor');
+        document.getElementById('sig-html-hidden').value = editor.innerHTML;
+    });
+}
+</script>
+{% endblock %}

@@ -18,7 +18,7 @@ from .models import (
     Calendar, CalendarShare, Event,
     AddressBook, AddressBookShare, Contact, ContactFolder,
     Mailbox, Email, EmailAttachment, EmailSignature,
-    AllowedDomain,
+    AllowedDomain, OutOfOffice,
 )
 from django.views import View
 from djangodav.views.views import DavView
@@ -2817,29 +2817,25 @@ class MailSendView(LoginRequiredMixin, View):
             part.add_header('Content-Disposition', 'attachment', filename=filename)
             msg.attach(part)
 
-        # Try to send via SMTP relay if configured
-        smtp_host = getattr(settings, 'SMTP_RELAY_HOST', None)
-        smtp_port = getattr(settings, 'SMTP_RELAY_PORT', 587)
-        smtp_user = getattr(settings, 'SMTP_RELAY_USER', None)
-        smtp_pass = getattr(settings, 'SMTP_RELAY_PASSWORD', None)
-        smtp_tls = getattr(settings, 'SMTP_RELAY_USE_TLS', True)
+        # Send via SMTP relay in background using Celery
+        import base64
+        from .tasks import send_email_task
+
+        celery_attachments = []
+        for filename, content_type, data in attachment_data:
+            celery_attachments.append({
+                'filename': filename,
+                'content_type': content_type,
+                'data': base64.b64encode(data).decode('ascii'),
+            })
 
         sent_ok = False
+        smtp_host = getattr(settings, 'SMTP_RELAY_HOST', None)
         if smtp_host:
-            try:
-                server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
-                if smtp_tls:
-                    server.starttls()
-                if smtp_user and smtp_pass:
-                    server.login(smtp_user, smtp_pass)
-                all_recipients = [a.strip() for a in to_addresses.split(',')]
-                if cc_addresses:
-                    all_recipients += [a.strip() for a in cc_addresses.split(',')]
-                server.sendmail(from_address, all_recipients, msg.as_string())
-                server.quit()
-                sent_ok = True
-            except Exception:
-                pass
+            send_email_task.delay(
+                from_address, to_addresses, cc_addresses, subject,
+                body_text, body_html, celery_attachments)
+            sent_ok = True
 
         # Store in Sent folder
         sent_box, _ = Mailbox.objects.get_or_create(
@@ -2901,9 +2897,9 @@ class ContactSearchView(LoginRequiredMixin, View):
 
 # ─── Signature Views ──────────────────────────────────────────
 
-class SignatureListView(LoginRequiredMixin, View):
-    def get(self, request):
-        sigs = EmailSignature.objects.filter(owner=request.user)
+class MailSettingsView(LoginRequiredMixin, View):
+    def _get_context(self, request):
+        from .models import SharedMailbox, SharedMailboxMembership
         Mailbox.ensure_defaults(request.user)
         mailboxes = _get_sorted_mailboxes(request.user)
         unread_counts = dict(
@@ -2914,17 +2910,85 @@ class SignatureListView(LoginRequiredMixin, View):
         )
         for mb in mailboxes:
             mb.unread_count = unread_counts.get(mb.id, 0)
+        mailbox_tree = _build_mailbox_tree(mailboxes, '')
 
+        shared_memberships = SharedMailboxMembership.objects.filter(
+            user=request.user).select_related('shared_mailbox')
+        shared_tree = []
+        for membership in shared_memberships:
+            sm = membership.shared_mailbox
+            sm.ensure_defaults()
+            sm_mailboxes = list(Mailbox.objects.filter(shared_mailbox=sm))
+            sm_unread = dict(
+                Email.objects.filter(mailbox__shared_mailbox=sm, is_read=False)
+                .values_list('mailbox_id')
+                .annotate(count=models.Count('id'))
+                .values_list('mailbox_id', 'count')
+            )
+            for smb in sm_mailboxes:
+                smb.unread_count = sm_unread.get(smb.id, 0)
+            shared_tree.append({
+                'shared_mailbox': sm,
+                'permission': membership.permission,
+                'folders': _build_mailbox_tree(sm_mailboxes, '', prefix=f'__shared__/{sm.name}'),
+            })
+
+        is_admin = request.user.role == 'admin'
+        all_users = list(User.objects.all().order_by('username')) if is_admin else []
+
+        return {
+            'mailboxes': mailboxes,
+            'mailbox_tree': mailbox_tree,
+            'shared_tree': shared_tree,
+            'is_admin': is_admin,
+            'all_users': all_users,
+        }
+
+    def get(self, request):
+        ctx = self._get_context(request)
+
+        sigs = EmailSignature.objects.filter(owner=request.user)
         selected_sig = None
         sig_id = request.GET.get('sig')
         if sig_id:
             selected_sig = EmailSignature.objects.filter(id=sig_id, owner=request.user).first()
 
-        return render(request, 'file/mail_signatures.html', {
-            'mailboxes': mailboxes,
+        ooo, _ = OutOfOffice.objects.get_or_create(user=request.user)
+
+        ctx.update({
             'signatures': sigs,
             'selected_signature': selected_sig,
+            'ooo': ooo,
         })
+        return render(request, 'file/mail_settings.html', ctx)
+
+
+# Keep old name as alias
+SignatureListView = MailSettingsView
+
+
+class OutOfOfficeUpdateView(LoginRequiredMixin, View):
+    def post(self, request):
+        ooo, _ = OutOfOffice.objects.get_or_create(user=request.user)
+        ooo.enabled = 'enabled' in request.POST
+        ooo.subject = request.POST.get('subject', ooo.subject).strip()
+        ooo.body = request.POST.get('body', ooo.body).strip()
+        start = request.POST.get('start_date', '').strip()
+        end = request.POST.get('end_date', '').strip()
+        from datetime import date as dt_date
+        ooo.start_date = dt_date.fromisoformat(start) if start else None
+        ooo.end_date = dt_date.fromisoformat(end) if end else None
+        ooo.save()
+
+        if not ooo.enabled:
+            # Clear reply tracking when disabling
+            from .models import OutOfOfficeReply
+            OutOfOfficeReply.objects.filter(user=request.user).delete()
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'ok': True})
+        messages.success(request, 'Out of office settings saved.')
+        return redirect('/mail/settings/')
 
 
 class SignatureCreateView(LoginRequiredMixin, View):
@@ -2935,7 +2999,7 @@ class SignatureCreateView(LoginRequiredMixin, View):
 
         if not name:
             messages.error(request, 'Signature name is required.')
-            return redirect('/mail/signatures/')
+            return redirect('/mail/settings/')
 
         sig = EmailSignature.objects.create(
             owner=request.user, name=name,
@@ -2943,7 +3007,7 @@ class SignatureCreateView(LoginRequiredMixin, View):
 
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'ok': True, 'id': sig.id})
-        return redirect(f'/mail/signatures/?sig={sig.id}')
+        return redirect(f'/mail/settings/?sig={sig.id}')
 
 
 class SignatureUpdateView(LoginRequiredMixin, View):
@@ -2956,7 +3020,7 @@ class SignatureUpdateView(LoginRequiredMixin, View):
 
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'ok': True})
-        return redirect(f'/mail/signatures/?sig={sig.id}')
+        return redirect(f'/mail/settings/?sig={sig.id}')
 
 
 class SignatureDeleteView(LoginRequiredMixin, View):
@@ -2965,7 +3029,7 @@ class SignatureDeleteView(LoginRequiredMixin, View):
         sig.delete()
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'ok': True})
-        return redirect('/mail/signatures/')
+        return redirect('/mail/settings/')
 
 
 class SignatureContentView(LoginRequiredMixin, View):
