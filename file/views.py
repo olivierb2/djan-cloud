@@ -2418,26 +2418,40 @@ class MailWebView(LoginRequiredMixin, View):
         shared_memberships = SharedMailboxMembership.objects.filter(
             user=request.user).select_related('shared_mailbox')
         shared_tree = []
-        for membership in shared_memberships:
-            sm = membership.shared_mailbox
-            sm.ensure_defaults()
-            sm_mailboxes = list(Mailbox.objects.filter(shared_mailbox=sm))
-            # Compute unread counts for shared mailboxes
-            sm_unread = dict(
-                Email.objects.filter(mailbox__shared_mailbox=sm, is_read=False)
+        if shared_memberships:
+            sm_ids = [m.shared_mailbox_id for m in shared_memberships]
+
+            # Ensure defaults for all shared mailboxes in bulk
+            for membership in shared_memberships:
+                membership.shared_mailbox.ensure_defaults()
+
+            # Fetch all shared mailboxes' folders in one query
+            all_sm_mailboxes = list(Mailbox.objects.filter(shared_mailbox_id__in=sm_ids))
+
+            # Compute unread counts for all shared mailboxes in one query
+            all_sm_unread = dict(
+                Email.objects.filter(mailbox__shared_mailbox_id__in=sm_ids, is_read=False)
                 .values_list('mailbox_id')
                 .annotate(count=models.Count('id'))
                 .values_list('mailbox_id', 'count')
             )
-            for smb in sm_mailboxes:
-                smb.unread_count = sm_unread.get(smb.id, 0)
-            shared_tree.append({
-                'shared_mailbox': sm,
-                'permission': membership.permission,
-                'folders': _build_mailbox_tree(
-                    sm_mailboxes, mailbox_name,
-                    prefix=f'__shared__/{sm.name}'),
-            })
+
+            # Group by shared mailbox
+            sm_mailboxes_map = {}
+            for smb in all_sm_mailboxes:
+                smb.unread_count = all_sm_unread.get(smb.id, 0)
+                sm_mailboxes_map.setdefault(smb.shared_mailbox_id, []).append(smb)
+
+            for membership in shared_memberships:
+                sm = membership.shared_mailbox
+                sm_mbs = sm_mailboxes_map.get(sm.id, [])
+                shared_tree.append({
+                    'shared_mailbox': sm,
+                    'permission': membership.permission,
+                    'folders': _build_mailbox_tree(
+                        sm_mbs, mailbox_name,
+                        prefix=f'__shared__/{sm.name}'),
+                })
 
         is_admin = request.user.role == 'admin'
         all_users = list(User.objects.all().order_by('username')) if is_admin else []

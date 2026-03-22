@@ -416,10 +416,15 @@ class SharedMailbox(models.Model):
         return f"{self.name} <{self.email_alias}>"
 
     def ensure_defaults(self):
-        for folder_name in SYSTEM_MAILBOXES:
-            Mailbox.objects.get_or_create(
-                shared_mailbox=self, owner=None, name=folder_name,
-                defaults={'system': True})
+        existing = set(Mailbox.objects.filter(
+            shared_mailbox=self, name__in=SYSTEM_MAILBOXES
+        ).values_list('name', flat=True))
+        missing = [name for name in SYSTEM_MAILBOXES if name not in existing]
+        if missing:
+            Mailbox.objects.bulk_create([
+                Mailbox(shared_mailbox=self, owner=None, name=name, system=True)
+                for name in missing
+            ], ignore_conflicts=True)
 
 
 class SharedMailboxMembership(models.Model):
@@ -481,9 +486,15 @@ class Mailbox(models.Model):
 
     @staticmethod
     def ensure_defaults(user):
-        for name in SYSTEM_MAILBOXES:
-            Mailbox.objects.get_or_create(
-                owner=user, name=name, defaults={'system': True})
+        existing = set(Mailbox.objects.filter(
+            owner=user, name__in=SYSTEM_MAILBOXES
+        ).values_list('name', flat=True))
+        missing = [name for name in SYSTEM_MAILBOXES if name not in existing]
+        if missing:
+            Mailbox.objects.bulk_create([
+                Mailbox(owner=user, name=name, system=True)
+                for name in missing
+            ], ignore_conflicts=True)
 
 
 class Email(models.Model):
