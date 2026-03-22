@@ -23,16 +23,33 @@ class DjancloudSMTPHandler:
 
         # Check domain against allowed domains
         allowed_domains = [d.domain async for d in AllowedDomain.objects.all()]
-        if allowed_domains:
-            domain = bare.split('@')[-1] if '@' in bare else ''
-            if domain not in allowed_domains:
-                return f'550 5.1.1 Recipient domain {domain} not allowed'
+        domain = bare.split('@')[-1] if '@' in bare else ''
+        logger.info("handle_RCPT: address=%s, domain=%s, allowed_domains=%s", address, domain, allowed_domains)
+        if not allowed_domains or domain not in allowed_domains:
+            logger.warning("Rejected recipient %s: domain %s not allowed", bare, domain)
+            return '550 5.1.1 Recipient domain not allowed'
 
         envelope.rcpt_tos.append(address)
         return '250 OK'
 
     async def handle_DATA(self, server, session, envelope):
-        from file.models import User, Mailbox, Email, EmailAttachment
+        from file.models import User, Mailbox, Email, EmailAttachment, AllowedDomain
+
+        # Double-check allowed domains (in case handle_RCPT was bypassed)
+        allowed_domains = [d.domain async for d in AllowedDomain.objects.all()]
+        valid_rcpts = []
+        for rcpt in envelope.rcpt_tos:
+            bare = rcpt
+            if '<' in bare and '>' in bare:
+                bare = bare.split('<')[1].split('>')[0]
+            domain = bare.lower().strip().split('@')[-1] if '@' in bare else ''
+            if allowed_domains and domain in allowed_domains:
+                valid_rcpts.append(rcpt)
+            else:
+                logger.warning("handle_DATA: filtering out recipient %s (domain %s not allowed)", rcpt, domain)
+        if not valid_rcpts:
+            return '550 5.1.1 No valid recipients - domain not allowed'
+        envelope.rcpt_tos = valid_rcpts
 
         raw = envelope.content
         if isinstance(raw, bytes):

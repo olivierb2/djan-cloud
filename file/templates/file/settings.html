@@ -61,7 +61,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h1 class="text-xl font-bold text-gray-900">Allowed domains</h1>
-                            <p class="text-sm text-gray-500 mt-1">Email domains accepted by the SMTP server. Emails sent to addresses outside these domains will be rejected.</p>
+                            <p class="text-sm text-gray-500 mt-1">Email domains accepted by the SMTP server. Only emails sent to addresses matching these domains will be accepted. If no domain is configured, all emails are rejected.</p>
                         </div>
                     </div>
 
@@ -118,7 +118,7 @@ function showSection(section) {
 function renderDomains() {
     const list = document.getElementById('domains-list');
     if (domains.length === 0) {
-        list.innerHTML = '<p class="text-sm text-gray-500 italic">No allowed domains configured. All email domains will be accepted.</p>';
+        list.innerHTML = '<p class="text-sm text-gray-500 italic">No allowed domains configured. All incoming emails will be rejected.</p>';
         return;
     }
     list.innerHTML = domains.map(d => `
