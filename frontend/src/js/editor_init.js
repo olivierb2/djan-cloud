@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const content = markdown || editor.getMarkdown();
+      const content = markdown || (isRawMode ? rawEditor.value : editor.getMarkdown());
       const response = await fetch(`/api/files/${config.fileId}/save/`, {
         method: 'POST',
         headers: {
@@ -139,6 +139,59 @@ document.addEventListener('DOMContentLoaded', () => {
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
       saveContent();
+    });
+  }
+
+  // Raw toggle
+  const toggleRawBtn = document.getElementById('toggle-raw-btn');
+  const rawEditor = document.getElementById('raw-editor');
+  let isRawMode = false;
+
+  if (toggleRawBtn && rawEditor) {
+    toggleRawBtn.addEventListener('click', () => {
+      isRawMode = !isRawMode;
+      if (isRawMode) {
+        // Switch to raw: copy markdown to textarea
+        rawEditor.value = editor.getMarkdown();
+        container.classList.add('hidden');
+        rawEditor.classList.remove('hidden');
+        toggleRawBtn.innerHTML = `
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+          Preview
+        `;
+      } else {
+        // Switch back to WYSIWYG
+        const rawContent = rawEditor.value;
+        const originalMd = editor.getMarkdown();
+        if (rawContent !== originalMd && config.canWrite) {
+          // Raw was modified: save then reload to sync the editor
+          saveContent(rawContent).then(() => {
+            window.location.reload();
+          });
+          return;
+        }
+        // No changes: just show the WYSIWYG editor again
+        rawEditor.classList.add('hidden');
+        container.classList.remove('hidden');
+        toggleRawBtn.innerHTML = `
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          </svg>
+          Raw
+        `;
+      }
+    });
+
+    // When typing in raw mode, mark as unsaved
+    rawEditor.addEventListener('input', () => {
+      hasUnsavedChanges = true;
+      if (config.canWrite) {
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(() => saveContent(rawEditor.value), 2000);
+      }
     });
   }
 

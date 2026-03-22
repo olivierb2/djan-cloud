@@ -117,6 +117,12 @@ export class CollaborativeEditor {
     return this.crepe?.getMarkdown() ?? '';
   }
 
+  setMarkdown(content) {
+    if (this.crepe) {
+      this.crepe.setMarkdown(content);
+    }
+  }
+
   destroy() {
     this.destroyed = true;
     this.crepe?.destroy();
