@@ -168,7 +168,7 @@
 
       <!-- File table -->
       <div v-else class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        <table class="w-full">
+        <table class="w-full text-[13px]">
           <thead>
             <tr class="border-b border-gray-100 bg-gray-50/50 text-xs font-medium uppercase tracking-wider text-gray-500">
               <th class="px-4 py-3 text-left">Name</th>
@@ -183,7 +183,7 @@
             <!-- Contacts root view -->
             <template v-if="isContactsRoot">
               <tr v-for="contact in contactsList" :key="contact.url_path" class="group hover:bg-gray-50/50 transition-colors">
-                <td class="px-4 py-2.5">
+                <td class="px-4 py-1.5">
                   <a href="#" class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600" @click.prevent="navigateToFolder(contact.url_path)">
                     <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -191,10 +191,10 @@
                     {{ contact.fn || contact.uid }}
                   </a>
                 </td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">{{ contact.email || '\u2014' }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ contact.org || '\u2014' }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">{{ contact.tel || '\u2014' }}</td>
-                <td class="px-4 py-2.5 text-right"></td>
+                <td class="px-4 py-1.5 text-gray-500 hidden sm:table-cell">{{ contact.email || '\u2014' }}</td>
+                <td class="px-4 py-1.5 text-gray-500 hidden md:table-cell">{{ contact.org || '\u2014' }}</td>
+                <td class="px-4 py-1.5 text-gray-400 text-right hidden sm:table-cell">{{ contact.tel || '\u2014' }}</td>
+                <td class="px-4 py-1.5 text-right"></td>
               </tr>
               <tr v-if="!contactsList || contactsList.length === 0">
                 <td colspan="5" class="px-4 py-12 text-center text-sm text-gray-400">
@@ -209,7 +209,7 @@
             <!-- Shared root view -->
             <template v-else-if="isSharedRoot">
               <tr v-for="sf in sharedFolders" :key="sf.url_path" class="group hover:bg-gray-50/50 transition-colors">
-                <td class="px-4 py-2.5">
+                <td class="px-4 py-1.5">
                   <a href="#" class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600" @click.prevent="navigateToFolder(sf.url_path)">
                     <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -217,9 +217,9 @@
                     {{ sf.name }}
                   </a>
                 </td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">Shared folder</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ formatDate(sf.created_at) }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">
+                <td class="px-4 py-1.5 text-gray-500 hidden sm:table-cell">Shared folder</td>
+                <td class="px-4 py-1.5 text-gray-500 hidden md:table-cell">{{ formatDate(sf.created_at) }}</td>
+                <td class="px-4 py-1.5 text-gray-400 text-right hidden sm:table-cell">
                   <span
                     class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
                     :class="{
@@ -231,7 +231,7 @@
                     {{ sf.permission }}
                   </span>
                 </td>
-                <td class="px-4 py-2.5 text-right"></td>
+                <td class="px-4 py-1.5 text-right"></td>
               </tr>
               <tr v-if="!sharedFolders || sharedFolders.length === 0">
                 <td colspan="5" class="px-4 py-12 text-center text-sm text-gray-400">
@@ -254,7 +254,7 @@
                   @dragover="onDragOverFolder($event, folder.id)"
                   @dragleave="onDragLeaveFolder($event, folder.id)"
                   @drop="onDropOnFolder($event, folder.id)">
-                <td class="px-4 py-2.5">
+                <td class="px-4 py-1.5">
                   <a href="#" class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600" @click.prevent="navigateToFolder(folder.url_path)">
                     <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/>
@@ -262,10 +262,10 @@
                     {{ folder.name }}
                   </a>
                 </td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">Folder</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ formatDate(folder.updated_at) }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-400 text-right hidden sm:table-cell">&mdash;</td>
-                <td class="px-4 py-2.5 text-right">
+                <td class="px-4 py-1.5 text-gray-500 hidden sm:table-cell">Folder</td>
+                <td class="px-4 py-1.5 text-gray-500 hidden md:table-cell">{{ formatDate(folder.updated_at) }}</td>
+                <td class="px-4 py-1.5 text-gray-400 text-right hidden sm:table-cell">&mdash;</td>
+                <td class="px-4 py-1.5 text-right">
                   <div v-if="canWrite" class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button title="Rename" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100" @click="openRenameModal('folder', folder.id, folder.name)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,7 +291,7 @@
                   :draggable="canWrite"
                   @dragstart="onDragStartItem($event, 'file', file.id, file.display_name)"
                   @dragend="onDragEndItem">
-                <td class="px-4 py-2.5">
+                <td class="px-4 py-1.5">
                   <!-- Markdown files link to editor -->
                   <a
                     v-if="file.display_name && file.display_name.toLowerCase().endsWith('.md')"
@@ -324,10 +324,10 @@
                     {{ file.display_name }}
                   </a>
                 </td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">{{ file.content_type || 'File' }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">{{ formatDate(file.updated_at) }}</td>
-                <td class="px-4 py-2.5 text-sm text-gray-500 text-right hidden sm:table-cell">{{ formatSize(file.size) }}</td>
-                <td class="px-4 py-2.5 text-right">
+                <td class="px-4 py-1.5 text-gray-500 hidden sm:table-cell">{{ file.content_type || 'File' }}</td>
+                <td class="px-4 py-1.5 text-gray-500 hidden md:table-cell">{{ formatDate(file.updated_at) }}</td>
+                <td class="px-4 py-1.5 text-gray-500 text-right hidden sm:table-cell">{{ formatSize(file.size) }}</td>
+                <td class="px-4 py-1.5 text-right">
                   <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <a :href="'/download/' + file.id + '/'" title="Download" class="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -537,7 +537,7 @@
           <div class="divide-y divide-gray-100">
             <div v-for="item in moveSubfolders" :key="item.id"
                  @click="navigateMovePicker(item.id)"
-                 class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                 class="flex items-center gap-3 px-4 py-1.5 hover:bg-gray-50 cursor-pointer">
               <svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
               </svg>
@@ -554,7 +554,7 @@
             <div class="divide-y divide-gray-100">
               <div v-for="item in moveShared" :key="'s'+item.id"
                    @click="navigateMovePicker(item.id)"
-                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                   class="flex items-center gap-3 px-4 py-1.5 hover:bg-gray-50 cursor-pointer">
                 <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
@@ -571,7 +571,7 @@
             <div class="divide-y divide-gray-100">
               <div v-for="item in moveContacts" :key="'c'+item.id"
                    @click="navigateMovePicker(item.id)"
-                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer">
+                   class="flex items-center gap-3 px-4 py-1.5 hover:bg-gray-50 cursor-pointer">
                 <svg class="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
