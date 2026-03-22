@@ -1332,16 +1332,30 @@ class FilePreviewView(LoginRequiredMixin, View):
             raise Http404("File not found")
 
         content_type = file_obj.content_type or ''
-        display_name = os.path.basename(file_obj.file.name)
+        display_name = file_obj.display_name or os.path.basename(file_obj.file.name)
 
-        # Serve the file inline for previewable types
-        if content_type.startswith('image/') or content_type == 'application/pdf':
+        # If ?raw=1, serve the file inline (used by viewer iframe/img src)
+        if request.GET.get('raw'):
             response = FileResponse(
                 open(file_obj.file.path, 'rb'),
                 content_type=content_type
             )
             response['Content-Disposition'] = f'inline; filename="{display_name}"'
             return response
+
+        # Image viewer
+        if content_type.startswith('image/'):
+            return render(request, 'file/preview_image.html', {
+                'file': file_obj,
+                'display_name': display_name,
+            })
+
+        # PDF viewer
+        if content_type == 'application/pdf':
+            return render(request, 'file/preview_pdf.html', {
+                'file': file_obj,
+                'display_name': display_name,
+            })
 
         # For text files, read content and show in a template
         if content_type.startswith('text/') or content_type in ('application/json', 'application/xml', 'application/javascript'):

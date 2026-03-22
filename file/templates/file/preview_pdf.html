@@ -1,0 +1,197 @@
+{% extends "file/base.html" %}
+
+{% block title %}{{ display_name }} - Djancloud{% endblock %}
+
+{% block body %}
+<div class="flex h-full min-h-screen flex-col">
+
+    {% include "file/_navbar.html" with active_nav='files' %}
+
+    <div class="flex flex-1 overflow-hidden">
+        <main class="flex-1 flex flex-col overflow-hidden bg-gray-100">
+
+            <!-- Toolbar -->
+            <div class="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <button onclick="history.back()"
+                            class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Back
+                    </button>
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    <h1 class="text-sm font-medium text-gray-900 truncate">{{ display_name }}</h1>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="prevPage()" id="btn-prev" disabled
+                            class="rounded p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed" title="Previous page">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <span class="text-sm text-gray-600"><span id="page-num">1</span> / <span id="page-count">-</span></span>
+                    <button onclick="nextPage()" id="btn-next" disabled
+                            class="rounded p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed" title="Next page">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    <div class="w-px h-5 bg-gray-200 mx-1"></div>
+                    <button onclick="zoomOut()" class="rounded p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100" title="Zoom out">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/>
+                        </svg>
+                    </button>
+                    <span id="zoom-level" class="text-xs text-gray-500 min-w-[3rem] text-center">100%</span>
+                    <button onclick="zoomIn()" class="rounded p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100" title="Zoom in">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
+                        </svg>
+                    </button>
+                    <div class="w-px h-5 bg-gray-200 mx-1"></div>
+                    <a href="{% url 'download_file' file_id=file.id %}"
+                       class="inline-flex items-center gap-1 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Download
+                    </a>
+                </div>
+            </div>
+
+            <!-- PDF pages container -->
+            <div id="pdf-container" class="flex-1 overflow-auto p-4">
+                <div id="pdf-pages" class="flex flex-col items-center gap-4">
+                    <div class="text-sm text-gray-400">Loading PDF...</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs" type="module"></script>
+<script type="module">
+import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.min.mjs';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.9.155/pdf.worker.min.mjs';
+
+const url = '{% url "preview_file" file_id=file.id %}?raw=1';
+let pdfDoc = null;
+let scale = 1.5;
+const pagesDiv = document.getElementById('pdf-pages');
+const pageNumEl = document.getElementById('page-num');
+const pageCountEl = document.getElementById('page-count');
+const zoomEl = document.getElementById('zoom-level');
+
+async function renderPage(num) {
+    const page = await pdfDoc.getPage(num);
+    const viewport = page.getViewport({ scale });
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bg-white shadow-lg';
+    wrapper.dataset.page = num;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    wrapper.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    return wrapper;
+}
+
+async function renderAllPages() {
+    pagesDiv.innerHTML = '';
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const wrapper = await renderPage(i);
+        pagesDiv.appendChild(wrapper);
+    }
+}
+
+async function loadPdf() {
+    try {
+        pdfDoc = await pdfjsLib.getDocument(url).promise;
+        pageCountEl.textContent = pdfDoc.numPages;
+        pageNumEl.textContent = '1';
+        document.getElementById('btn-prev').disabled = false;
+        document.getElementById('btn-next').disabled = false;
+        updateZoomDisplay();
+        await renderAllPages();
+    } catch (err) {
+        pagesDiv.innerHTML = '<div class="text-red-500 text-sm">Failed to load PDF: ' + err.message + '</div>';
+    }
+}
+
+function updateZoomDisplay() {
+    zoomEl.textContent = Math.round(scale * 100 / 1.5) + '%';
+}
+
+// Expose to global for onclick handlers
+window.zoomIn = async function() {
+    scale = Math.min(scale + 0.25, 5);
+    updateZoomDisplay();
+    await renderAllPages();
+};
+
+window.zoomOut = async function() {
+    scale = Math.max(scale - 0.25, 0.5);
+    updateZoomDisplay();
+    await renderAllPages();
+};
+
+window.prevPage = function() {
+    const container = document.getElementById('pdf-container');
+    const pages = pagesDiv.querySelectorAll('[data-page]');
+    for (let i = pages.length - 1; i >= 0; i--) {
+        if (pages[i].getBoundingClientRect().top < container.getBoundingClientRect().top - 10) {
+            pages[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            pageNumEl.textContent = pages[i].dataset.page;
+            return;
+        }
+    }
+};
+
+window.nextPage = function() {
+    const container = document.getElementById('pdf-container');
+    const pages = pagesDiv.querySelectorAll('[data-page]');
+    for (let i = 0; i < pages.length; i++) {
+        if (pages[i].getBoundingClientRect().top > container.getBoundingClientRect().top + 10) {
+            pages[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            pageNumEl.textContent = pages[i].dataset.page;
+            return;
+        }
+    }
+};
+
+// Update page number on scroll
+document.getElementById('pdf-container').addEventListener('scroll', function() {
+    const container = this;
+    const pages = pagesDiv.querySelectorAll('[data-page]');
+    for (let i = pages.length - 1; i >= 0; i--) {
+        if (pages[i].getBoundingClientRect().top <= container.getBoundingClientRect().top + 50) {
+            pageNumEl.textContent = pages[i].dataset.page;
+            return;
+        }
+    }
+});
+
+// Ctrl+wheel zoom
+document.getElementById('pdf-container').addEventListener('wheel', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0) window.zoomIn();
+        else window.zoomOut();
+    }
+}, { passive: false });
+
+loadPdf();
+</script>
+{% endblock %}
