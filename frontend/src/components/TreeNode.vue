@@ -2,10 +2,16 @@
   <div>
     <a
       :href="node.url_path ? '/browse/' + node.url_path : '/browse/'"
-      class="flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm select-none no-underline"
-      :class="isActive ? 'bg-brand-50 text-brand-700 font-medium' : 'text-gray-700 hover:bg-gray-100'"
+      class="flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm select-none no-underline transition-colors"
+      :class="[
+        isActive ? 'bg-brand-50 text-brand-700 font-medium' : 'text-gray-700 hover:bg-gray-100',
+        isDropTarget ? 'ring-2 ring-brand-400 bg-brand-50' : ''
+      ]"
       :style="{ paddingLeft: (depth * 12 + 8) + 'px' }"
       @click.prevent="onNavigate"
+      @dragover.prevent="onDragOver"
+      @dragleave="onDragLeave"
+      @drop.prevent="onDrop"
     >
       <!-- Toggle chevron -->
       <svg
@@ -126,6 +132,9 @@ export default defineComponent({
   emits: ['share-click'],
   setup(props) {
     const navigateToFolder = inject('navigateToFolder', null);
+    const dragItem = inject('dragItem', ref(null));
+    const dropTargetId = inject('dropTargetId', ref(null));
+    const onDropOnFolder = inject('onDropOnFolder', null);
 
     const hasChildren = computed(() => props.node.children && props.node.children.length > 0);
 
@@ -139,6 +148,9 @@ export default defineComponent({
 
     const isOpen = ref(isOnPath.value && hasChildren.value);
 
+    const nodeDropId = computed(() => 'tree-' + (props.node.id || props.node.url_path));
+    const isDropTarget = computed(() => dropTargetId.value === nodeDropId.value);
+
     // Navigate using injected function or fall back to page navigation
     function onNavigate() {
       const path = props.node.url_path || '';
@@ -149,7 +161,24 @@ export default defineComponent({
       }
     }
 
-    return { hasChildren, isActive, isOpen, onNavigate };
+    function onDragOver(e) {
+      if (!dragItem.value || !props.node.id) return;
+      if (dragItem.value.type === 'folder' && dragItem.value.id === props.node.id) return;
+      e.dataTransfer.dropEffect = 'move';
+      dropTargetId.value = nodeDropId.value;
+    }
+
+    function onDragLeave() {
+      if (dropTargetId.value === nodeDropId.value) dropTargetId.value = null;
+    }
+
+    function onDrop(e) {
+      if (!dragItem.value || !props.node.id || !onDropOnFolder) return;
+      dropTargetId.value = null;
+      onDropOnFolder(e, props.node.id);
+    }
+
+    return { hasChildren, isActive, isOpen, isDropTarget, onNavigate, onDragOver, onDragLeave, onDrop };
   },
 });
 </script>

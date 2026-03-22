@@ -73,13 +73,23 @@
 
         <!-- Breadcrumbs -->
         <div class="hidden sm:flex items-center gap-1 text-sm text-gray-500">
-          <a href="#" class="hover:text-brand-600" @click.prevent="navigateToFolder('')">Home</a>
+          <a href="#" class="hover:text-brand-600 rounded px-1 transition-colors"
+             :class="{ 'ring-2 ring-brand-400 bg-brand-50': dropTargetId === 'bc-home' }"
+             @click.prevent="navigateToFolder('')"
+             @dragover.prevent="dragItem && (dropTargetId = 'bc-home')"
+             @dragleave="dropTargetId === 'bc-home' && (dropTargetId = null)"
+             @drop.prevent="onDropOnFolder($event, null)">Home</a>
           <template v-for="(part, idx) in breadcrumbs" :key="part.path">
             <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
             <span v-if="idx === breadcrumbs.length - 1" class="text-gray-900 font-medium">{{ part.name }}</span>
-            <a v-else href="#" class="hover:text-brand-600" @click.prevent="navigateToFolder(part.path)">{{ part.name }}</a>
+            <a v-else href="#" class="hover:text-brand-600 rounded px-1 transition-colors"
+               :class="{ 'ring-2 ring-brand-400 bg-brand-50': dropTargetId === 'bc-' + part.id }"
+               @click.prevent="navigateToFolder(part.path)"
+               @dragover.prevent="dragItem && (dropTargetId = 'bc-' + part.id)"
+               @dragleave="dropTargetId === 'bc-' + part.id && (dropTargetId = null)"
+               @drop.prevent="onDropOnFolder($event, part.id)">{{ part.name }}</a>
           </template>
         </div>
       </div>
@@ -235,7 +245,15 @@
 
             <!-- Normal folder view: subfolders then files -->
             <template v-else>
-              <tr v-for="folder in subfolders" :key="'folder-' + folder.id" class="group hover:bg-gray-50/50 transition-colors">
+              <tr v-for="folder in subfolders" :key="'folder-' + folder.id"
+                  class="group hover:bg-gray-50/50 transition-colors"
+                  :class="{ 'ring-2 ring-brand-400 bg-brand-50': dropTargetId === folder.id }"
+                  :draggable="canWrite"
+                  @dragstart="onDragStartItem($event, 'folder', folder.id, folder.name)"
+                  @dragend="onDragEndItem"
+                  @dragover="onDragOverFolder($event, folder.id)"
+                  @dragleave="onDragLeaveFolder($event, folder.id)"
+                  @drop="onDropOnFolder($event, folder.id)">
                 <td class="px-4 py-2.5">
                   <a href="#" class="inline-flex items-center gap-2 font-medium text-gray-900 hover:text-brand-600" @click.prevent="navigateToFolder(folder.url_path)">
                     <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
@@ -268,7 +286,11 @@
                 </td>
               </tr>
 
-              <tr v-for="file in files" :key="'file-' + file.id" :id="'file-' + file.id" class="group hover:bg-gray-50/50 transition-colors">
+              <tr v-for="file in files" :key="'file-' + file.id" :id="'file-' + file.id"
+                  class="group hover:bg-gray-50/50 transition-colors"
+                  :draggable="canWrite"
+                  @dragstart="onDragStartItem($event, 'file', file.id, file.display_name)"
+                  @dragend="onDragEndItem">
                 <td class="px-4 py-2.5">
                   <!-- Markdown files link to editor -->
                   <a
@@ -690,7 +712,14 @@ export default defineComponent({
     }
 
     // Provide navigateToFolder so TreeNode and BrowseSidebar children can use it
+    // Drag & drop refs (declared early for provide)
+    const dragItem = ref(null);
+    const dropTargetId = ref(null);
+
     provide('navigateToFolder', navigateToFolder);
+    provide('dragItem', dragItem);
+    provide('dropTargetId', dropTargetId);
+    provide('onDropOnFolder', (...args) => onDropOnFolder(...args));
 
     // Handle browser back/forward
     function onPopState(event) {
@@ -1077,6 +1106,70 @@ export default defineComponent({
       }
     }
 
+    // -- Internal drag & drop for moving items --
+
+    function onDragStartItem(e, type, id, name) {
+      dragItem.value = { type, id, name };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', `${type}:${id}`);
+      // Make the row semi-transparent
+      if (e.target && e.target.closest) {
+        const row = e.target.closest('tr');
+        if (row) setTimeout(() => row.style.opacity = '0.4', 0);
+      }
+    }
+
+    function onDragEndItem(e) {
+      dragItem.value = null;
+      dropTargetId.value = null;
+      if (e.target && e.target.closest) {
+        const row = e.target.closest('tr');
+        if (row) row.style.opacity = '';
+      }
+    }
+
+    function onDragOverFolder(e, folderId) {
+      if (!dragItem.value) return;
+      // Don't allow dropping a folder on itself
+      if (dragItem.value.type === 'folder' && dragItem.value.id === folderId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      dropTargetId.value = folderId;
+    }
+
+    function onDragLeaveFolder(e, folderId) {
+      if (dropTargetId.value === folderId) dropTargetId.value = null;
+    }
+
+    async function onDropOnFolder(e, folderId) {
+      e.preventDefault();
+      if (!dragItem.value) return;
+      const item = dragItem.value;
+      dragItem.value = null;
+      dropTargetId.value = null;
+      // If dropping on Home (null), use the root folder id from breadcrumbs
+      let destId = folderId;
+      if (destId === null && breadcrumbs.value.length > 0) {
+        destId = breadcrumbs.value[0].id;
+      }
+      if (!destId) return;
+      try {
+        const r = await apiFetch(`/api/move/${item.type}/${item.id}/`, {
+          method: 'POST',
+          body: JSON.stringify({ destination_folder_id: destId }),
+        });
+        const data = await r.json();
+        if (data.error) {
+          addToast(data.error, 'error');
+        } else {
+          addToast(`Moved "${item.name}" successfully.`, 'success');
+          navigateToFolder(currentPath.value);
+        }
+      } catch (err) {
+        addToast('Move failed.', 'error');
+      }
+    }
+
     // -- Lifecycle --
     onMounted(() => {
       // Initial load
@@ -1152,6 +1245,10 @@ export default defineComponent({
       // Members
       membersModalTitle, members, membersLoading, allUsers,
       addMemberUserId, openMembersModal, updateMember, removeMember, addMember,
+
+      // Internal drag & drop
+      dragItem, dropTargetId,
+      onDragStartItem, onDragEndItem, onDragOverFolder, onDragLeaveFolder, onDropOnFolder,
     };
   },
 });
