@@ -18,6 +18,7 @@ from .models import (
     Calendar, CalendarShare, Event,
     AddressBook, AddressBookShare, Contact, ContactFolder,
     Mailbox, Email, EmailAttachment, EmailSignature,
+    AllowedDomain,
 )
 from django.views import View
 from djangodav.views.views import DavView
@@ -1622,7 +1623,7 @@ class UserDeleteView(LoginRequiredMixin, View):
         return JsonResponse({'ok': True})
 
 
-class UserManagementView(LoginRequiredMixin, View):
+class SettingsView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated or request.user.role != 'admin':
             return redirect('browse_files_root')
@@ -1636,7 +1637,42 @@ class UserManagementView(LoginRequiredMixin, View):
              'email': u.email, 'role': u.role, 'is_active': u.is_active}
             for u in users
         ])
-        return render(request, 'file/users.html', {'users': users, 'users_json': users_json})
+        domains = AllowedDomain.objects.all()
+        domains_json = json.dumps([
+            {'id': d.id, 'domain': d.domain}
+            for d in domains
+        ])
+        return render(request, 'file/settings.html', {
+            'users': users,
+            'users_json': users_json,
+            'domains_json': domains_json,
+        })
+
+
+# Keep old name as alias for backwards compatibility in imports
+UserManagementView = SettingsView
+
+
+class AllowedDomainCreateView(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.user.role != 'admin':
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        data = json.loads(request.body)
+        domain = data.get('domain', '').strip().lower()
+        if not domain:
+            return JsonResponse({'error': 'Domain is required'}, status=400)
+        if AllowedDomain.objects.filter(domain=domain).exists():
+            return JsonResponse({'error': 'Domain already exists'}, status=400)
+        obj = AllowedDomain.objects.create(domain=domain)
+        return JsonResponse({'id': obj.id, 'domain': obj.domain})
+
+
+class AllowedDomainDeleteView(LoginRequiredMixin, View):
+    def delete(self, request, domain_id):
+        if request.user.role != 'admin':
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+        AllowedDomain.objects.filter(id=domain_id).delete()
+        return JsonResponse({'ok': True})
 
 
 class FileEditorView(LoginRequiredMixin, View):

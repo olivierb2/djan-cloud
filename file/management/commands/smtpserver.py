@@ -13,6 +13,21 @@ logger = logging.getLogger('smtpserver')
 
 class DjancloudSMTPHandler:
     async def handle_RCPT(self, server, session, envelope, address, rcpt_options):
+        from file.models import AllowedDomain
+
+        # Extract bare email
+        bare = address
+        if '<' in bare and '>' in bare:
+            bare = bare.split('<')[1].split('>')[0]
+        bare = bare.lower().strip()
+
+        # Check domain against allowed domains
+        allowed_domains = [d.domain async for d in AllowedDomain.objects.all()]
+        if allowed_domains:
+            domain = bare.split('@')[-1] if '@' in bare else ''
+            if domain not in allowed_domains:
+                return f'550 5.1.1 Recipient domain {domain} not allowed'
+
         envelope.rcpt_tos.append(address)
         return '250 OK'
 
@@ -154,6 +169,7 @@ class DjancloudSMTPHandler:
 
         if delivered == 0:
             logger.warning("No local recipients matched for: %s", recipients)
+            return '550 5.1.1 No valid recipients'
 
         return '250 Message accepted for delivery'
 

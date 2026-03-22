@@ -42,6 +42,7 @@ from file.views import (
     SharedMailboxMemberAddView, SharedMailboxMemberDeleteView,
     BrowseApiView, ApiFolderCreateView, ApiFileUploadView, ApiTextFileCreateView,
     ApiRenameView, ApiDeleteFileView, ApiDeleteFolderView, ApiMoveItemView,
+    SettingsView, AllowedDomainCreateView, AllowedDomainDeleteView,
 )
 from file.caldav_views import (
     WellKnownCalDavView, WellKnownCardDavView,
@@ -132,11 +133,13 @@ urlpatterns = [
     path('api/shared-folders/<int:sf_id>/members/', SharedFolderMembersView.as_view(), name='api_shared_folder_members'),
     path('api/shared-folders/<int:sf_id>/members/<int:user_id>/', SharedFolderMemberDeleteView.as_view(), name='api_shared_folder_member_delete'),
     path('api/contact-folders/create/', ContactFolderCreateView.as_view(), name='api_contact_folder_create'),
-    path('users/', UserManagementView.as_view(), name='user_management'),
+    path('settings/', SettingsView.as_view(), name='settings'),
     path('api/users/', UserListView.as_view(), name='api_users'),
     path('api/users/create/', UserCreateView.as_view(), name='api_user_create'),
     path('api/users/<int:user_id>/', UserDeleteView.as_view(), name='api_user_delete'),
     path('api/users/<int:user_id>/update/', UserUpdateView.as_view(), name='api_user_update'),
+    path('api/domains/create/', AllowedDomainCreateView.as_view(), name='api_domain_create'),
+    path('api/domains/<int:domain_id>/', AllowedDomainDeleteView.as_view(), name='api_domain_delete'),
 
     # Calendar web UI
     path('calendars/', CalendarWebView.as_view(), name='calendars'),

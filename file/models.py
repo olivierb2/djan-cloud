@@ -561,3 +561,14 @@ class EmailSignature(models.Model):
                 owner=self.owner, is_default=True
             ).exclude(pk=self.pk).update(is_default=False)
         super().save(*args, **kwargs)
+
+
+class AllowedDomain(models.Model):
+    domain = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['domain']
+
+    def __str__(self):
+        return self.domain
