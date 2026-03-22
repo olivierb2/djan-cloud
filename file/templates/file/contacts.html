@@ -103,6 +103,13 @@
                         </svg>
                         New contact
                     </button>
+                    <button onclick="openModal('group-modal')"
+                            class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        New group
+                    </button>
                     {% endif %}
                     {% if selected_addressbook.owner == user and selected_addressbook.name != 'contacts' %}
                     <form method="post" action="{% url 'addressbook_delete' addressbook_id=selected_addressbook.id %}" class="inline"
@@ -120,77 +127,86 @@
                 </div>
             </div>
 
-            <!-- Contacts list -->
-            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b border-gray-100 bg-gray-50/50 text-xs font-medium uppercase tracking-wider text-gray-500">
-                            <th class="px-4 py-3 text-left">Name</th>
-                            <th class="px-4 py-3 text-left hidden sm:table-cell">Email</th>
-                            <th class="px-4 py-3 text-left hidden md:table-cell">Phone</th>
-                            <th class="px-4 py-3 text-left hidden lg:table-cell">Organization</th>
-                            <th class="px-4 py-3 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        {% for contact in contacts %}
-                        <tr class="group hover:bg-gray-50/50 transition-colors">
-                            <td class="px-4 py-2.5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm font-medium">
-                                        {{ contact.fn|default:"?"|truncatechars:1 }}
-                                    </div>
-                                    <span class="font-medium text-gray-900">{{ contact.fn|default:"(No name)" }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden sm:table-cell">
-                                {% if contact.email %}
-                                <a href="mailto:{{ contact.email }}" class="hover:text-brand-600">{{ contact.email }}</a>
-                                {% else %}&mdash;{% endif %}
-                            </td>
-                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden md:table-cell">
-                                {{ contact.tel|default:"&mdash;" }}
-                            </td>
-                            <td class="px-4 py-2.5 text-sm text-gray-500 hidden lg:table-cell">
-                                {{ contact.org|default:"&mdash;" }}
-                            </td>
-                            <td class="px-4 py-2.5 text-right">
-                                {% if can_write %}
-                                <div class="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button type="button" title="Edit"
-                                            onclick="openEditContact({{ contact.id }}, '{{ contact.fn|default:""|escapejs }}', '{{ contact.email|default:""|escapejs }}', '{{ contact.tel|default:""|escapejs }}', '{{ contact.org|default:""|escapejs }}')"
-                                            class="rounded p-1 text-gray-400 hover:text-brand-600 hover:bg-brand-50">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                        </svg>
-                                    </button>
-                                    <form method="post" action="{% url 'contact_delete' contact_id=contact.id %}" class="inline"
-                                          onsubmit="return confirm('Delete contact \'{{ contact.fn|default:"this contact"|escapejs }}\'?')">
-                                        {% csrf_token %}
-                                        <button type="submit" title="Delete"
-                                                class="rounded p-1 text-gray-400 hover:text-red-600 hover:bg-red-50">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </div>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="px-4 py-12 text-center text-sm text-gray-400">
-                                <svg class="mx-auto mb-2 w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                </svg>
-                                No contacts in this address book
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <!-- Contacts list grouped by organization -->
+            <div class="space-y-4">
+
+                {% for org, org_contacts in grouped_contacts.items %}
+                <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <div class="flex items-center justify-between px-4 py-2 bg-gray-50 border-b border-gray-100 cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            <span class="text-sm font-semibold text-gray-700">{{ org }}</span>
+                            <span class="text-xs text-gray-400">({{ org_contacts|length }})</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <table class="w-full">
+                        <tbody class="divide-y divide-gray-100">
+                            {% for contact in org_contacts %}
+                            {% include "file/_contact_row.html" %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+
+                {% if ungrouped_contacts %}
+                <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    {% if grouped_contacts %}
+                    <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border-b border-gray-100 cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <span class="text-sm font-semibold text-gray-700">No organization</span>
+                        <span class="text-xs text-gray-400">({{ ungrouped_contacts|length }})</span>
+                    </div>
+                    {% endif %}
+                    <table class="w-full">
+                        <tbody class="divide-y divide-gray-100">
+                            {% for contact in ungrouped_contacts %}
+                            {% include "file/_contact_row.html" %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+
+                {% if not contacts %}
+                <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <div class="px-4 py-12 text-center text-sm text-gray-400">
+                        <svg class="mx-auto mb-2 w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        No contacts yet
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Groups section -->
+            <div class="mt-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-semibold text-gray-700">Groups</h2>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    {% for group in contact_groups %}
+                    <button type="button" onclick="openGroupMembersModal({{ group.id }}, '{{ group.name|escapejs }}')"
+                            class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 hover:border-brand-300 hover:bg-brand-50 transition-colors cursor-pointer">
+                        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {{ group.name }}
+                        <span class="text-xs text-gray-400">({{ group.contacts.count }})</span>
+                    </button>
+                    {% endfor %}
+                    {% if not contact_groups %}
+                    <p class="text-sm text-gray-400 italic">No groups yet. Create one with the "New group" button above.</p>
+                    {% endif %}
+                </div>
             </div>
 
             {% else %}
@@ -287,6 +303,53 @@
 </div>
 {% endif %}
 
+<!-- Create Group modal -->
+<div id="group-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">New contact group</h3>
+        <form id="group-form" onsubmit="return createGroup(event)">
+            <input type="text" id="group-name" required maxlength="255" placeholder="Group name (e.g. ACME Corp)"
+                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none mb-3">
+            <p class="text-xs text-gray-500 mb-3">Contacts from the current address book with matching organization will be automatically added.</p>
+            <div id="group-error" class="hidden mb-3 text-sm text-red-600"></div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeModal('group-modal')"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit"
+                        class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Group Members modal -->
+<div id="group-members-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4"><span id="group-members-title"></span></h3>
+        <div id="group-members-list" class="mb-4 max-h-48 overflow-y-auto divide-y divide-gray-100 rounded-lg border border-gray-200">
+        </div>
+        <div class="border-t border-gray-100 pt-3">
+            <p class="text-xs font-medium text-gray-500 mb-2">Add contact</p>
+            <div class="flex gap-2">
+                <select id="group-add-contact" class="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm">
+                    <option value="">Select a contact...</option>
+                    {% for contact in contacts %}
+                    <option value="{{ contact.id }}">{{ contact.fn|default:contact.uid }}{% if contact.org %} ({{ contact.org }}){% endif %}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" onclick="addContactToGroup()"
+                        class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700">Add</button>
+            </div>
+        </div>
+        <div class="flex items-center justify-between mt-4">
+            <button type="button" onclick="deleteGroup()"
+                    class="text-sm text-red-500 hover:text-red-700">Delete group</button>
+            <button type="button" onclick="closeModal('group-members-modal')"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- Dynamic Share modal -->
 <div id="share-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
     <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
@@ -338,8 +401,125 @@ function openEditContact(contactId, fn, email, tel, org) {
     openModal('edit-contact-modal');
 }
 
-var shareType = '', shareId = null;
 var csrf = '{{ csrf_token }}';
+var currentGroupId = null;
+
+function openGroupMembersModal(groupId, name) {
+    currentGroupId = groupId;
+    document.getElementById('group-members-title').textContent = name;
+    loadGroupMembers();
+    openModal('group-members-modal');
+}
+
+function loadGroupMembers() {
+    var list = document.getElementById('group-members-list');
+    list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400">Loading...</div>';
+    fetch('/api/contact-groups/' + currentGroupId + '/')
+        .then(r => r.json())
+        .then(data => {
+            if (!data.members || data.members.length === 0) {
+                list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400 text-center">No contacts in this group</div>';
+                return;
+            }
+            list.innerHTML = data.members.map(m =>
+                '<div class="flex items-center justify-between px-4 py-2">' +
+                    '<div class="flex items-center gap-2 min-w-0">' +
+                        '<div class="w-7 h-7 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-medium">' + (m.name || '?')[0] + '</div>' +
+                        '<div class="min-w-0"><div class="text-sm font-medium text-gray-900 truncate">' + m.name + '</div>' +
+                        (m.email ? '<div class="text-xs text-gray-500 truncate">' + m.email + '</div>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<button onclick="removeFromGroup(' + m.id + ')" class="text-xs text-red-500 hover:text-red-700 flex-shrink-0">Remove</button>' +
+                '</div>'
+            ).join('');
+        });
+}
+
+function addContactToGroup() {
+    var select = document.getElementById('group-add-contact');
+    var contactId = select.value;
+    if (!contactId) return;
+    fetch('/api/contact-groups/' + currentGroupId + '/add/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+        body: JSON.stringify({ contact_id: parseInt(contactId) })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            select.value = '';
+            loadGroupMembers();
+        }
+    });
+}
+
+function removeFromGroup(contactId) {
+    fetch('/api/contact-groups/' + currentGroupId + '/remove/' + contactId + '/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) loadGroupMembers();
+    });
+}
+
+function deleteGroup() {
+    if (!confirm('Delete this group?')) return;
+    fetch('/api/contact-groups/' + currentGroupId + '/delete/', {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': csrf }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            closeModal('group-members-modal');
+            window.location.reload();
+        }
+    });
+}
+
+// Contact group creation
+function createGroup(e) {
+    e.preventDefault();
+    var name = document.getElementById('group-name').value.trim();
+    if (!name) return false;
+    var errEl = document.getElementById('group-error');
+    errEl.classList.add('hidden');
+
+    // Collect contact IDs with matching org from current page
+    var contactIds = [];
+    {% for contact in contacts %}
+    {% if contact.org %}
+    if ('{{ contact.org|escapejs }}'.toLowerCase() === name.toLowerCase()) {
+        contactIds.push({{ contact.id }});
+    }
+    {% endif %}
+    {% endfor %}
+
+    fetch('/api/contact-groups/create/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+        body: JSON.stringify({ name: name, contact_ids: contactIds })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.error) {
+            errEl.textContent = data.error;
+            errEl.classList.remove('hidden');
+        } else {
+            closeModal('group-modal');
+            window.location.reload();
+        }
+    })
+    .catch(() => {
+        errEl.textContent = 'Failed to create group';
+        errEl.classList.remove('hidden');
+    });
+    return false;
+}
+
+var shareType = '', shareId = null;
 
 function openShareModal(type, id, name) {
     shareType = type;

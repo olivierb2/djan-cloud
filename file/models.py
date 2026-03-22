@@ -396,6 +396,47 @@ class ContactFolder(models.Model):
         super().save(*args, **kwargs)
 
 
+class ContactGroup(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='contact_groups')
+    name = models.CharField(max_length=255)
+    contacts = models.ManyToManyField(Contact, related_name='groups', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [('owner', 'name')]
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class ContactGroupFolder(models.Model):
+    group = models.OneToOneField(
+        ContactGroup, on_delete=models.CASCADE, related_name='group_folder')
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='contact_group_folders')
+    folder = models.OneToOneField(
+        Folder, on_delete=models.CASCADE, related_name='contact_group_folder_ref')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [('owner', 'group')]
+
+    def __str__(self):
+        return f"{self.owner.username} -> {self.group.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.folder_id:
+            root = Folder(owner=None, name=None, parent=None)
+            root.full_path = f"/__contacts__/{self.owner.username}/group-{self.group.id}/"
+            root.save()
+            self.folder = root
+        super().save(*args, **kwargs)
+
+
 # Email Models
 
 SYSTEM_MAILBOXES = ['INBOX', 'Sent', 'Drafts', 'Trash', 'Junk']

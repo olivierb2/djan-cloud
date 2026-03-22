@@ -506,6 +506,7 @@
   <!-- Contact search modal -->
   <contact-search-modal ref="contactModal" :csrf-token="csrfToken" />
 
+
   <!-- Move picker modal -->
   <teleport to="body">
     <div v-if="showMoveModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="showMoveModal = false">

@@ -19,6 +19,7 @@ from .models import (
     AddressBook, AddressBookShare, Contact, ContactFolder,
     Mailbox, Email, EmailAttachment, EmailSignature,
     AllowedDomain, OutOfOffice,
+    ContactGroup, ContactGroupFolder,
 )
 from django.views import View
 from djangodav.views.views import DavView
@@ -611,10 +612,25 @@ class FileBrowseView(LoginRequiredMixin, View):
         if stripped == '__contacts__':
             return None, False, False, False, True, None
 
-        # Inside a contact folder
+        # Inside a contact folder or group folder
         if stripped.startswith('__contacts__/'):
             parts = stripped.split('/')
-            contact_id = parts[1]
+            identifier = parts[1]
+
+            # Contact group folder: __contacts__/group-<id>/...
+            if identifier.startswith('group-'):
+                group_id = identifier[len('group-'):]
+                gf = get_object_or_404(
+                    ContactGroupFolder, group_id=group_id, owner=request.user)
+                if len(parts) == 2:
+                    return gf.folder, False, True, False, False, gf
+                sub_path = '/'.join(parts[2:])
+                full_path = f"/__contacts__/{request.user.username}/{identifier}/{sub_path}/"
+                folder = get_object_or_404(Folder, full_path=full_path)
+                return folder, False, True, False, False, gf
+
+            # Individual contact folder: __contacts__/<contact_id>/...
+            contact_id = identifier
             cf = get_object_or_404(
                 ContactFolder, contact_id=contact_id, owner=request.user)
 
@@ -1431,11 +1447,25 @@ class FolderTreeView(LoginRequiredMixin, View):
             tree['url_path'] = f"__contacts__/{cf.contact.id}"
             contact_trees.append(tree)
 
+        # Contact group folders
+        group_folders = ContactGroupFolder.objects.filter(
+            owner=request.user
+        ).select_related('group', 'folder')
+        group_trees = []
+        for gf in group_folders:
+            tree = build_tree(gf.folder, contact_id=True)
+            tree['name'] = gf.group.name
+            tree['group_id'] = gf.group.id
+            tree['url_path'] = f"__contacts__/group-{gf.group.id}"
+            tree['icon_type'] = 'group'
+            group_trees.append(tree)
+
         is_admin = request.user.role == 'admin'
         return JsonResponse({
             'tree': personal_tree,
             'shared': shared_trees,
             'contacts': contact_trees,
+            'contact_groups': group_trees,
             'is_admin': is_admin,
         })
 
@@ -1545,6 +1575,112 @@ class ContactFolderCreateView(LoginRequiredMixin, View):
             'contact_id': contact.id,
             'contact_name': contact.fn or contact.uid,
             'url_path': f"__contacts__/{contact.id}",
+            'created': created,
+        }, status=201 if created else 200)
+
+
+class ContactGroupListView(LoginRequiredMixin, View):
+    def get(self, request):
+        groups = ContactGroup.objects.filter(owner=request.user)
+        return JsonResponse([
+            {'id': g.id, 'name': g.name, 'count': g.contacts.count()}
+            for g in groups
+        ], safe=False)
+
+
+class ContactGroupCreateView(LoginRequiredMixin, View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        name = data.get('name', '').strip()
+        if not name:
+            return JsonResponse({'error': 'Group name is required'}, status=400)
+
+        contact_ids = data.get('contact_ids', [])
+
+        group, created = ContactGroup.objects.get_or_create(
+            owner=request.user, name=name)
+
+        if contact_ids:
+            own_books = AddressBook.objects.filter(owner=request.user).values_list('id', flat=True)
+            shared_books = AddressBookShare.objects.filter(user=request.user).values_list('addressbook_id', flat=True)
+            all_books = list(own_books) + list(shared_books)
+            contacts = Contact.objects.filter(id__in=contact_ids, addressbook_id__in=all_books)
+            group.contacts.add(*contacts)
+
+        return JsonResponse({
+            'id': group.id,
+            'name': group.name,
+            'count': group.contacts.count(),
+            'created': created,
+        }, status=201 if created else 200)
+
+
+class ContactGroupDetailView(LoginRequiredMixin, View):
+    def get(self, request, group_id):
+        group = get_object_or_404(ContactGroup, id=group_id, owner=request.user)
+        members = [
+            {'id': c.id, 'name': c.fn or c.uid, 'email': c.email or '', 'org': c.org or ''}
+            for c in group.contacts.all().order_by('fn')
+        ]
+        return JsonResponse({'id': group.id, 'name': group.name, 'members': members})
+
+
+class ContactGroupAddMemberView(LoginRequiredMixin, View):
+    def post(self, request, group_id):
+        group = get_object_or_404(ContactGroup, id=group_id, owner=request.user)
+        data = json.loads(request.body)
+        contact_id = data.get('contact_id')
+        if not contact_id:
+            return JsonResponse({'error': 'contact_id required'}, status=400)
+        own_books = AddressBook.objects.filter(owner=request.user).values_list('id', flat=True)
+        shared_books = AddressBookShare.objects.filter(user=request.user).values_list('addressbook_id', flat=True)
+        all_books = list(own_books) + list(shared_books)
+        contact = get_object_or_404(Contact, id=contact_id, addressbook_id__in=all_books)
+        group.contacts.add(contact)
+        return JsonResponse({'ok': True})
+
+
+class ContactGroupRemoveMemberView(LoginRequiredMixin, View):
+    def post(self, request, group_id, contact_id):
+        group = get_object_or_404(ContactGroup, id=group_id, owner=request.user)
+        group.contacts.remove(contact_id)
+        return JsonResponse({'ok': True})
+
+
+class ContactGroupDeleteView(LoginRequiredMixin, View):
+    def delete(self, request, group_id):
+        group = get_object_or_404(ContactGroup, id=group_id, owner=request.user)
+        if hasattr(group, 'group_folder'):
+            group.group_folder.folder.delete()
+        group.delete()
+        return JsonResponse({'ok': True})
+
+
+class ContactGroupFolderCreateView(LoginRequiredMixin, View):
+    """Create a shared folder for a contact group in the browse."""
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        group_id = data.get('group_id')
+        if not group_id:
+            return JsonResponse({'error': 'group_id required'}, status=400)
+
+        group = get_object_or_404(ContactGroup, id=group_id, owner=request.user)
+        cgf, created = ContactGroupFolder.objects.get_or_create(
+            owner=request.user, group=group)
+
+        return JsonResponse({
+            'id': cgf.id,
+            'group_id': group.id,
+            'group_name': group.name,
+            'url_path': f"__contacts__/group-{group.id}",
             'created': created,
         }, status=201 if created else 200)
 
@@ -2061,12 +2197,29 @@ class ContactsWebView(LoginRequiredMixin, View):
             except AddressBook.DoesNotExist:
                 selected_addressbook = None
 
+        # Group contacts by organization
+        from collections import OrderedDict
+        grouped_contacts = OrderedDict()
+        ungrouped = []
+        for c in contacts:
+            org = (c.org or '').strip()
+            if org:
+                grouped_contacts.setdefault(org, []).append(c)
+            else:
+                ungrouped.append(c)
+
+        # User's contact groups
+        contact_groups = ContactGroup.objects.filter(owner=request.user)
+
         return render(request, 'file/contacts.html', {
             'addressbooks': own_addressbooks,
             'shareable_addressbooks': shareable_addressbooks,
             'shared_addressbooks': shared_addressbooks,
             'selected_addressbook': selected_addressbook,
             'contacts': contacts,
+            'grouped_contacts': grouped_contacts,
+            'ungrouped_contacts': ungrouped,
+            'contact_groups': contact_groups,
             'shares': shares,
             'can_write': can_write,
         })
@@ -3233,10 +3386,23 @@ class BrowseApiView(LoginRequiredMixin, View):
         if stripped == '__contacts__':
             return None, False, False, False, True, None
 
-        # Inside a contact folder
+        # Inside a contact folder or group folder
         if stripped.startswith('__contacts__/'):
             parts = stripped.split('/')
-            contact_id = parts[1]
+            identifier = parts[1]
+
+            if identifier.startswith('group-'):
+                group_id = identifier[len('group-'):]
+                gf = get_object_or_404(
+                    ContactGroupFolder, group_id=group_id, owner=request.user)
+                if len(parts) == 2:
+                    return gf.folder, False, True, False, False, gf
+                sub_path = '/'.join(parts[2:])
+                full_path = f"/__contacts__/{request.user.username}/{identifier}/{sub_path}/"
+                folder = get_object_or_404(Folder, full_path=full_path)
+                return folder, False, True, False, False, gf
+
+            contact_id = identifier
             cf = get_object_or_404(
                 ContactFolder, contact_id=contact_id, owner=request.user)
             if len(parts) == 2:
