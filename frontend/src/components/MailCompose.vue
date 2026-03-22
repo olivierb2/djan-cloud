@@ -390,7 +390,7 @@ export default {
 
     loadSignature() {
       if (!this.selectedSignatureId) { this.signatureHtml = ''; return; }
-      fetch(`/mail/signatures/${this.selectedSignatureId}/content/`, {
+      fetch(`/mail/settings/signatures/${this.selectedSignatureId}/content/`, {
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
       })
         .then(r => r.json())

@@ -2442,6 +2442,13 @@ class MailWebView(LoginRequiredMixin, View):
         is_admin = request.user.role == 'admin'
         all_users = list(User.objects.all().order_by('username')) if is_admin else []
 
+        # Signatures for inline reply
+        signatures = EmailSignature.objects.filter(owner=request.user)
+        default_sig = signatures.filter(is_default=True).first()
+        signatures_json = json.dumps([
+            {'id': s.id, 'name': s.name} for s in signatures
+        ])
+
         return render(request, 'file/mail.html', {
             'mailboxes': mailboxes,
             'mailbox_tree': mailbox_tree,
@@ -2450,6 +2457,9 @@ class MailWebView(LoginRequiredMixin, View):
             'selected_mailbox_name': mailbox_name,
             'emails': emails,
             'selected_email': selected_email,
+            'signatures': signatures,
+            'signatures_json': signatures_json,
+            'default_signature': default_sig,
             'is_admin': is_admin,
             'all_users': all_users,
         })
