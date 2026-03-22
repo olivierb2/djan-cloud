@@ -2,6 +2,7 @@
   <div>
     <a
       :href="node.url_path ? '/browse/' + node.url_path : '/browse/'"
+      draggable="false"
       class="group flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm select-none no-underline transition-colors"
       :class="[
         isActive ? 'bg-brand-50 text-brand-700 font-medium' : 'text-gray-700 hover:bg-gray-100',
