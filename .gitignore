@@ -1,3 +1,5 @@
+.env
+staticfiles
 venv
 uploads
 db.sqlite3

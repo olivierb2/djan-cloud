@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: djancloud
+      POSTGRES_USER: djancloud
+      POSTGRES_PASSWORD: djancloud
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U djancloud"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      target: app
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      DB_HOST: db
+      DB_NAME: djancloud
+      DB_USER: djancloud
+      DB_PASSWORD: djancloud
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery:
+    build:
+      context: .
+      target: app
+    command: celery -A core worker -l info
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      DB_HOST: db
+      DB_NAME: djancloud
+      DB_USER: djancloud
+      DB_PASSWORD: djancloud
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  nginx:
+    build:
+      context: .
+      target: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+
+volumes:
+  pgdata:
+  uploads:
