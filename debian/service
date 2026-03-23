@@ -1,0 +1,14 @@
+[Unit]
+Description=DjanCloud - Django Service
+After=network.target
+
+[Service]
+User=djancloud
+Environment=VIRTUAL_ENV=/usr/share/djancloud/venv
+EnvironmentFile=/etc/djancloud/djancloud.conf
+WorkingDirectory=/usr/share/djancloud/
+ExecStartPre=/usr/share/djancloud/venv/bin/python manage.py migrate --noinput
+ExecStart=/usr/share/djancloud/venv/bin/daphne -p 8000 core.asgi:application
+
+[Install]
+WantedBy=multi-user.target

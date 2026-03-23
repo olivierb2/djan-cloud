@@ -1,0 +1,23 @@
+Source: djancloud
+Section: web
+Priority: optional
+Maintainer: Olivier Bitsch <olivier.b@iabsis.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ python3-pip,
+ python3-venv,
+ nodejs,
+ npm,
+Standards-Version: 4.6.2
+Homepage: https://github.com/olivierb2/djancloud
+
+Package: djancloud
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ python3
+Description: DjanCloud - Nextcloud-compatible server built with Django
+ A lightweight, all-in-one self-hosted file sync and share solution
+ with CalDAV, CardDAV, WebDAV, SMTP and IMAP support.

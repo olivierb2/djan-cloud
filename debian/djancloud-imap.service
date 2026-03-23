@@ -1,0 +1,13 @@
+[Unit]
+Description=DjanCloud - IMAP server
+After=network.target
+
+[Service]
+User=djancloud
+Environment=VIRTUAL_ENV=/usr/share/djancloud/venv
+EnvironmentFile=/etc/djancloud/djancloud.conf
+WorkingDirectory=/usr/share/djancloud/
+ExecStart=/usr/share/djancloud/venv/bin/python manage.py imapserver
+
+[Install]
+WantedBy=multi-user.target

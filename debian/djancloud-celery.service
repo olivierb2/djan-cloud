@@ -1,0 +1,13 @@
+[Unit]
+Description=DjanCloud - Celery worker
+After=network.target
+
+[Service]
+User=djancloud
+Environment=VIRTUAL_ENV=/usr/share/djancloud/venv
+EnvironmentFile=/etc/djancloud/djancloud.conf
+WorkingDirectory=/usr/share/djancloud/
+ExecStart=/usr/share/djancloud/venv/bin/celery -A core worker --loglevel=info
+
+[Install]
+WantedBy=multi-user.target

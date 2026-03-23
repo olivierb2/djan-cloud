@@ -1,0 +1,4 @@
+/usr/share/djancloud
+/var/lib/djancloud
+/etc/djancloud
+debian/nginx /usr/share/doc/djancloud

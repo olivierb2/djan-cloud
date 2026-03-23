@@ -1,0 +1,7 @@
+flows:
+- deb
+options:
+ distrib: "debian"
+ codename: "trixie"
+modes:
+- ON_TAG
