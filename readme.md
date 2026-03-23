@@ -1,4 +1,6 @@
-The purpose of this project is to rewrite Nextcloud server using Django. What is working so far:
+In 2026, if you want to free yourself from Google Drive or Microsoft 365, self-hosted options remain surprisingly limited. Nextcloud is essentially the only serious choice, with very few real alternatives. DjanCloud was born out of this frustration: a fast, lightweight Nextcloud-compatible server built with Django, offering the essential features without the complexity of the PHP stack.
+
+What is working so far:
 
 - Login page, user management with simple role.
 - Web UI to browse files and folders.
@@ -6,11 +8,12 @@ The purpose of this project is to rewrite Nextcloud server using Django. What is
 - Login with official Nextcloud client and full synchronisation
 - Browsable files over webdav.
 - Collaborative markdown editor
+- Shared calendars with CalDAV support
+- Shared contacts with CardDAV support
 
 What I'm planning to do:
 
-- Probably integrate onlyoffice or collabora office
-- Have shared calendar and contact
+- Integrate OnlyOffice or Collabora Office
 
 Any requests or pull requests are welcome.
 
