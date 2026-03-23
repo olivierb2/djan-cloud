@@ -18,15 +18,30 @@ Any requests or pull requests are welcome.
 
 ![screenshot](screenshot.png)
 
-# How to start the development server
-
-Install Python package (Debian/Ubuntu)
+# How to start with Docker Compose
 
 ```
-apt-get install python3 python3-pip python3-venv git
+cp .env.example .env
+docker compose up --build
 ```
 
-Clone this repository and and create virtual env
+The application will be available at http://localhost:8080
+
+To create the first admin user:
+
+```
+docker compose exec -ti web python manage.py createsuperuser
+```
+
+# How to start the development server (without Docker)
+
+Install system packages (Debian/Ubuntu)
+
+```
+apt-get install python3 python3-pip python3-venv git nodejs npm
+```
+
+Clone this repository and create virtual env
 
 ```
 git clone https://github.com/olivierb2/djan-cloud
@@ -36,14 +51,29 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-Create database (sqlite for now, postgresql will come soon) and first admin user
+Build the frontend
+
+```
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+Configure the environment
+
+```
+cp .env.example .env
+```
+
+Create database and first admin user
 
 ```
 python3 manage.py migrate
 python3 manage.py createsuperuser
 ```
 
-Finally run the development server
+Run the development server
 
 ```
 python3 manage.py runserver
